@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -28,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -39,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -67,9 +72,10 @@ fun RegisterScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
-    var boxBackgroundColor by remember { mutableStateOf(Maroon) }
-    var brideTextColor by remember { mutableStateOf(White) }
-    var groomTextColor by remember { mutableStateOf(White) }
+    val genderRadioOptions = listOf("Male", "Female")
+    var selectedGenderOption by remember { mutableStateOf(genderRadioOptions[0]) }
+    val lookingForRadioOptions = listOf("Bride", "Groom")
+    var selectedLookingForOption by remember { mutableStateOf(lookingForRadioOptions[0]) }
 
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -78,56 +84,6 @@ fun RegisterScreen(
     ) {
         ScreenHeader("Create Your Account", onBack)
         Column(Modifier.padding(horizontal = 16.dp)) {
-            Row(Modifier.fillMaxWidth()
-                .clickable {
-                    // 2. Change color dynamically on row click
-                    boxBackgroundColor = if (boxBackgroundColor == White) {
-                        Maroon
-                    } else {
-                        White
-                    }
-                },
-                horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(boxBackgroundColor)
-                        .weight(1f)
-                        .height(40.dp),
-                    contentAlignment = Alignment.Center
-                ){
-                    TextButton(onClick = {
-                        brideTextColor = if (brideTextColor == White) {
-                            Maroon
-                        } else {
-                            White
-                        }
-                    }, ) {
-                        Text("Bride", textAlign = TextAlign.Center, fontSize = 14.sp, color = brideTextColor)
-                    }
-                }
-
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(boxBackgroundColor)
-                        .weight(1f)
-                        .height(40.dp),
-                    contentAlignment = Alignment.Center
-                )
-                { TextButton(onClick = {
-                    groomTextColor = if (groomTextColor == White) {
-                        Maroon
-                    } else {
-                        White
-                    }
-                }, ) {
-                    Text("Groom", textAlign = TextAlign.Center, fontSize = 14.sp, color = groomTextColor)
-                }}
-
-            }
-            Spacer(Modifier.height(12.dp))
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -467,11 +423,76 @@ fun RegisterScreen(
                             }
                         )
                     }
+
+                    Row(modifier = Modifier.selectableGroup()
+                        .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "Gender",
+                            color = Maroon,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Normal)
+                        genderRadioOptions.forEach { text ->
+                            Row(
+                                modifier = Modifier
+                                    .selectable(
+                                        selected = (text == selectedGenderOption),
+                                        onClick = { selectedGenderOption = text },
+                                        role = Role.RadioButton
+                                    ),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Spacer(Modifier.width(10.dp))
+                                Row( verticalAlignment = Alignment.CenterVertically){
+                                    RadioButton(
+                                        selected = (text == selectedGenderOption),
+                                        onClick = null // null removes the extra 48dp padding, matching your checkbox fix
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(text = text)
+                                }
+
+                            }
+                        }
+                    }
+
+                    Row(modifier = Modifier.selectableGroup()
+                        .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "Looking for ",
+                            color = Maroon,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Normal)
+                        lookingForRadioOptions.forEach { text ->
+                            Row(
+                                modifier = Modifier
+                                    .selectable(
+                                        selected = (text == selectedLookingForOption),
+                                        onClick = { selectedLookingForOption = text },
+                                        role = Role.RadioButton
+                                    ),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Spacer(Modifier.width(10.dp))
+                                Row( verticalAlignment = Alignment.CenterVertically){
+                                    RadioButton(
+                                        selected = (text == selectedLookingForOption),
+                                        onClick = null // null removes the extra 48dp padding, matching your checkbox fix
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(text = text)
+                                }
+
+                            }
+                        }
+                    }
                 }
             }
+
             Spacer(Modifier.height(20.dp))
             Spacer(Modifier.weight(1f))
-            PrimaryButton("Next", onNext)
+            PrimaryButton(text = "Submit", onNext)
         }
     }
 }

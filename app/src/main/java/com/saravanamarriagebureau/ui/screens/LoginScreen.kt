@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +67,7 @@ fun LoginScreen(
     var mobileNumber by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var isCheckedRememberMe by remember { mutableStateOf(false) }
 
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -92,7 +96,7 @@ fun LoginScreen(
                 // Mobile Number
                 Column {
                     Text(
-                        text = "User Name",
+                        text = "Mobile Number / Email",
                         fontSize = 14.sp,
                         color = Maroon,
                         fontWeight = FontWeight.Normal,
@@ -129,7 +133,7 @@ fun LoginScreen(
 
                         placeholder = {
                             Text(
-                                text = "Mobile Number / Email",
+                                text = "Enter Mobile Number / Email",
                                 color = Color(0xFFB5B5BD),
                                 fontSize = 14.sp
                             )
@@ -208,14 +212,33 @@ fun LoginScreen(
                         }
                     )
                 }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Checkbox(
+                            checked = isCheckedRememberMe,
+                            onCheckedChange = null // Handled by the parent Row's toggleable modifier
+                        )
+                        Spacer(Modifier.width(5.dp))
+                        Text(text = "Remember Me",
+                            color = Maroon,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Normal)
+                    }
+
+                    Text(text = "Forgot Password?", color = Maroon,
+                        fontSize = 14.sp,
+                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Normal)
+                }
             }
         }
-        Spacer(Modifier.height(30.dp))
-
-        Text("Forgot Password?", color = Maroon, modifier = Modifier.align(Alignment.End),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,)
-
         Spacer(Modifier.height(30.dp))
         PrimaryButton("Login", onLogin)
         Spacer(Modifier.height(20.dp))

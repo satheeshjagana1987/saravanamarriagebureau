@@ -48,15 +48,15 @@ fun WelcomeScreen(
                 start = 24.dp, end = 24.dp, top = 40.dp, bottom = 50.dp
             ), horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(10.dp))
         AppLogo()
         Spacer(Modifier.height(30.dp))
         Text(
-            "Find Your Life Partner\nwith Trusted Families",
+            "Find Your Life Partner with Trusted Families",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
             color = TextPrimary,
-            fontSize = 18.sp
+            fontSize = 16.sp
         )
         Spacer(Modifier.height(28.dp))
         listOf("Verified Profiles", "Family Videos", "Admin Support", "Safe & Secure").forEach {
@@ -87,6 +87,16 @@ fun WelcomeScreen(
             }
         }
         Spacer(Modifier.weight(1f))
+        Text(
+            "Guntur No.1 Trusted Marriage Bureau",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = Success,
+            fontSize = 16.sp
+        )
+
+        Spacer(Modifier.height(20.dp))
+
         PrimaryButton("Get Started", onGetStarted)
 
         Row(verticalAlignment = Alignment.CenterVertically) {

@@ -52,7 +52,7 @@ fun AppLogo(compact: Boolean = false) {
             )
         }
         if (!compact) {
-            Text("Saravana", color = Maroon, fontWeight = FontWeight.Bold, fontSize = 28.sp)
+            Text("Saravana Bhava", color = Maroon, fontWeight = FontWeight.Bold, fontSize = 28.sp)
             Text("Marriage Bureau", color = Maroon, fontWeight = FontWeight.SemiBold, fontSize = 28.sp)
         }
     }
