@@ -57,3 +57,13 @@ data class Interest(
     val reject: Boolean = true,
     val imageUrl: String? = null
 )
+
+data class LanguageOption(
+    val name: String,     // Display name (e.g., "English")
+    val code: String      // ISO language code (e.g., "en")
+)
+
+data class Branches(
+    val name: String,
+    val price: String
+)

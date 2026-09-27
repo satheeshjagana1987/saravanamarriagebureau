@@ -11,7 +11,7 @@ import com.saravanamarriagebureau.ui.screens.AdminVoiceScreen
 import com.saravanamarriagebureau.ui.screens.ContactsLockedScreen
 import com.saravanamarriagebureau.ui.screens.ForgotPasswordScreen
 import com.saravanamarriagebureau.ui.screens.HomeScreen
-import com.saravanamarriagebureau.ui.screens.InterestSentScreen
+import com.saravanamarriagebureau.ui.screens.InterestSentDialogScreen
 import com.saravanamarriagebureau.ui.screens.InterestsScreen
 import com.saravanamarriagebureau.ui.screens.InvoiceScreen
 import com.saravanamarriagebureau.ui.screens.LoginScreen
@@ -146,14 +146,17 @@ fun SmbNavigationApp() {
         }
 
         composable(Routes.InterestSent) {
-            InterestSentScreen(
+            InterestSentDialogScreen(
                 onMatches = { navController.navigate(Routes.Matches) },
                 onHome = { navController.navigate(Routes.Home) { popUpTo(Routes.Home) { inclusive = true } } }
             )
         }
 
         composable(Routes.MatchFixed) {
-            MatchFixedScreen { navController.navigate(Routes.Invoice) }
+            MatchFixedScreen(
+                onBack = {navController.popBackStack()},
+                onInvoice = { navController.navigate(Routes.Invoice) }
+            )
         }
 
         composable(Routes.Invoice) {

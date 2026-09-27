@@ -119,71 +119,9 @@ fun PrivacyScreen(onBack: () -> Unit) {
     }
 }
 
-@Composable
-fun InterestSentScreen(onMatches: () -> Unit, onHome: () -> Unit) {
-    Column(
-        Modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(Icons.Default.Favorite, null, tint = Success, modifier = Modifier.size(100.dp))
-        Text("Interest Sent!", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Text("Your interest has been sent. We will connect you if there is mutual interest.", textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-        Spacer(Modifier.height(28.dp))
-        PrimaryButton("View Matches", onMatches)
-        Spacer(Modifier.height(10.dp))
-        SecondaryButton("Go to Home", onHome)
-    }
-}
 
-@Composable
-fun MatchFixedScreen(onInvoice: () -> Unit) {
-    Column(
-        Modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("🤝", style = MaterialTheme.typography.displayLarge)
-        Text("Match Fixed", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Text("Both families are interested!", fontWeight = FontWeight.SemiBold)
-        Text("Generate Success Fee Invoice to proceed.", color = TextSecondary)
-        Spacer(Modifier.height(20.dp))
-        Card(Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(16.dp)) {
-                Text("Success Fee")
-                Text("Guntur Branch                 ₹50,000")
-                Text("Hyderabad Main (N/AUS)       ₹1,00,000")
-            }
-        }
-        Spacer(Modifier.height(20.dp))
-        PrimaryButton("Generate Invoice", onInvoice)
-    }
-}
 
-@Composable
-fun InvoiceScreen(onPay: () -> Unit, onBack: () -> Unit) {
-    Column(Modifier.fillMaxSize().padding(16.dp)) {
-        ScreenHeader("Success Fee Invoice", onBack)
-        Card(colors = CardDefaults.cardColors(containerColor = SuccessSoft)) {
-            Text("✓  Invoice Generated", Modifier.padding(16.dp), color = Success, fontWeight = FontWeight.Bold)
-        }
-        Spacer(Modifier.height(12.dp))
-        Card {
-            Column(Modifier.padding(16.dp)) {
-                Text("Invoice ID: #AF12345")
-                Text("Match ID: #AF12345")
-                Text("Branch: Guntur Branch")
-                Text("Amount: ₹50,000", fontWeight = FontWeight.Bold)
-                Text("Date: 28 Aug 2026")
-                Text("Payment Status: Pending", color = Warning)
-            }
-        }
-        Spacer(Modifier.weight(1f))
-        PrimaryButton("Pay Now (₹50,000)", onPay)
-        Spacer(Modifier.height(10.dp))
-        SecondaryButton("View Details", onClick = {})
-    }
-}
+
 
 @Composable
 fun ContactsLockedScreen(onBack: () -> Unit) {

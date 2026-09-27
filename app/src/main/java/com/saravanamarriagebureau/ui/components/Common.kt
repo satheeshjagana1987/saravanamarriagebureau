@@ -77,13 +77,13 @@ fun PrimaryButton(
 }
 
 @Composable
-fun SecondaryButton(text: String, onClick: () -> Unit) {
+fun SecondaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier,) {
     OutlinedButton(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth().height(50.dp),
+        modifier = modifier.fillMaxWidth().height(50.dp),
         shape = RoundedCornerShape(8.dp)
     ) {
-        Text(text, color = Maroon, fontWeight = FontWeight.SemiBold)
+        Text(text, color = Black, fontWeight = FontWeight.SemiBold)
     }
 }
 
@@ -336,7 +336,7 @@ fun DividerLine() {
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(Color(0xFFE9ECEF))
+            .background(color = Gray)
     )
 }
 
@@ -346,7 +346,7 @@ fun VerticalDivider() {
         modifier = Modifier
             .width(1.dp)
             .height(20.dp)
-            .background(Gray)
+            .background(color = Gray)
     )
 }
 
