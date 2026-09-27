@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Mail
+import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
@@ -314,7 +315,7 @@ fun RegisterScreen(
                             ),
                             leadingIcon = {
                                 Icon(
-                                    imageVector = Icons.Outlined.Lock,
+                                    imageVector = Icons.Outlined.Password,
                                     contentDescription = null,
                                     tint = Color(0xFF9A9AA5),
                                     modifier = Modifier.size(19.dp)
@@ -386,7 +387,7 @@ fun RegisterScreen(
                             ),
                             leadingIcon = {
                                 Icon(
-                                    imageVector = Icons.Outlined.Lock,
+                                    imageVector = Icons.Outlined.Password,
                                     contentDescription = null,
                                     tint = Color(0xFF9A9AA5),
                                     modifier = Modifier.size(19.dp)

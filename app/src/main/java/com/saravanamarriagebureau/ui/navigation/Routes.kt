@@ -5,6 +5,7 @@ object Routes {
     const val Welcome = "welcome"
     const val Login = "login"
     const val Register = "register"
+    const val ForgotPassword = "forgot_password"
     const val Offer = "offer"
     const val Membership = "membership"
     const val ProfileCreation = "profile_creation"

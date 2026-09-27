@@ -9,6 +9,7 @@ import com.saravanamarriagebureau.ui.navigation.Routes
 import com.saravanamarriagebureau.ui.screens.AdminPanelScreen
 import com.saravanamarriagebureau.ui.screens.AdminVoiceScreen
 import com.saravanamarriagebureau.ui.screens.ContactsLockedScreen
+import com.saravanamarriagebureau.ui.screens.ForgotPasswordScreen
 import com.saravanamarriagebureau.ui.screens.HomeScreen
 import com.saravanamarriagebureau.ui.screens.InterestSentScreen
 import com.saravanamarriagebureau.ui.screens.InterestsScreen
@@ -52,6 +53,13 @@ fun SmbNavigationApp() {
                 onLogin = { navController.navigate(Routes.Home) },
                 onRegister = { navController.navigate(Routes.Register) },
                 onPrivacy = { }
+            )
+        }
+
+        composable(Routes.ForgotPassword) {
+            ForgotPasswordScreen(
+                onReset = { navController.navigate(Routes.Login) },
+                onBack = { navController.popBackStack() }
             )
         }
 

@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Checkbox
@@ -175,7 +176,7 @@ fun LoginScreen(
                         ),
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Outlined.Lock,
+                                imageVector = Icons.Outlined.Password,
                                 contentDescription = null,
                                 tint = Color(0xFF9A9AA5),
                                 modifier = Modifier.size(19.dp)
