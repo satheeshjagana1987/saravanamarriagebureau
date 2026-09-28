@@ -6,11 +6,8 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,13 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,12 +32,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.saravanamarriagebureau.ui.components.BorderLineCustomButton
+import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.PrimaryButton
-import com.saravanamarriagebureau.ui.components.SecondaryButton
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Success
+import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
 fun InterestSentDialogScreen(
@@ -112,28 +109,22 @@ fun InterestSentDialogScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Confirm Option A
-                TextButton(onClick = onMatches) {
-                    Text(
-                        text = "View Matches",
-                        style = TextStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            color = Maroon, // Custom primary color
-                            fontSize = 14.sp
-                        )
-                    )
-                }
 
-                TextButton(onClick = onMatches) {
-                    Text(
-                        text = "Go To Home",
-                        style = TextStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            color = Maroon, // Custom primary color
-                            fontSize = 14.sp
-                        )
-                    )
-                }
+                CustomButton(
+                    text = "View Matches", onClick = onMatches,
+                    modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 0.dp),
+                    height = 40.dp, width = 200.dp, cornerRadius = 20.dp, textColor = White,
+                    fontWeight = FontWeight.SemiBold, fontSize = 12.sp, backgroundColor = Maroon
+                )
+                Spacer(Modifier.height(10.dp))
+                BorderLineCustomButton(
+                    text = "Go To Home",
+                    onClick = onHome,
+                    modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 5.dp),
+                    height = 40.dp, width = 200.dp, cornerRadius = 20.dp, textColor = Black,
+                    fontWeight = FontWeight.SemiBold, fontSize = 12.sp
+                )
+
             }
         }
     )

@@ -18,11 +18,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -59,6 +62,7 @@ import com.saravanamarriagebureau.ui.theme.Gray
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.Success
+import com.saravanamarriagebureau.ui.theme.SuccessSoft
 import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
@@ -83,14 +87,25 @@ fun ForgotPasswordScreen(
         AppLogo()
         Spacer(Modifier.height(20.dp))
 
-        Text(
-            text = "OTP sent to 9999900000",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.SemiBold,
-            color = Success,
-            fontSize = 14.sp
-        )
-
+        Card(colors = CardDefaults.cardColors(containerColor = SuccessSoft)) {
+            Row(horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(10.dp).fillMaxWidth()) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Verified",
+                    tint = Success,
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    "OTP sent to 9999900000",
+                    Modifier.padding(start = 10.dp),
+                    color = Success,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -160,7 +175,7 @@ fun ForgotPasswordScreen(
                 // Password
                 Column {
                     Text(
-                        text = "Password",
+                        text = "New Password",
                         fontSize = 14.sp,
                         color = Maroon,
                         fontWeight = FontWeight.Normal,
@@ -221,7 +236,7 @@ fun ForgotPasswordScreen(
                         },
                         placeholder = {
                             Text(
-                                text = "Enter password",
+                                text = "Enter New Password",
                                 color = Color(0xFFB5B5BD),
                                 fontSize = 14.sp
                             )
@@ -232,7 +247,7 @@ fun ForgotPasswordScreen(
                 // Confirm Password
                 Column {
                     Text(
-                        text = "Confirm Password",
+                        text = "Confirm New Password",
                         fontSize = 14.sp,
                         color = Maroon,
                         fontWeight = FontWeight.Normal,
@@ -293,7 +308,7 @@ fun ForgotPasswordScreen(
                         },
                         placeholder = {
                             Text(
-                                text = "Enter Confirm Password",
+                                text = "Enter Confirm New Password",
                                 color = Color(0xFFB5B5BD),
                                 fontSize = 14.sp
                             )

@@ -50,6 +50,7 @@ fun InvoiceScreen(onPay: () -> Unit, onBack: () -> Unit) {
         Spacer(Modifier.height(50.dp))
         Card(colors = CardDefaults.cardColors(containerColor = SuccessSoft)) {
             Row(horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(10.dp).fillMaxWidth()) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
@@ -62,7 +63,6 @@ fun InvoiceScreen(onPay: () -> Unit, onBack: () -> Unit) {
                     Modifier.padding(start = 10.dp),
                     color = Success,
                     fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
                     fontWeight = FontWeight.SemiBold
                 )
             }

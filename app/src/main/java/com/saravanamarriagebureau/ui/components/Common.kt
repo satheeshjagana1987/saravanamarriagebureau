@@ -1,5 +1,6 @@
 package com.saravanamarriagebureau.ui.components
 
+import android.widget.GridLayout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.R
@@ -84,6 +87,46 @@ fun SecondaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modi
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(text, color = Black, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@Composable
+fun CustomButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    height: Dp,
+    width: Dp,
+    cornerRadius: Dp,
+    textColor: Color,
+    fontWeight: FontWeight,
+    fontSize: TextUnit,
+    backgroundColor: Color
+
+) {
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier.width(width).height(height),
+        shape = RoundedCornerShape(size = cornerRadius),
+        colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Text(text, fontWeight = fontWeight, color = textColor,
+            fontSize = fontSize, textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+fun BorderLineCustomButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier,
+                height: Dp, width: Dp, cornerRadius: Dp, textColor: Color, fontWeight: FontWeight, fontSize: TextUnit) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier.width(width).height(height),
+        shape = RoundedCornerShape(size = cornerRadius)
+    ) {
+        Text(text, color = textColor, fontWeight = fontWeight, fontSize = fontSize)
     }
 }
 
@@ -207,47 +250,21 @@ fun InterestCard(
                 Text(interest.education, color = TextSecondary, fontWeight = FontWeight.Normal)
 
             }
-            Spacer(modifier = Modifier.size(10.dp))
-            Column{
-                TextButton(
-                    onClick = {},
-                    modifier = Modifier.defaultMinSize(
-                        minWidth = 1.dp,
-                        minHeight = 10.dp
-                    ),
-                    colors = ButtonDefaults.textButtonColors(
-                        containerColor = Success,  // Sets the background color
-                        contentColor = White         // Sets the text color
-                    ),
-                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 5.dp)
-                ) {
-                    Text(
-                        "Accept",
-                        textAlign = TextAlign.Center,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-
-                TextButton(
-                    onClick = {},
-                    modifier = Modifier.defaultMinSize(
-                        minWidth = 1.dp,
-                        minHeight = 10.dp
-                    ),
-                    colors = ButtonDefaults.textButtonColors(
-                        containerColor = Red,  // Sets the background color
-                        contentColor = White         // Sets the text color
-                    ),
-                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 5.dp)
-                ) {
-                    Text(
-                        "Reject",
-                        textAlign = TextAlign.Center,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
+            Spacer(modifier = Modifier.size(20.dp))
+            Column(modifier = Modifier.fillMaxHeight()){
+                CustomButton(
+                    text = "Accept", onClick = {},
+                    modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                    height = 30.dp, width = 80.dp, cornerRadius = 20.dp, textColor = White,
+                    fontWeight = FontWeight.SemiBold, fontSize = 12.sp, backgroundColor = Success
+                )
+                Spacer(Modifier.height(10.dp))
+                CustomButton(
+                    text = "Reject", onClick = {},
+                    modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                    height = 30.dp, width = 80.dp, cornerRadius = 20.dp, textColor = White,
+                    fontWeight = FontWeight.SemiBold, fontSize = 12.sp, backgroundColor = Red
+                )
 
 
             }
