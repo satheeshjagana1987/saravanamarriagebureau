@@ -31,7 +31,6 @@ import com.saravanamarriagebureau.ui.theme.Maroon
 @Composable
 fun ChangeLanguageScreen(
     onBack: () -> Unit,
-    onLanguageChange: () -> Unit
 ){
     val languages = listOf(
         LanguageOption(name = "English", code = "en"),
@@ -100,5 +99,5 @@ fun ChangeLanguageScreen(
 @Preview
 @Composable
 fun ChangeLanguageScreenPreview(){
-    ChangeLanguageScreen(onBack = {}, onLanguageChange = {})
+    ChangeLanguageScreen(onBack = {})
 }

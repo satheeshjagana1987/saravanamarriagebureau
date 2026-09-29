@@ -89,7 +89,6 @@ fun ProfileCreationScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScreenHeader("Profile", onBack)
         Column(Modifier.padding(horizontal = 16.dp)) {
             Row(
                 Modifier

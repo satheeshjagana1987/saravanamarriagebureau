@@ -52,7 +52,6 @@ import com.saravanamarriagebureau.ui.theme.Success
 
 @Composable
 fun ChangePasswordScreen(
-    onChangePassword: () -> Unit,
     onBack: () -> Unit
 ) {
     var mobileNumber by remember { mutableStateOf("") }
@@ -283,7 +282,7 @@ fun ChangePasswordScreen(
         PrimaryButton(
             text = "Change Password",
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
-            onClick = onChangePassword
+            onClick = {}
         )
     }
 }
@@ -291,5 +290,5 @@ fun ChangePasswordScreen(
 @Preview
 @Composable
 fun ChangePasswordScreenPreview(){
-    ChangePasswordScreen(onChangePassword = {}, onBack = {})
+    ChangePasswordScreen(onBack = {})
 }

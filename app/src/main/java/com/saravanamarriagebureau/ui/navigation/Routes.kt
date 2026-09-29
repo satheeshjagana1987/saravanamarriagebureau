@@ -22,4 +22,7 @@ object Routes {
     const val ContactsLocked = "contacts_locked"
     const val AdminPanel = "admin_panel"
     const val Interests = "interests"
+    const val Main = "main"
+    const val ChangePassword = "change_password"
+    const val ChangeLanguage = "change_language"
 }

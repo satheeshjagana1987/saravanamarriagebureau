@@ -49,7 +49,6 @@ fun MatchesScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScreenHeader("Matches", onBack)
         Column(Modifier.padding(horizontal = 16.dp)) {
             Row(
                 Modifier

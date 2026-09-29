@@ -15,6 +15,7 @@ import com.saravanamarriagebureau.ui.screens.InterestSentDialogScreen
 import com.saravanamarriagebureau.ui.screens.InterestsScreen
 import com.saravanamarriagebureau.ui.screens.InvoiceScreen
 import com.saravanamarriagebureau.ui.screens.LoginScreen
+import com.saravanamarriagebureau.ui.screens.MainScreenWithHamburger
 import com.saravanamarriagebureau.ui.screens.MatchFixedScreen
 import com.saravanamarriagebureau.ui.screens.MatchesScreen
 import com.saravanamarriagebureau.ui.screens.MembershipScreen
@@ -48,6 +49,10 @@ fun SmbNavigationApp() {
             )
         }
 
+        composable(Routes.Main) {
+            MainScreenWithHamburger()
+        }
+
         composable(Routes.Login) {
             LoginScreen(
                 onLogin = { navController.navigate(Routes.Home) },
@@ -65,7 +70,7 @@ fun SmbNavigationApp() {
 
         composable(Routes.Register) {
             RegisterScreen(
-                onNext = { navController.navigate(Routes.Offer) },
+                onNext = { navController.navigate(Routes.Login) },
                 onBack = { navController.popBackStack() }
             )
         }
@@ -130,12 +135,10 @@ fun SmbNavigationApp() {
         }
 
         composable(Routes.Matches) {
-            val vm: MatchesViewModel = hiltViewModel()
             MatchesScreen(
                 onBack = { navController.popBackStack() },
                 onProfile = { navController.navigate(Routes.Profile) },
                 onInterestSent = {
-                    vm.sendInterest("demo")
                     navController.navigate(Routes.InterestSent)
                 }
             )
@@ -155,7 +158,6 @@ fun SmbNavigationApp() {
         composable(Routes.MatchFixed) {
             MatchFixedScreen(
                 onBack = {navController.popBackStack()},
-                onInvoice = { navController.navigate(Routes.Invoice) }
             )
         }
 

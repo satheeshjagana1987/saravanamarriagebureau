@@ -40,7 +40,7 @@ fun SplashScreen(navController: NavController) {
         delay(5000L)
 
         // Navigate to the next screen (e.g., "home") and clear the splash screen from history
-        navController.navigate(Routes.Welcome) {
+        navController.navigate(Routes.Main) {
             popUpTo(Routes.Splash) { inclusive = true }
         }
     }

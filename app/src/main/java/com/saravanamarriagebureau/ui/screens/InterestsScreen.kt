@@ -57,7 +57,6 @@ fun InterestsScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScreenHeader("Interests", onBack)
         Column(Modifier.padding(horizontal = 16.dp)) {
             Row(
                 Modifier

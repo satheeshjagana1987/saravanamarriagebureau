@@ -1,5 +1,15 @@
 package com.saravanamarriagebureau.data.model
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.saravanamarriagebureau.ui.navigation.Routes
+
 data class LoginRequest(
     val mobile: String,
     val password: String
@@ -67,3 +77,17 @@ data class Branches(
     val name: String,
     val price: String
 )
+
+// Primary Bottom Bar Destinations
+sealed class BottomBarScreen(val route: String, val title: String, val icon: ImageVector) {
+    object Home : BottomBarScreen(Routes.Home, "Home", Icons.Default.Home)
+    object Matches : BottomBarScreen(Routes.Matches, "Matches", Icons.Default.Search)
+    object Interests : BottomBarScreen(Routes.Interests, "Interests", Icons.Default.Person)
+    object Profile : BottomBarScreen(Routes.ProfileCreation, "Profile", Icons.Default.Person)
+}
+
+// Secondary Side Drawer Destinations
+sealed class DrawerScreen(val route: String, val title: String, val icon: ImageVector) {
+    object ChangeLanguage : DrawerScreen(Routes.ChangeLanguage, "ChangeLanguage", Icons.Default.Settings)
+    object ChangePassword : DrawerScreen(Routes.ChangePassword, "ChangePassword", Icons.Default.Info)
+}

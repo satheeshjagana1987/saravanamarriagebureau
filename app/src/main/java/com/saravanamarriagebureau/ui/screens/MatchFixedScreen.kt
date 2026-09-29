@@ -49,7 +49,6 @@ import com.saravanamarriagebureau.ui.theme.White
 @Composable
 fun MatchFixedScreen(
     onBack: () -> Unit,
-    onInvoice: () -> Unit
 ) {
 
     val branches = listOf(
@@ -134,7 +133,7 @@ fun MatchFixedScreen(
             }
         }
         Spacer(Modifier.weight(1f))
-        PrimaryButton(text = "Generate Invoice", onClick = onInvoice,
+        PrimaryButton(text = "Generate Invoice", onClick = {},
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp))
     }
 }
@@ -142,5 +141,5 @@ fun MatchFixedScreen(
 @Preview
 @Composable
 fun MatchFixedScreenPreview(){
-    MatchFixedScreen(onBack = {}, onInvoice = {})
+    MatchFixedScreen(onBack = {})
 }
