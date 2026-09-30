@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.saravanamarriagebureau.R
+import com.saravanamarriagebureau.data.model.BottomBarScreen
 import com.saravanamarriagebureau.ui.components.AppLogo
 import com.saravanamarriagebureau.ui.navigation.Routes
 import com.saravanamarriagebureau.ui.theme.Black
@@ -33,16 +34,15 @@ import com.saravanamarriagebureau.ui.theme.Maroon
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(
+    onFinished: () -> Unit
+) {
 
     LaunchedEffect(Unit) {
-        // Simulate a 3-second loading/animation delay
+
         delay(5000L)
 
-        // Navigate to the next screen (e.g., "home") and clear the splash screen from history
-        navController.navigate(Routes.Main) {
-            popUpTo(Routes.Splash) { inclusive = true }
-        }
+        onFinished()
     }
     Box(
         modifier = Modifier.fillMaxSize()
@@ -111,6 +111,6 @@ fun SplashScreen(navController: NavController) {
 @Composable
 fun SplashScreenPreview() {
     val dummyNavController = rememberNavController()
-    SplashScreen(navController = dummyNavController) // Passing a dummy NavController for preview
+    SplashScreen(onFinished = {}) // Passing a dummy NavController for preview
 }
 

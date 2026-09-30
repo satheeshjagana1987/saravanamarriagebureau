@@ -39,7 +39,19 @@ fun SmbNavigationApp() {
         startDestination = Routes.Splash
     ) {
         composable(Routes.Splash) {
-            SplashScreen (navController = navController)
+            SplashScreen(
+                onFinished = {
+
+                    navController.navigate(Routes.Main) {
+
+                        popUpTo(Routes.Splash) {
+                            inclusive = true
+                        }
+
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
 
         composable(Routes.Welcome) {
@@ -47,10 +59,6 @@ fun SmbNavigationApp() {
                 onGetStarted = { navController.navigate(Routes.Register) },
                 onLogin = { navController.navigate(Routes.Login) }
             )
-        }
-
-        composable(Routes.Main) {
-            MainScreenWithHamburger()
         }
 
         composable(Routes.Login) {
@@ -75,105 +83,109 @@ fun SmbNavigationApp() {
             )
         }
 
-        composable(Routes.Offer) {
-            OfferScreen { navController.navigate(Routes.Membership) }
+        composable(Routes.Main) {
+            MainScreenWithHamburger()
         }
 
-        composable(Routes.Membership) {
-            MembershipScreen(
-                onContinue = { navController.navigate(Routes.ProfileCreation) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(Routes.ProfileCreation) {
-            ProfileCreationScreen(
-                onSubmit = { navController.navigate(Routes.Home) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(Routes.VoiceBio) {
-            VoiceBioScreen(
-                onNext = { navController.navigate(Routes.ParentsTalk) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(Routes.ParentsTalk) {
-            ParentsTalkScreen(
-                onNext = { navController.navigate(Routes.Home) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(Routes.Home) {
-            HomeScreen(
-                onMatches = { navController.navigate(Routes.Matches) },
-                onProfile = { navController.navigate(Routes.Profile) },
-                onPrivacy = { navController.navigate(Routes.Privacy) }
-            )
-        }
-
-        composable(Routes.Profile) {
-            ProfileViewScreen(
-                onBack = { navController.popBackStack() },
-                onInterest = { navController.navigate(Routes.InterestSent) },
-                onVoice = { navController.navigate(Routes.AdminVoice) }
-            )
-        }
-
-        composable(Routes.Interests) {
-            InterestsScreen(
-                onBack = { navController.popBackStack() },
-                onInterestItemClick = { navController.navigate(Routes.Profile) }
-            )
-        }
-
-        composable(Routes.AdminVoice) {
-            AdminVoiceScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Routes.Matches) {
-            MatchesScreen(
-                onBack = { navController.popBackStack() },
-                onProfile = { navController.navigate(Routes.Profile) },
-                onInterestSent = {
-                    navController.navigate(Routes.InterestSent)
-                }
-            )
-        }
-
-        composable(Routes.Privacy) {
-            PrivacyScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Routes.InterestSent) {
-            InterestSentDialogScreen(
-                onMatches = { navController.navigate(Routes.Matches) },
-                onHome = { navController.navigate(Routes.Home) { popUpTo(Routes.Home) { inclusive = true } } }
-            )
-        }
-
-        composable(Routes.MatchFixed) {
-            MatchFixedScreen(
-                onBack = {navController.popBackStack()},
-            )
-        }
-
-        composable(Routes.Invoice) {
-            InvoiceScreen(
-                onPay = { navController.navigate(Routes.ContactsLocked) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(Routes.ContactsLocked) {
-            ContactsLockedScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Routes.AdminPanel) {
-            AdminPanelScreen()
-        }
+//        composable(Routes.Offer) {
+//            OfferScreen { navController.navigate(Routes.Membership) }
+//        }
+//
+//        composable(Routes.Membership) {
+//            MembershipScreen(
+//                onContinue = { navController.navigate(Routes.ProfileCreation) },
+//                onBack = { navController.popBackStack() }
+//            )
+//        }
+//
+//        composable(Routes.ProfileCreation) {
+//            ProfileCreationScreen(
+//                onSubmit = { navController.navigate(Routes.Home) },
+//                onBack = { navController.popBackStack() }
+//            )
+//        }
+//
+//        composable(Routes.VoiceBio) {
+//            VoiceBioScreen(
+//                onNext = { navController.navigate(Routes.ParentsTalk) },
+//                onBack = { navController.popBackStack() }
+//            )
+//        }
+//
+//        composable(Routes.ParentsTalk) {
+//            ParentsTalkScreen(
+//                onNext = { navController.navigate(Routes.Home) },
+//                onBack = { navController.popBackStack() }
+//            )
+//        }
+//
+//        composable(Routes.Home) {
+//            HomeScreen(
+//                onMatches = { navController.navigate(Routes.Matches) },
+//                onProfile = { navController.navigate(Routes.Profile) },
+//                onPrivacy = { navController.navigate(Routes.Privacy) }
+//            )
+//        }
+//
+//        composable(Routes.Profile) {
+//            ProfileViewScreen(
+//                onBack = { navController.popBackStack() },
+//                onInterest = { navController.navigate(Routes.InterestSent) },
+//                onVoice = { navController.navigate(Routes.AdminVoice) }
+//            )
+//        }
+//
+//        composable(Routes.Interests) {
+//            InterestsScreen(
+//                onBack = { navController.popBackStack() },
+//                onInterestItemClick = { navController.navigate(Routes.Profile) }
+//            )
+//        }
+//
+//        composable(Routes.AdminVoice) {
+//            AdminVoiceScreen(onBack = { navController.popBackStack() })
+//        }
+//
+//        composable(Routes.Matches) {
+//            MatchesScreen(
+//                onBack = { navController.popBackStack() },
+//                onProfile = { navController.navigate(Routes.Profile) },
+//                onInterestSent = {
+//                    navController.navigate(Routes.InterestSent)
+//                }
+//            )
+//        }
+//
+//        composable(Routes.Privacy) {
+//            PrivacyScreen(onBack = { navController.popBackStack() })
+//        }
+//
+//        composable(Routes.InterestSent) {
+//            InterestSentDialogScreen(
+//                onMatches = { navController.navigate(Routes.Matches) },
+//                onHome = { navController.navigate(Routes.Home) { popUpTo(Routes.Home) { inclusive = true } } }
+//            )
+//        }
+//
+//        composable(Routes.MatchFixed) {
+//            MatchFixedScreen(
+//                onBack = {navController.popBackStack()},
+//            )
+//        }
+//
+//        composable(Routes.Invoice) {
+//            InvoiceScreen(
+//                onPay = { navController.navigate(Routes.ContactsLocked) },
+//                onBack = { navController.popBackStack() }
+//            )
+//        }
+//
+//        composable(Routes.ContactsLocked) {
+//            ContactsLockedScreen(onBack = { navController.popBackStack() })
+//        }
+//
+//        composable(Routes.AdminPanel) {
+//            AdminPanelScreen()
+//        }
     }
 }

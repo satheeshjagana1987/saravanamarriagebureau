@@ -1,6 +1,7 @@
 package com.saravanamarriagebureau.ui.components
 
 import android.widget.GridLayout
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -102,8 +103,10 @@ fun CustomButton(
     textColor: Color,
     fontWeight: FontWeight,
     fontSize: TextUnit,
-    backgroundColor: Color
-
+    backgroundColor: Color,
+    borderStroke: Dp = 1.dp,
+    borderColor: Color = Gray,
+    
 ) {
     Button(
         onClick = onClick,
@@ -111,7 +114,8 @@ fun CustomButton(
         modifier = modifier.width(width).height(height),
         shape = RoundedCornerShape(size = cornerRadius),
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp),
+        border = BorderStroke(borderStroke, borderColor)
     ) {
         Text(text, fontWeight = fontWeight, color = textColor,
             fontSize = fontSize, textAlign = TextAlign.Center)
@@ -255,15 +259,15 @@ fun InterestCard(
                 CustomButton(
                     text = "Accept", onClick = {},
                     modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                    height = 30.dp, width = 80.dp, cornerRadius = 20.dp, textColor = White,
-                    fontWeight = FontWeight.SemiBold, fontSize = 12.sp, backgroundColor = Success
+                    height = 40.dp, width = 90.dp, cornerRadius = 20.dp, textColor = White,
+                    fontWeight = FontWeight.SemiBold, fontSize = 14.sp, backgroundColor = Success
                 )
                 Spacer(Modifier.height(10.dp))
                 CustomButton(
                     text = "Reject", onClick = {},
                     modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                    height = 30.dp, width = 80.dp, cornerRadius = 20.dp, textColor = White,
-                    fontWeight = FontWeight.SemiBold, fontSize = 12.sp, backgroundColor = Red
+                    height = 40.dp, width = 90.dp, cornerRadius = 20.dp, textColor = White,
+                    fontWeight = FontWeight.SemiBold, fontSize = 14.sp, backgroundColor = Red
                 )
 
 

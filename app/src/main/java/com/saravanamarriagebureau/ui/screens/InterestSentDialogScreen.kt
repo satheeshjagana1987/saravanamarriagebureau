@@ -24,6 +24,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -46,6 +49,14 @@ fun InterestSentDialogScreen(
     onMatches: () -> Unit,
     onHome: () -> Unit,
 ) {
+
+    var showDialog by remember {
+        mutableStateOf(true)
+    }
+
+    if (!showDialog) {
+        return
+    }
 
     AlertDialog(
         // Leave this empty to disable clicking outside to close
@@ -111,7 +122,14 @@ fun InterestSentDialogScreen(
             ) {
 
                 CustomButton(
-                    text = "View Matches", onClick = onMatches,
+                    text = "View Matches", onClick = {
+
+                        // 1. Close dialog
+                        showDialog = false
+
+                        // 2. Navigate after dialog is removed
+                        onMatches()
+                    },
                     modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 0.dp),
                     height = 40.dp, width = 200.dp, cornerRadius = 20.dp, textColor = White,
                     fontWeight = FontWeight.SemiBold, fontSize = 12.sp, backgroundColor = Maroon
@@ -119,7 +137,14 @@ fun InterestSentDialogScreen(
                 Spacer(Modifier.height(10.dp))
                 BorderLineCustomButton(
                     text = "Go To Home",
-                    onClick = onHome,
+                    onClick = {
+
+                        // Close dialog
+                        showDialog = false
+
+                        // Navigate home
+                        onHome()
+                    },
                     modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 5.dp),
                     height = 40.dp, width = 200.dp, cornerRadius = 20.dp, textColor = Black,
                     fontWeight = FontWeight.SemiBold, fontSize = 12.sp
@@ -128,21 +153,6 @@ fun InterestSentDialogScreen(
             }
         }
     )
-//    Column(
-//        Modifier.fillMaxSize()
-//            .padding(24.dp)
-//            .background(Cream),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.Center
-//    ) {
-//        Icon(Icons.Default.Favorite, null, tint = Maroon, modifier = Modifier.size(100.dp))
-//        Text("Interest Sent!", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-//        Text("Your interest has been sent. We will connect you if there is mutual interest.", textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-//        Spacer(Modifier.height(28.dp))
-//        PrimaryButton(text = "View Matches", onClick = onMatches)
-//        Spacer(Modifier.height(10.dp))
-//        SecondaryButton(text = "Go to Home", onClick = onHome)
-//    }
 }
 
 @Preview(

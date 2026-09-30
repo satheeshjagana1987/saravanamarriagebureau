@@ -23,15 +23,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.saravanamarriagebureau.data.enums.InterestTab
+import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.Profile
+import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.InterestCard
 import com.saravanamarriagebureau.ui.components.ProfileCard
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
@@ -42,8 +47,9 @@ fun InterestsScreen(
     onInterestItemClick: (Interest) -> Unit,
 ) {
 
-    var boxBackgroundColor by remember { mutableStateOf(Maroon) }
-    var brideTextColor by remember { mutableStateOf(White) }
+    var selectedTab by remember {
+        mutableStateOf(InterestTab.RECEIVED)
+    }
 
     val demoInterests = listOf(
         Interest("1", "Pooja S", 26, "B.Tech", false, false, true),
@@ -59,95 +65,35 @@ fun InterestsScreen(
     ) {
         Column(Modifier.padding(horizontal = 16.dp)) {
             Row(
-                Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        // 2. Change color dynamically on row click
-                        boxBackgroundColor = if (boxBackgroundColor == White) {
-                            Maroon
-                        } else {
-                            White
-                        }
-                    },
+                Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(boxBackgroundColor)
-                        .weight(1f)
-                        .height(40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TextButton(
-                        onClick = {
-                            brideTextColor = if (brideTextColor == White) {
-                                Maroon
-                            } else {
-                                White
-                            }
-                        },
-                    ) {
-                        Text(
-                            "Received",
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            color = brideTextColor
-                        )
-                    }
-                }
+                InterestTabButton(
+                    text = "Received",
+                    selected = selectedTab == InterestTab.RECEIVED,
+                    onClick = {
+                        selectedTab = InterestTab.RECEIVED
+                    },
+                    modifier = Modifier.weight(1f)
+                )
 
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(boxBackgroundColor)
-                        .weight(1f)
-                        .height(40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TextButton(
-                        onClick = {
-                            brideTextColor = if (brideTextColor == White) {
-                                Maroon
-                            } else {
-                                White
-                            }
-                        },
-                    ) {
-                        Text(
-                            "Sent",
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            color = brideTextColor
-                        )
-                    }
-                }
+                InterestTabButton(
+                    text = "Sent",
+                    selected = selectedTab == InterestTab.SENT,
+                    onClick = {
+                        selectedTab = InterestTab.SENT
+                    },
+                    modifier = Modifier.weight(1f)
+                )
 
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(boxBackgroundColor)
-                        .weight(1f)
-                        .height(40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TextButton(
-                        onClick = {
-                            brideTextColor = if (brideTextColor == White) {
-                                Maroon
-                            } else {
-                                White
-                            }
-                        },
-                    ) {
-                        Text(
-                            "Match Fixed",
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            color = brideTextColor
-                        )
-                    }
-                }
+                InterestTabButton(
+                    text = "Match Fixed",
+                    selected = selectedTab == InterestTab.MATCH_FIXED,
+                    onClick = {
+                        selectedTab = InterestTab.MATCH_FIXED
+                    },
+                    modifier = Modifier.weight(1f)
+                )
 
             }
             LazyColumn(
@@ -162,6 +108,34 @@ fun InterestsScreen(
             }
         }
     }
+}
+
+@Composable
+fun InterestTabButton(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    CustomButton(
+        text = text,
+        onClick = onClick,
+        modifier = modifier,
+        height = 40.dp,
+        width = 0.dp,
+        cornerRadius = 5.dp,
+
+        textColor = if (selected) White else Black,
+
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+
+        backgroundColor = if (selected) Maroon else White,
+
+        borderColor = if (selected) Maroon else Black,
+
+        borderStroke = 0.2.dp
+    )
 }
 
 @Preview

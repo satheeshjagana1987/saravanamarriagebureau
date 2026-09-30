@@ -75,7 +75,6 @@ fun ProfileViewScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScreenHeader("Profile Details", onBack)
         Box(
             modifier = Modifier
                 .fillMaxSize()

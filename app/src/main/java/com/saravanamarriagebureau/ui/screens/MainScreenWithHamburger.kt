@@ -1,5 +1,7 @@
 package com.saravanamarriagebureau.ui.screens
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -19,12 +21,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -38,265 +45,512 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreenWithHamburger() {
     val navController = rememberNavController()
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val drawerState = rememberDrawerState(
+        initialValue = DrawerValue.Closed
+    )
+
     val scope = rememberCoroutineScope()
 
-    // Monitor backstack to know exactly which screen is active
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val currentRoute = currentDestination?.route
 
-    // Separate UI menu lists
+    LaunchedEffect(currentRoute) {
+        drawerState.close()
+    }
+
+    // -----------------------------------------
+    // Bottom navigation
+    // -----------------------------------------
+
     val bottomItems = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Matches,
         BottomBarScreen.Interests,
-        BottomBarScreen.Profile
+        BottomBarScreen.ProfileCreation
     )
-    val drawerItems = listOf(DrawerScreen.ChangePassword, DrawerScreen.ChangeLanguage)
 
-    // 2. Dynamically determine the title based on the active route
-    val appBarTitle = when (currentDestination?.route) {
-        BottomBarScreen.Home.route -> BottomBarScreen.Home.title
-        BottomBarScreen.Matches.route -> BottomBarScreen.Matches.title
-        BottomBarScreen.Profile.route -> BottomBarScreen.Profile.title
-        BottomBarScreen.Interests.route -> BottomBarScreen.Interests.title
-        else -> "My App" // Default fallback title
+    // -----------------------------------------
+    // Drawer navigation
+    // -----------------------------------------
+
+    val drawerItems = listOf(
+        DrawerScreen.ChangePassword,
+        DrawerScreen.ChangeLanguage,
+        DrawerScreen.Logout,
+
+    )
+
+    // -----------------------------------------
+    // Screens WITHOUT drawer / bottom bar
+    // -----------------------------------------
+
+    val screensWithoutNavigation = setOf(
+        Routes.Profile,
+        DrawerScreen.ChangeLanguage.route,
+        DrawerScreen.ChangePassword.route,
+        Routes.InterestSent
+    )
+
+    val showMainNavigation =
+        currentRoute !in screensWithoutNavigation
+
+    // -----------------------------------------
+    // App bar title
+    // -----------------------------------------
+
+    val appBarTitle = when (currentRoute) {
+
+        BottomBarScreen.Home.route ->
+            BottomBarScreen.Home.title
+
+        BottomBarScreen.Matches.route ->
+            BottomBarScreen.Matches.title
+
+        BottomBarScreen.Interests.route ->
+            BottomBarScreen.Interests.title
+
+        BottomBarScreen.ProfileCreation.route ->
+            BottomBarScreen.ProfileCreation.title
+
+        Routes.Profile ->
+            "Profile"
+
+        DrawerScreen.ChangeLanguage.route ->
+            "Change Language"
+
+        DrawerScreen.ChangePassword.route ->
+            "Change Password"
+
+        Routes.InterestSent ->
+            ""
+
+        else ->
+            ""
     }
 
+    // =====================================================
+    // ONE DRAWER
+    // ONE SCAFFOLD
+    // ONE NAVHOST
+    // =====================================================
+
     ModalNavigationDrawer(
+
         drawerState = drawerState,
+
         drawerContent = {
-            ModalDrawerSheet {
-                Text("App Menu", modifier = Modifier.padding(16.dp))
-                HorizontalDivider()
 
-                // 🛑 SIDE DRAWER MENU LOOP
-                drawerItems.forEach { screen ->
-                    val isSelected =
-                        currentDestination?.hierarchy?.any { it.route == screen.route } == true
+            // Only show drawer content for main screens
+            if (showMainNavigation) {
 
-                    NavigationDrawerItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
-                        label = { Text(screen.title) },
-                        selected = isSelected,
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                ModalDrawerSheet {
+
+                    Text(
+                        text = "App Menu",
+                        modifier = Modifier.padding(16.dp)
                     )
-                }
-            }
-        }
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = appBarTitle) },
-                    navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Open Drawer")
-                        }
-                    }
-                )
-            },
-            bottomBar = {
-                // 🛑 BOTTOM NAVIGATION BAR LOOP
-                NavigationBar {
-                    bottomItems.forEach { screen ->
-                        val isSelected =
-                            currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
-                        NavigationBarItem(
-                            icon = { Icon(screen.icon, contentDescription = screen.title) },
-                            label = { Text(screen.title) },
+                    HorizontalDivider()
+
+                    drawerItems.forEach { screen ->
+
+                        val isSelected =
+                            currentDestination
+                                ?.hierarchy
+                                ?.any {
+                                    it.route == screen.route
+                                } == true
+
+                        NavigationDrawerItem(
+
+                            icon = {
+                                Icon(
+                                    imageVector = screen.icon,
+                                    contentDescription = screen.title
+                                )
+                            },
+
+                            label = {
+                                Text(screen.title)
+                            },
+
                             selected = isSelected,
+
                             onClick = {
+
+                                scope.launch {
+                                    drawerState.close()
+                                }
+
                                 navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
+
                                     launchSingleTop = true
+
                                     restoreState = true
                                 }
-                            }
+                            },
+
+                            modifier = Modifier.padding(
+                                NavigationDrawerItemDefaults.ItemPadding
+                            )
                         )
                     }
                 }
             }
-        ) { paddingValues ->
-            // Combined Destination Graph
-            NavHost(
-                navController = navController,
-                startDestination = BottomBarScreen.Home.route,
-                modifier = Modifier.padding(paddingValues)
-            ) {
-                // Bottom Bar Screens
-                composable(BottomBarScreen.Home.route) {
-                    MatchFixedScreen(
-                        onBack = { navController.popBackStack() },
+        }
+
+    ) {
+
+        // =================================================
+        // SCAFFOLD
+        // =================================================
+
+        Scaffold(
+
+            // ---------------------------------------------
+            // TOP APP BAR
+            // ---------------------------------------------
+
+            topBar = {
+
+                // Don't show hamburger on special screens
+                if (showMainNavigation) {
+
+                    TopAppBar(
+
+                        title = {
+                            Text(appBarTitle)
+                        },
+
+                        navigationIcon = {
+
+                            IconButton(
+                                onClick = {
+
+                                    scope.launch {
+                                        drawerState.open()
+                                    }
+                                }
+                            ) {
+
+                                Icon(
+                                    imageVector = Icons.Default.Menu,
+                                    contentDescription = "Open Drawer"
+                                )
+                            }
+                        }
+                    )
+
+                } else {
+
+                    // Special screens:
+                    // NO navigationIcon
+
+                    TopAppBar(
+                        title = {
+                            Text(appBarTitle)
+                        }
                     )
                 }
+            },
+
+            // ---------------------------------------------
+            // BOTTOM BAR
+            // ---------------------------------------------
+
+            bottomBar = {
+
+                if (showMainNavigation) {
+
+                    NavigationBar {
+
+                        bottomItems.forEach { screen ->
+
+                            val isSelected =
+                                currentDestination
+                                    ?.hierarchy
+                                    ?.any {
+                                        it.route == screen.route
+                                    } == true
+
+                            NavigationBarItem(
+
+                                icon = {
+                                    Icon(
+                                        imageVector = screen.icon,
+                                        contentDescription = screen.title
+                                    )
+                                },
+
+                                label = {
+                                    Text(screen.title)
+                                },
+
+                                selected = isSelected,
+
+                                onClick = {
+
+                                    navController.navigate(screen.route) {
+
+                                        popUpTo(
+                                            navController.graph
+                                                .findStartDestination()
+                                                .id
+                                        ) {
+                                            saveState = true
+                                        }
+
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+        ) { paddingValues ->
+
+            // =================================================
+            // ONE AND ONLY ONE NAVHOST
+            // =================================================
+
+            NavHost(
+
+                navController = navController,
+
+                startDestination = BottomBarScreen.Home.route,
+
+                modifier = Modifier.padding(paddingValues)
+
+            ) {
+
+                // =================================================
+                // HOME
+                // =================================================
+
+                composable(BottomBarScreen.Home.route) {
+
+                    MatchFixedScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                // =================================================
+                // MATCHES
+                // =================================================
+
                 composable(BottomBarScreen.Matches.route) {
+
                     MatchesScreen(
-                        onBack = { navController.popBackStack() },
-                        onProfile = { navController.navigate(Routes.Profile) },
+
+                        onBack = {
+                            navController.popBackStack()
+                        },
+
+                        onProfile = {
+                            navController.navigate(Routes.Profile)
+                        },
+
                         onInterestSent = {
                             navController.navigate(Routes.InterestSent)
                         }
                     )
                 }
-                composable(BottomBarScreen.Profile.route) {
-                    ProfileCreationScreen(
-                        onSubmit = { navController.navigate(Routes.Home) },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
+
+                // =================================================
+                // INTERESTS
+                // =================================================
 
                 composable(BottomBarScreen.Interests.route) {
+
                     InterestsScreen(
-                        onBack = { navController.popBackStack() },
-                        onInterestItemClick = { navController.navigate(Routes.Profile) }
-                    )
-                }
 
-                // Drawer Screens
-                composable(DrawerScreen.ChangeLanguage.route) {
-                    ChangeLanguageScreen(
-                        onBack = { navController.popBackStack() },
-                    )
-                }
-                composable(DrawerScreen.ChangePassword.route) {
-                    ChangePasswordScreen(
-                        onBack = { navController.popBackStack() },
-                    )
-                }
+                        onBack = {
+                            navController.popBackStack()
+                        },
 
-                composable(Routes.Splash) {
-                    SplashScreen (navController = navController)
-                }
-
-                composable(Routes.Welcome) {
-                    WelcomeScreen(
-                        onGetStarted = { navController.navigate(Routes.Register) },
-                        onLogin = { navController.navigate(Routes.Login) }
-                    )
-                }
-
-                composable(Routes.Main) {
-                    MainScreenWithHamburger()
-                }
-
-                composable(Routes.Login) {
-                    LoginScreen(
-                        onLogin = { navController.navigate(Routes.Home) },
-                        onRegister = { navController.navigate(Routes.Register) },
-                        onPrivacy = { }
-                    )
-                }
-
-                composable(Routes.ForgotPassword) {
-                    ForgotPasswordScreen(
-                        onReset = { navController.navigate(Routes.Login) },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-
-                composable(Routes.Register) {
-                    RegisterScreen(
-                        onNext = { navController.navigate(Routes.Login) },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-
-                composable(Routes.Offer) {
-                    OfferScreen { navController.navigate(Routes.Membership) }
-                }
-
-                composable(Routes.Membership) {
-                    MembershipScreen(
-                        onContinue = { navController.navigate(Routes.ProfileCreation) },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-
-                composable(Routes.ProfileCreation) {
-                    ProfileCreationScreen(
-                        onSubmit = { navController.navigate(Routes.Home) },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-
-                composable(Routes.VoiceBio) {
-                    VoiceBioScreen(
-                        onNext = { navController.navigate(Routes.ParentsTalk) },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-
-                composable(Routes.ParentsTalk) {
-                    ParentsTalkScreen(
-                        onNext = { navController.navigate(Routes.Home) },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-
-                composable(Routes.Profile) {
-                    ProfileViewScreen(
-                        onBack = { navController.popBackStack() },
-                        onInterest = { navController.navigate(Routes.InterestSent) },
-                        onVoice = { navController.navigate(Routes.AdminVoice) }
-                    )
-                }
-
-                composable(Routes.Interests) {
-                    InterestsScreen(
-                        onBack = { navController.popBackStack() },
-                        onInterestItemClick = { navController.navigate(Routes.Profile) }
-                    )
-                }
-
-                composable(Routes.AdminVoice) {
-                    AdminVoiceScreen(onBack = { navController.popBackStack() })
-                }
-
-                composable(Routes.Matches) {
-                    MatchesScreen(
-                        onBack = { navController.popBackStack() },
-                        onProfile = { navController.navigate(Routes.Profile) },
-                        onInterestSent = {
-                            navController.navigate(Routes.InterestSent)
+                        onInterestItemClick = {
+                            navController.navigate(Routes.Profile)
                         }
                     )
                 }
 
-                composable(Routes.Privacy) {
-                    PrivacyScreen(onBack = { navController.popBackStack() })
+                // =================================================
+                // PROFILE CREATION
+                // =================================================
+
+                composable(BottomBarScreen.ProfileCreation.route) {
+
+                    ProfileCreationScreen(
+
+                        onSubmit = {
+                            navController.navigate(
+                                BottomBarScreen.Home.route
+                            )
+                        },
+
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
+
+                // =================================================
+                // PROFILE VIEW
+                // =================================================
+
+                composable(Routes.Profile) {
+
+                    ProfileViewScreen(
+
+                        onBack = {
+                            navController.popBackStack()
+                        },
+
+                        onInterest = {
+                            navController.navigate(
+                                Routes.InterestSent
+                            )
+                        },
+
+                        onVoice = {
+                            navController.navigate(
+                                Routes.AdminVoice
+                            )
+                        }
+                    )
+                }
+
+                // =================================================
+                // CHANGE LANGUAGE
+                // =================================================
+
+                composable(
+                    DrawerScreen.ChangeLanguage.route
+                ) {
+
+                    ChangeLanguageScreen(
+
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                // =================================================
+                // CHANGE PASSWORD
+                // =================================================
+
+                composable(
+                    DrawerScreen.ChangePassword.route
+                ) {
+
+                    ChangePasswordScreen(
+
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                // =================================================
+                // INTEREST SENT
+                // =================================================
 
                 composable(Routes.InterestSent) {
+
                     InterestSentDialogScreen(
-                        onMatches = { navController.navigate(Routes.Matches) },
-                        onHome = { navController.navigate(Routes.Home) { popUpTo(Routes.Home) { inclusive = true } } }
+
+                        onMatches = {
+
+                            navController.navigate(
+                                BottomBarScreen.Matches.route
+                            )
+                        },
+
+                        onHome = {
+
+                            navController.navigate(
+                                BottomBarScreen.Home.route
+                            ) {
+
+                                popUpTo(
+                                    BottomBarScreen.Home.route
+                                ) {
+                                    inclusive = true
+                                }
+                            }
+                        }
                     )
                 }
+
+                // =================================================
+                // ADMIN VOICE
+                // =================================================
+
+                composable(Routes.AdminVoice) {
+
+                    AdminVoiceScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                // =================================================
+                // PRIVACY
+                // =================================================
+
+                composable(Routes.Privacy) {
+
+                    PrivacyScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                // =================================================
+                // INVOICE
+                // =================================================
 
                 composable(Routes.Invoice) {
+
                     InvoiceScreen(
-                        onPay = { navController.navigate(Routes.ContactsLocked) },
-                        onBack = { navController.popBackStack() }
+
+                        onPay = {
+                            navController.navigate(
+                                Routes.ContactsLocked
+                            )
+                        },
+
+                        onBack = {
+                            navController.popBackStack()
+                        }
                     )
                 }
 
+                // =================================================
+                // CONTACTS LOCKED
+                // =================================================
+
                 composable(Routes.ContactsLocked) {
-                    ContactsLockedScreen(onBack = { navController.popBackStack() })
+
+                    ContactsLockedScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
+
+                // =================================================
+                // ADMIN PANEL
+                // =================================================
 
                 composable(Routes.AdminPanel) {
                     AdminPanelScreen()
@@ -305,4 +559,7 @@ fun MainScreenWithHamburger() {
         }
     }
 }
+
+
+
 
