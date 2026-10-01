@@ -42,7 +42,6 @@ import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
 fun MatchesScreen(
-    onBack: () -> Unit,
     onProfile: (Profile) -> Unit,
     onInterestSent: () -> Unit
 ) {
@@ -142,5 +141,5 @@ fun MatchTabButton(
 @Preview
 @Composable
 fun MatchesScreenPreview() {
-    MatchesScreen(onBack = {}, onProfile = {}, onInterestSent = {})
+    MatchesScreen(onProfile = {}, onInterestSent = {})
 }

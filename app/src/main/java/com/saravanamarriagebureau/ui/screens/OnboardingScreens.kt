@@ -75,41 +75,6 @@ fun OfferScreen(onContinue: () -> Unit) {
 }
 
 @Composable
-fun MembershipScreen(onContinue: () -> Unit, onBack: () -> Unit) {
-    Column(Modifier.fillMaxSize().padding(16.dp)) {
-        ScreenHeader("Choose Your Plan", onBack)
-        PlanCard("Dasara Offer", "Free Registration", "₹0", selected = true)
-        PlanCard("Yearly Membership", "For profile viewing only", "₹299 / Year", selected = false)
-        Spacer(Modifier.weight(1f))
-        PrimaryButton("Continue", onContinue)
-    }
-}
-
-@Composable
-private fun PlanCard(title: String, subtitle: String, price: String, selected: Boolean) {
-    Card(
-        Modifier.fillMaxWidth().padding(vertical = 8.dp),
-        shape = RoundedCornerShape(12.dp),
-        border = CardDefaults.outlinedCardBorder()
-    ) {
-        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(title, color = Maroon, fontWeight = FontWeight.Bold)
-                Text(price, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                Text(subtitle, color = TextSecondary)
-            }
-            Icon(
-                Icons.Default.CheckCircle,
-                null,
-                tint = if (selected) Success else CardBorder
-            )
-        }
-    }
-}
-
-
-
-@Composable
 fun VoiceBioScreen(onNext: () -> Unit, onBack: () -> Unit) {
     Column(
         Modifier.fillMaxSize().padding(16.dp),

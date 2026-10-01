@@ -43,8 +43,8 @@ import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
 fun InterestsScreen(
-    onBack: () -> Unit,
     onInterestItemClick: (Interest) -> Unit,
+    onAcceptRejectButton: () -> Unit
 ) {
 
     var selectedTab by remember {
@@ -103,7 +103,9 @@ fun InterestsScreen(
                 items(demoInterests) { interest ->
                     InterestCard(
                         interest,
-                        onOpen = {onInterestItemClick(interest)})
+                        onOpen = {onInterestItemClick(interest)},
+                        onAcceptRejectButton = { onAcceptRejectButton() }
+                    )
                 }
             }
         }
@@ -141,5 +143,5 @@ fun InterestTabButton(
 @Preview
 @Composable
 fun InterestsScreenPreview() {
-    InterestsScreen(onBack = {}, onInterestItemClick = {})
+    InterestsScreen(onInterestItemClick = {}, onAcceptRejectButton = {})
 }

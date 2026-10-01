@@ -210,7 +210,8 @@ fun ProfileCard(
             .clickable { onOpen() },
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = CardDefaults.outlinedCardBorder()
+        border = CardDefaults.outlinedCardBorder(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
             ProfilePhoto("", Modifier.size(74.dp))
@@ -226,7 +227,10 @@ fun ProfileCard(
                     Text("● Admin Verified", color = Success, style = MaterialTheme.typography.labelSmall)
                 }
             }
-            Icon(Icons.Default.FavoriteBorder, null, tint = Maroon, modifier = Modifier.size(30.dp))
+            Icon(Icons.Default.FavoriteBorder,
+                null, tint = Maroon,
+                modifier = Modifier.size(30.dp).clickable{onInterest()},
+            )
         }
     }
 }
@@ -234,14 +238,16 @@ fun ProfileCard(
 @Composable
 fun InterestCard(
     interest: Interest,
-    onOpen: () -> Unit
+    onOpen: () -> Unit,
+    onAcceptRejectButton: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth()
             .clickable { onOpen() },
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = CardDefaults.outlinedCardBorder()
+        border = CardDefaults.outlinedCardBorder(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
             ProfilePhoto("", Modifier.size(74.dp))

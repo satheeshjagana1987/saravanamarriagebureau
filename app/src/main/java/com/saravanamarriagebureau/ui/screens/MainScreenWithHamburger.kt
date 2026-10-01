@@ -1,7 +1,5 @@
 package com.saravanamarriagebureau.ui.screens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -23,15 +21,11 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -79,7 +73,7 @@ fun MainScreenWithHamburger() {
         DrawerScreen.ChangeLanguage,
         DrawerScreen.Logout,
 
-    )
+        )
 
     // -----------------------------------------
     // Screens WITHOUT drawer / bottom bar
@@ -332,10 +326,9 @@ fun MainScreenWithHamburger() {
                 // =================================================
 
                 composable(BottomBarScreen.Home.route) {
-
-                    MatchFixedScreen(
-                        onBack = {
-                            navController.popBackStack()
+                    HomeScreen(
+                        onViewPlans = {
+                            navController.navigate(Routes.ChoosePlan)
                         }
                     )
                 }
@@ -347,11 +340,6 @@ fun MainScreenWithHamburger() {
                 composable(BottomBarScreen.Matches.route) {
 
                     MatchesScreen(
-
-                        onBack = {
-                            navController.popBackStack()
-                        },
-
                         onProfile = {
                             navController.navigate(Routes.Profile)
                         },
@@ -369,13 +357,11 @@ fun MainScreenWithHamburger() {
                 composable(BottomBarScreen.Interests.route) {
 
                     InterestsScreen(
-
-                        onBack = {
-                            navController.popBackStack()
-                        },
-
                         onInterestItemClick = {
                             navController.navigate(Routes.Profile)
+                        },
+                        onAcceptRejectButton = {
+
                         }
                     )
                 }
@@ -485,6 +471,30 @@ fun MainScreenWithHamburger() {
                                     inclusive = true
                                 }
                             }
+                        }
+                    )
+                }
+
+                // Choose Plan
+                composable(Routes.ChoosePlan) {
+                    ChooseYourPlanScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        },
+                        onContinue = {
+                            navController.navigate(Routes.Invoice)
+                        }
+                    )
+                }
+
+                // Match Fixed
+                composable(Routes.MatchFixed) {
+                    MatchFixedScreen (
+                        onBack = {
+                            navController.popBackStack()
+                        },
+                        onInvoice = {
+                            navController.navigate(Routes.Invoice)
                         }
                     )
                 }

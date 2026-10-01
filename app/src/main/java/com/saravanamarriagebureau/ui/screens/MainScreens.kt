@@ -27,55 +27,6 @@ val demoProfiles = listOf(
 )
 
 @Composable
-fun HomeScreen(
-    onMatches: () -> Unit,
-    onProfile: () -> Unit,
-    onPrivacy: () -> Unit
-) {
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                NavigationBarItem(true, onClick = {}, icon = { Icon(Icons.Default.Home, null) }, label = { Text("Home") })
-                NavigationBarItem(false, onClick = onMatches, icon = { Icon(Icons.Default.Favorite, null) }, label = { Text("Matches") })
-                NavigationBarItem(false, onClick = {}, icon = { Icon(Icons.Default.Save, null) }, label = { Text("Profile") })
-                NavigationBarItem(false, onClick = onProfile, icon = { Icon(Icons.Default.Person, null) }, label = { Text("Settings") })
-            }
-        }
-    ) { padding ->
-        LazyColumn(
-            Modifier.fillMaxSize().padding(padding).padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            item {
-                Text("Welcome to Anubandham", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                Text("Real families. Genuine matches.", color = TextSecondary)
-            }
-            item {
-                Card(colors = CardDefaults.cardColors(containerColor = SoftRose)) {
-                    Column(Modifier.padding(18.dp)) {
-                        Text("Dasara Free Offer", color = Maroon, fontWeight = FontWeight.Bold)
-                        Text("Registration ₹0/-", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
-                        PrimaryButton("View Plans", onMatches)
-                    }
-                }
-            }
-            item {
-                OutlinedButton(onClick = onPrivacy, modifier = Modifier.fillMaxWidth()) {
-                    Text("Privacy & Security")
-                }
-            }
-            item {
-                Text("Recommended Profiles", fontWeight = FontWeight.Bold)
-            }
-            items(demoProfiles.take(2)) { profile ->
-                ProfileCard(profile, onInterest = onMatches, onOpen = onProfile)
-            }
-        }
-    }
-}
-
-
-@Composable
 fun AdminVoiceScreen(onBack: () -> Unit) {
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         ScreenHeader("Admin Voice Note", onBack)

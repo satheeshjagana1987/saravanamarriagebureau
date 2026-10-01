@@ -34,6 +34,7 @@ import com.saravanamarriagebureau.ui.components.SecondaryButton
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.SuccessSoft
 import com.saravanamarriagebureau.ui.theme.TextSecondary
@@ -239,15 +240,23 @@ fun InvoiceScreen(onPay: () -> Unit, onBack: () -> Unit) {
                 DividerLine()
             }
         }
+        Spacer(Modifier.height(20.dp))
+        Text(
+            text = "Contacts will be revealed after successful payment.",
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp, color = Red,
+            modifier = Modifier.fillMaxWidth(),
+        )
         Spacer(Modifier.weight(1f))
         PrimaryButton(
             text = "Pay Now (₹50,000)", onClick = onPay,
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 20.dp)
         )
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(5.dp))
         SecondaryButton(
             text = "Go Back",
-            onClick = {},
+            onClick = {onBack()},
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp)
         )
     }

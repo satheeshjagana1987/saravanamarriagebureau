@@ -26,4 +26,5 @@ object Routes {
     const val ChangePassword = "change_password"
     const val ChangeLanguage = "change_language"
     const val Logout = "logout"
+    const val ChoosePlan = "choose_plan"
 }
