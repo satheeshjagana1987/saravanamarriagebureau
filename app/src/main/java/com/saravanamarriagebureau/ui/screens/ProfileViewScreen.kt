@@ -2,7 +2,6 @@ package com.saravanamarriagebureau.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,28 +14,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.visible
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Report
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -46,18 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.model.Profile
-import com.saravanamarriagebureau.ui.components.ActionButton
 import com.saravanamarriagebureau.ui.components.DividerLine
-import com.saravanamarriagebureau.ui.components.PlayButton
-import com.saravanamarriagebureau.ui.components.PrimaryButton
-import com.saravanamarriagebureau.ui.components.ProfilePhoto
+import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
-import com.saravanamarriagebureau.ui.components.VerifiedBadge
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Success
-import com.saravanamarriagebureau.ui.theme.TextSecondary
-import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 
 @Composable
 fun ProfileViewScreen(
@@ -75,249 +59,252 @@ fun ProfileViewScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
+        ScreenHeader("Profile", onBack)
+        Column(
+            Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF4F4F4))
+                .background(Cream),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Column(
-                modifier = Modifier.fillMaxSize()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFF4F4F4))
             ) {
 
-                // ---------------------------------------------------------
-                // Profile image section
-                // ---------------------------------------------------------
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
+                Column(
+                    modifier = Modifier.fillMaxSize()
                 ) {
 
-                    Image(
-                        painter = painterResource(id = R.drawable.profile_pic),
-                        contentDescription = "Profile photo",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-
-                    )
-
-                    // Dark transparent gradient at bottom
+                    // ---------------------------------------------------------
+                    // Profile image section
+                    // ---------------------------------------------------------
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Color.Black.copy(alpha = 0.05f)
-                            )
-                    )
-
-                    // Top-right circular icon
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 28.dp, end = 18.dp)
-                            .size(40.dp)
-                            .align(Alignment.TopEnd)
-                            .clip(CircleShape)
-                            .visible(false)
-                            .background(Color.Black.copy(alpha = 0.20f)),
-                        contentAlignment = Alignment.Center
+                            .fillMaxWidth()
+                            .height(250.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(20.dp)
+
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_pic ),
+                            contentDescription = "Profile photo",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+
                         )
-                    }
 
-                    // Play button
-                    Box(
-                        modifier = Modifier
-                            .size(92.dp)
-                            .align(Alignment.Center)
-                            .clip(CircleShape)
-                            .visible(false)
-                            .background(Color.White),
-                        contentAlignment = Alignment.Center
-                    ) {
+                        // Dark transparent gradient at bottom
                         Box(
                             modifier = Modifier
-                                .size(82.dp)
+                                .fillMaxSize()
+                                .background(
+                                    Color.Black.copy(alpha = 0.05f)
+                                )
+                        )
+
+                        // Top-right circular icon
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 28.dp, end = 18.dp)
+                                .size(40.dp)
+                                .align(Alignment.TopEnd)
                                 .clip(CircleShape)
                                 .visible(false)
-                                .background(Color(0xFF142D42)),
+                                .background(Color.Black.copy(alpha = 0.20f)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.PlayArrow,
-                                contentDescription = "Play video",
-                                tint = Color.White,
-                                modifier = Modifier.size(45.dp)
-                            )
-                        }
-                    }
-
-                    // Family Video label
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(end = 28.dp, bottom = 18.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                            .visible(false)
-                            .background(Color(0xFF22272D).copy(alpha = .92f))
-                            .padding(horizontal = 14.dp, vertical = 8.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PlayArrow,
+                                imageVector = Icons.Default.Star,
                                 contentDescription = null,
                                 tint = Color.White,
-                                modifier = Modifier.size(17.dp)
-                            )
-
-                            Spacer(modifier = Modifier.width(6.dp))
-
-                            Text(
-                                text = "Family Video",
-                                color = Color.White,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold
+                                modifier = Modifier.size(20.dp)
                             )
                         }
-                    }
-                }
 
-                // ---------------------------------------------------------
-                // Information card
-                // ---------------------------------------------------------
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(y = (-25).dp)
-                        .clip(
-                            RoundedCornerShape(
-                                topStart = 20.dp,
-                                topEnd = 20.dp
+                        // Play button
+                        Box(
+                            modifier = Modifier
+                                .size(92.dp)
+                                .align(Alignment.Center)
+                                .clip(CircleShape)
+                                .visible(false)
+                                .background(Color.White),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(82.dp)
+                                    .clip(CircleShape)
+                                    .visible(false)
+                                    .background(Color(0xFF142D42)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.PlayArrow,
+                                    contentDescription = "Play video",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(45.dp)
+                                )
+                            }
+                        }
+
+                        // Family Video label
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(end = 28.dp, bottom = 18.dp)
+                                .clip(RoundedCornerShape(20.dp))
+                                .visible(false)
+                                .background(Color(0xFF22272D).copy(alpha = .92f))
+                                .padding(horizontal = 14.dp, vertical = 8.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.PlayArrow,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(17.dp)
+                                )
+
+                                Spacer(modifier = Modifier.width(6.dp))
+
+                                Text(
+                                    text = "Family Video",
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
+                    }
+
+                    // ---------------------------------------------------------
+                    // Information card
+                    // ---------------------------------------------------------
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset(y = (-25).dp)
+                            .clip(
+                                RoundedCornerShape(
+                                    topStart = 20.dp,
+                                    topEnd = 20.dp
+                                )
                             )
-                        )
-                        .background(Color.White)
-                        .padding(
-                            start = 28.dp,
-                            end = 28.dp,
-                            top = 24.dp
-                        )
-                ) {
+                            .background(Color.White)
+                            .padding(
+                                start = 16.dp,
+                                end = 16.dp,
+                                top = 5.dp
+                            )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            Text(
+                                text = "Rohit",
+                                color = Maroon,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                imageVector = Icons.Default.Favorite,
+                                contentDescription = "Success",
+                                tint = Maroon,
+                                modifier = Modifier
+                                    .size(40.dp)
+                            )
+                        }
 
                     // Verified row
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(14.dp)
+                                    .clip(CircleShape)
+                                    .background(Success),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = "Verified",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            }
 
-                        Text(
-                            text = "Rohit",
-                            color = Maroon,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                            Spacer(modifier = Modifier.width(5.dp))
 
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        Box(
-                            modifier = Modifier
-                                .size(16.dp)
-                                .clip(CircleShape)
-                                .background(Success),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = "Verified",
-                                tint = Color.White,
-                                modifier = Modifier.size(14.dp)
+                            Text(
+                                text = "Admin Verified",
+                                color = Success,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(5.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
 
-                        Text(
-                            text = "Admin Verified",
-                            color = Success,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
+                        ProfileInfoRow(
+                            label = "Age",
+                            value = "26",
+                            secondLabel = "Height",
+                            secondValue = "5'4\"",
+                            thirdLabel = "Religion",
+                            thirdValue = "Hindu"
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = "Education",
+                            value = "B.Tech"
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = "Profession",
+                            value = "Software Engineer"
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = "Location",
+                            value = "Hyderabad"
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = "Mobile",
+                            value = "9876543210"
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = "Family Video",
+                            value = "Download"
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = "Voice Record",
+                            value = "Download"
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    ProfileInfoRow(
-                        label = "Age",
-                        value = "26",
-                        secondLabel = "Height",
-                        secondValue = "5'4\"",
-                        thirdValue = "Never Married"
-                    )
-
-                    DividerLine()
-
-                    ProfileInfoRow(
-                        label = "Education",
-                        value = "B.Tech"
-                    )
-
-                    DividerLine()
-
-                    ProfileInfoRow(
-                        label = "Profession",
-                        value = "Software Engineer"
-                    )
-
-                    DividerLine()
-
-                    ProfileInfoRow(
-                        label = "Location",
-                        value = "Hyderabad"
-                    )
-
-                    DividerLine()
-
-                    ProfileInfoRow(
-                        label = "Mobile",
-                        value = "9876543210"
-                    )
-
-                    DividerLine()
-
-                    ProfileInfoRow(
-                        label = "Video",
-                        value = "Download"
-                    )
-
-                    DividerLine()
-
-                    ProfileInfoRow(
-                        label = "Voice Record",
-                        value = "Download"
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-
-                // -----------------------------------------------------
-                // Bottom actions
-                // -----------------------------------------------------
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    ActionButton(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 16.dp),
-                        icon = Icons.Default.Favorite,
-                        text = "Interest",
-                        onClick = onInterestClick
-                    )
                 }
             }
         }

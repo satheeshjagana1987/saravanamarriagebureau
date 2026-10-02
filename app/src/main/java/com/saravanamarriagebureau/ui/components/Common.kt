@@ -301,12 +301,13 @@ fun ProfileInfoRow(
     value: String,
     secondLabel: String? = null,
     secondValue: String? = null,
+    thirdLabel: String? = null,
     thirdValue: String? = null
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
+            .padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -334,7 +335,7 @@ fun ProfileInfoRow(
             )
             Spacer(modifier = Modifier.size(10.dp))
             VerticalDivider()
-            Spacer(modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.size(10.dp))
             Text(
                 text = secondValue,
                 color = Black,
@@ -343,10 +344,17 @@ fun ProfileInfoRow(
             )
         }
 
-        if (thirdValue != null) {
+        if (thirdValue != null && thirdLabel != null) {
+            Spacer(modifier = Modifier.size(10.dp))
+            Text(
+                text = thirdLabel,
+                color = TextSecondary,
+                fontSize = 14.sp
+            )
             Spacer(modifier = Modifier.size(10.dp))
             VerticalDivider()
             Spacer(modifier = Modifier.size(10.dp))
+
             Text(
                 text = thirdValue,
                 color = TextPrimary,
@@ -374,6 +382,22 @@ fun VerticalDivider() {
             .width(1.dp)
             .height(20.dp)
             .background(color = Gray)
+    )
+}
+
+@Composable
+fun LabelName(
+    labelName: String,
+    fontSize: TextUnit = 14.sp,
+    fontWeight: FontWeight = FontWeight.Normal,
+    color: Color = Maroon
+){
+    Text(
+        text = labelName,
+        fontSize = fontSize,
+        color = color,
+        fontWeight = fontWeight,
+        modifier = Modifier.padding(bottom = 7.dp)
     )
 }
 

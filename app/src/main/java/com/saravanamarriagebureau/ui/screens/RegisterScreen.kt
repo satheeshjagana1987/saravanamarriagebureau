@@ -27,6 +27,8 @@ import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -52,6 +55,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.saravanamarriagebureau.R
+import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
@@ -84,30 +89,25 @@ fun RegisterScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ScreenHeader("Create Your Account", onBack)
+        Spacer(Modifier.height(10.dp))
         Column(Modifier.padding(horizontal = 16.dp)) {
-            Box(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(White)
-                    .padding(16.dp)
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                        .fillMaxWidth()
+                        .background(White)
+                        .padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
 
                     // Full Name
-                    Column {
-                        Text(
-                            text = "Full Name",
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
-                        )
-
+                        LabelName(labelName = stringResource(id = R.string.full_name))
                         OutlinedTextField(
                             value = name,
                             onValueChange = {
@@ -142,17 +142,10 @@ fun RegisterScreen(
                                 )
                             }
                         )
-                    }
+                    Spacer(Modifier.height(10.dp))
 
                     // Mobile Number
-                    Column {
-                        Text(
-                            text = "Mobile Number",
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
-                        )
+                    LabelName(labelName = stringResource(id = R.string.mobile_number))
 
                         OutlinedTextField(
                             value = mobileNumber,
@@ -189,17 +182,10 @@ fun RegisterScreen(
                                 )
                             }
                         )
-                    }
+                    Spacer(Modifier.height(10.dp))
 
                     // Email
-                    Column {
-                        Text(
-                            text = "Email",
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
-                        )
+                    LabelName(labelName = stringResource(id = R.string.email))
 
                         OutlinedTextField(
                             value = email,
@@ -234,17 +220,10 @@ fun RegisterScreen(
                                 )
                             }
                         )
-                    }
 
+                    Spacer(Modifier.height(10.dp))
                     // DOB
-                    Column {
-                        Text(
-                            text = "Date of Birth",
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
-                        )
+                    LabelName(labelName = stringResource(id = R.string.date_of_birth))
 
                         OutlinedTextField(
                             value = dob,
@@ -279,17 +258,10 @@ fun RegisterScreen(
                                 )
                             }
                         )
-                    }
 
+                    Spacer(Modifier.height(10.dp))
                     // Password
-                    Column {
-                        Text(
-                            text = "Password",
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
-                        )
+                    LabelName(labelName = stringResource(id = R.string.password))
 
                         OutlinedTextField(
                             value = password,
@@ -351,17 +323,10 @@ fun RegisterScreen(
                                 )
                             }
                         )
-                    }
+                    Spacer(Modifier.height(10.dp))
 
                     // Confirm Password
-                    Column {
-                        Text(
-                            text = "Confirm Password",
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
-                        )
+                    LabelName(labelName = stringResource(id = R.string.confirm_password))
 
                         OutlinedTextField(
                             value = confirmPassword,
@@ -423,15 +388,12 @@ fun RegisterScreen(
                                 )
                             }
                         )
-                    }
 
+                    Spacer(Modifier.height(10.dp))
                     Row(modifier = Modifier.selectableGroup()
                         .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "Gender",
-                            color = Maroon,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Normal)
+                        LabelName(labelName = stringResource(id = R.string.gender))
                         genderRadioOptions.forEach { text ->
                             Row(
                                 modifier = Modifier
@@ -460,10 +422,7 @@ fun RegisterScreen(
                     Row(modifier = Modifier.selectableGroup()
                         .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "Looking for ",
-                            color = Maroon,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Normal)
+                        LabelName(labelName = stringResource(id = R.string.looking_for))
                         lookingForRadioOptions.forEach { text ->
                             Row(
                                 modifier = Modifier
@@ -491,10 +450,11 @@ fun RegisterScreen(
                 }
             }
 
-            Spacer(Modifier.height(20.dp))
-            Spacer(Modifier.weight(1f))
-            PrimaryButton(text = "Submit", onNext)
         }
+        Spacer(Modifier.weight(1f))
+        PrimaryButton(text = "Submit",
+            modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 40.dp),
+            onClick = onNext)
     }
 }
 
