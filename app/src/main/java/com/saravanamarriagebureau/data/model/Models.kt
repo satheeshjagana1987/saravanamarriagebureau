@@ -40,8 +40,12 @@ data class Profile(
     val education: String,
     val profession: String,
     val location: String,
-    val verified: Boolean = true,
-    val imageUrl: String? = null
+    val responded: Boolean = false,
+    val imageUrl: String? = null,
+    val mobileNumber: Int,
+    val isAdminVerified: Boolean = false,
+    val isPaidUser: Boolean = false,
+    val religion: String,
 )
 
 data class Match(
@@ -63,11 +67,18 @@ data class Interest(
     val id: String,
     val name: String,
     val age: Int,
+    val height: String,
     val education: String,
-    val verified: Boolean = true,
+    val profession: String,
+    val location: String,
+    val imageUrl: String? = null,
+    val mobileNumber: Int,
+    val isAdminVerified: Boolean = false,
+    val isPaidUser: Boolean = false,
+    val religion: String,
     val accept: Boolean = false,
     val reject: Boolean = true,
-    val imageUrl: String? = null
+    val isMatched: Boolean = false,
 )
 
 data class LanguageOption(

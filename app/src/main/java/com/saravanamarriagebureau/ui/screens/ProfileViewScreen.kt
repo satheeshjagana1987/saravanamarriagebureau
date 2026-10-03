@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,22 +38,27 @@ import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.ui.components.DividerLine
+import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Success
+import com.saravanamarriagebureau.ui.theme.Warning
 
 @Composable
 fun ProfileViewScreen(
-    profile: Profile = demoProfiles.first(),
     onBack: () -> Unit,
     onInterest: () -> Unit,
-    onVoice: () -> Unit,
-    onInterestClick: () -> Unit = {},
-    onSaveClick: () -> Unit = {},
-    onReportClick: () -> Unit = {}
+    profileId: String,
+    onMatchFixed: () -> Unit = {}
 ) {
+
+    val profile = demoProfiles.find {
+        it.id == profileId
+    } ?: return
+
     Column(
         Modifier
             .fillMaxSize()
@@ -82,11 +88,11 @@ fun ProfileViewScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(250.dp)
+                            .height(200.dp)
                     ) {
 
                         Image(
-                            painter = painterResource(id = R.drawable.profile_pic ),
+                            painter = painterResource(id = R.drawable.profile_pic),
                             contentDescription = "Profile photo",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -208,7 +214,7 @@ fun ProfileViewScreen(
                         ) {
 
                             Text(
-                                text = "Rohit",
+                                text = profile.name,
                                 color = Maroon,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold
@@ -219,76 +225,64 @@ fun ProfileViewScreen(
                                 contentDescription = "Success",
                                 tint = Maroon,
                                 modifier = Modifier
-                                    .size(40.dp)
+                                    .size(30.dp)
                             )
                         }
 
-                    // Verified row
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(14.dp)
-                                    .clip(CircleShape)
-                                    .background(Success),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = "Verified",
-                                    tint = Color.White,
-                                    modifier = Modifier.size(14.dp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(5.dp))
-
-                            Text(
-                                text = "Admin Verified",
-                                color = Success,
+                        if (profile.isAdminVerified) {
+                            LabelName(
+                                labelName = "● "+stringResource(id = R.string.verified),
                                 fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                color = Success,
+                                modifier = Modifier.padding(0.dp)
+                            )
+                        } else {
+                            LabelName(
+                                labelName = "● "+stringResource(id = R.string.profile_under_review),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Warning
                             )
                         }
 
                         Spacer(modifier = Modifier.height(10.dp))
 
                         ProfileInfoRow(
-                            label = "Age",
-                            value = "26",
-                            secondLabel = "Height",
-                            secondValue = "5'4\"",
-                            thirdLabel = "Religion",
-                            thirdValue = "Hindu"
+                            label = stringResource(id = R.string.age),
+                            value = profile.age.toString(),
+                            secondLabel = stringResource(id = R.string.height),
+                            secondValue = profile.height,
+                            thirdLabel = stringResource(id = R.string.religion),
+                            thirdValue = profile.religion
                         )
 
                         DividerLine()
 
                         ProfileInfoRow(
-                            label = "Education",
-                            value = "B.Tech"
+                            label = stringResource(id = R.string.education),
+                            value = profile.education
                         )
 
                         DividerLine()
 
                         ProfileInfoRow(
-                            label = "Profession",
-                            value = "Software Engineer"
+                            label =stringResource(id = R.string.profession),
+                            value = profile.profession
                         )
 
                         DividerLine()
 
                         ProfileInfoRow(
-                            label = "Location",
-                            value = "Hyderabad"
+                            label = stringResource(id = R.string.location),
+                            value = profile.location
                         )
 
                         DividerLine()
 
                         ProfileInfoRow(
-                            label = "Mobile",
-                            value = "9876543210"
+                            label = stringResource(id = R.string.mobile_number),
+                            value = profile.mobileNumber.toString()
                         )
 
                         DividerLine()
@@ -308,11 +302,17 @@ fun ProfileViewScreen(
                 }
             }
         }
+        Spacer(Modifier.weight(1f))
+        PrimaryButton(
+            text = stringResource(id = R.string.reset_password),
+            modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
+            onClick = onMatchFixed
+        )
     }
 }
 
 @Preview
 @Composable
 fun ProfileViewScreenPreview() {
-    ProfileViewScreen(onBack = {}, onInterest = {}, onVoice = {})
+    ProfileViewScreen(onBack = {}, onInterest = {}, profileId = "", onMatchFixed = {})
 }

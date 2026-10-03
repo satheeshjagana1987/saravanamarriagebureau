@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.saravanamarriagebureau.data.model.BottomBarScreen
 import com.saravanamarriagebureau.data.model.DrawerScreen
 import com.saravanamarriagebureau.ui.navigation.Routes
+import com.saravanamarriagebureau.ui.navigation.profileRoute
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,8 +87,17 @@ fun MainScreenWithHamburger() {
         Routes.InterestSent
     )
 
+    val isProfileScreen =
+        currentRoute?.startsWith("${Routes.Profile}/") == true
+
     val showMainNavigation =
-        currentRoute !in screensWithoutNavigation
+        currentRoute !in setOf(
+            DrawerScreen.ChangeLanguage.route,
+            DrawerScreen.ChangePassword.route,
+            Routes.InterestSent,
+            Routes.ChoosePlan,
+            Routes.ChangeLanguage
+        ) && !isProfileScreen
 
     // -----------------------------------------
     // App bar title
@@ -210,40 +220,23 @@ fun MainScreenWithHamburger() {
 
                 // Don't show hamburger on special screens
                 if (showMainNavigation) {
-
                     TopAppBar(
-
                         title = {
                             Text(appBarTitle)
                         },
-
                         navigationIcon = {
-
                             IconButton(
                                 onClick = {
-
                                     scope.launch {
                                         drawerState.open()
                                     }
                                 }
                             ) {
-
                                 Icon(
                                     imageVector = Icons.Default.Menu,
                                     contentDescription = "Open Drawer"
                                 )
                             }
-                        }
-                    )
-
-                } else {
-
-                    // Special screens:
-                    // NO navigationIcon
-
-                    TopAppBar(
-                        title = {
-                            Text(appBarTitle)
                         }
                     )
                 }
@@ -340,8 +333,10 @@ fun MainScreenWithHamburger() {
                 composable(BottomBarScreen.Matches.route) {
 
                     MatchesScreen(
-                        onProfile = {
-                            navController.navigate(Routes.Profile)
+                        onProfile = { profile ->
+                            navController.navigate(
+                                profileRoute(profile.id)
+                            )
                         },
 
                         onInterestSent = {
@@ -357,8 +352,10 @@ fun MainScreenWithHamburger() {
                 composable(BottomBarScreen.Interests.route) {
 
                     InterestsScreen(
-                        onInterestItemClick = {
-                            navController.navigate(Routes.Profile)
+                        onInterestItemClick = { interest ->
+                            navController.navigate(
+                                profileRoute(interest.id)
+                            )
                         },
                         onAcceptRejectButton = {
 
@@ -390,24 +387,27 @@ fun MainScreenWithHamburger() {
                 // PROFILE VIEW
                 // =================================================
 
-                composable(Routes.Profile) {
+                composable(
+                    route = "${Routes.Profile}/{profileId}"
+                ) { backStackEntry ->
+
+                    val profileId = backStackEntry.arguments
+                        ?.getString("profileId")
+                        ?: return@composable
 
                     ProfileViewScreen(
+                        profileId = profileId,
 
                         onBack = {
                             navController.popBackStack()
                         },
 
                         onInterest = {
-                            navController.navigate(
-                                Routes.InterestSent
-                            )
+                            navController.navigate(Routes.InterestSent)
                         },
 
-                        onVoice = {
-                            navController.navigate(
-                                Routes.AdminVoice
-                            )
+                        onMatchFixed = {
+                            navController.navigate(Routes.MatchFixed)
                         }
                     )
                 }

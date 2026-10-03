@@ -84,8 +84,11 @@ fun RegisterScreen(
     var selectedLookingForOption by remember { mutableStateOf(lookingForRadioOptions[0]) }
 
 
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-        .background(Cream),
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ScreenHeader("Create Your Account", onBack)
@@ -107,292 +110,295 @@ fun RegisterScreen(
                 ) {
 
                     // Full Name
-                        LabelName(labelName = stringResource(id = R.string.full_name))
-                        OutlinedTextField(
-                            value = name,
-                            onValueChange = {
-                                name = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.AccountBox,
-                                    contentDescription = null,
-                                    tint = Color(0xFF9A9AA5),
-                                    modifier = Modifier.size(19.dp)
-                                )
-                            },
+                    LabelName(labelName = stringResource(id = R.string.full_name))
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = {
+                            name = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.AccountBox,
+                                contentDescription = null,
+                                tint = Color(0xFF9A9AA5),
+                                modifier = Modifier.size(19.dp)
+                            )
+                        },
 
-                            placeholder = {
-                                Text(
-                                    text = "Enter Full Name",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        )
+                        placeholder = {
+                            Text(
+                                text = "Enter Full Name",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
                     Spacer(Modifier.height(10.dp))
 
                     // Mobile Number
                     LabelName(labelName = stringResource(id = R.string.mobile_number))
 
-                        OutlinedTextField(
-                            value = mobileNumber,
-                            onValueChange = {
-                                if (it.length <= 10 && it.all(Char::isDigit)) {
-                                    mobileNumber = it
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Phone,
-                                    contentDescription = null,
-                                    tint = Color(0xFF9A9AA5),
-                                    modifier = Modifier.size(19.dp)
-                                )
-                            },
-                            placeholder = {
-                                Text(
-                                    text = "Enter Mobile Number",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
+                    OutlinedTextField(
+                        value = mobileNumber,
+                        onValueChange = {
+                            if (it.length <= 10 && it.all(Char::isDigit)) {
+                                mobileNumber = it
                             }
-                        )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Phone,
+                                contentDescription = null,
+                                tint = Color(0xFF9A9AA5),
+                                modifier = Modifier.size(19.dp)
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Enter Mobile Number",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
                     Spacer(Modifier.height(10.dp))
 
                     // Email
                     LabelName(labelName = stringResource(id = R.string.email))
 
-                        OutlinedTextField(
-                            value = email,
-                            onValueChange = {
-                                email = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Mail,
-                                    contentDescription = null,
-                                    tint = Color(0xFF9A9AA5),
-                                    modifier = Modifier.size(19.dp)
-                                )
-                            },
-                            placeholder = {
-                                Text(
-                                    text = "Enter Email",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        )
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = {
+                            email = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Mail,
+                                contentDescription = null,
+                                tint = Color(0xFF9A9AA5),
+                                modifier = Modifier.size(19.dp)
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Enter Email",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
 
                     Spacer(Modifier.height(10.dp))
                     // DOB
                     LabelName(labelName = stringResource(id = R.string.date_of_birth))
 
-                        OutlinedTextField(
-                            value = dob,
-                            onValueChange = {
-                                dob = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.CalendarMonth,
-                                    contentDescription = null,
-                                    tint = Color(0xFF9A9AA5),
-                                    modifier = Modifier.size(19.dp)
-                                )
-                            },
-                            placeholder = {
-                                Text(
-                                    text = "DD / MM / YYYY",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        )
+                    OutlinedTextField(
+                        value = dob,
+                        onValueChange = {
+                            dob = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.CalendarMonth,
+                                contentDescription = null,
+                                tint = Color(0xFF9A9AA5),
+                                modifier = Modifier.size(19.dp)
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "DD / MM / YYYY",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
 
                     Spacer(Modifier.height(10.dp))
                     // Password
                     LabelName(labelName = stringResource(id = R.string.password))
 
-                        OutlinedTextField(
-                            value = password,
-                            onValueChange = {
-                                password = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-                            visualTransformation = if (passwordVisible) {
-                                VisualTransformation.None
-                            } else {
-                                PasswordVisualTransformation()
-                            },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Password,
-                                    contentDescription = null,
-                                    tint = Color(0xFF9A9AA5),
-                                    modifier = Modifier.size(19.dp)
-                                )
-                            },
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = {
-                                        passwordVisible = !passwordVisible
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = if (passwordVisible) {
-                                            Icons.Outlined.Visibility
-                                        } else {
-                                            Icons.Outlined.VisibilityOff
-                                        },
-                                        contentDescription = if (passwordVisible) {
-                                            "Hide password"
-                                        } else {
-                                            "Show password"
-                                        },
-                                        tint = Color(0xFF55555F),
-                                        modifier = Modifier.size(20.dp)
-                                    )
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = {
+                            password = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        visualTransformation = if (passwordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Password,
+                                contentDescription = null,
+                                tint = Color(0xFF9A9AA5),
+                                modifier = Modifier.size(19.dp)
+                            )
+                        },
+                        trailingIcon = {
+                            IconButton(
+                                onClick = {
+                                    passwordVisible = !passwordVisible
                                 }
-                            },
-                            placeholder = {
-                                Text(
-                                    text = "Enter Password",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
+                            ) {
+                                Icon(
+                                    imageVector = if (passwordVisible) {
+                                        Icons.Outlined.Visibility
+                                    } else {
+                                        Icons.Outlined.VisibilityOff
+                                    },
+                                    contentDescription = if (passwordVisible) {
+                                        "Hide password"
+                                    } else {
+                                        "Show password"
+                                    },
+                                    tint = Color(0xFF55555F),
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
-                        )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Enter Password",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
                     Spacer(Modifier.height(10.dp))
 
                     // Confirm Password
                     LabelName(labelName = stringResource(id = R.string.confirm_password))
 
-                        OutlinedTextField(
-                            value = confirmPassword,
-                            onValueChange = {
-                                confirmPassword = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-                            visualTransformation = if (confirmPasswordVisible) {
-                                VisualTransformation.None
-                            } else {
-                                PasswordVisualTransformation()
-                            },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Password,
-                                    contentDescription = null,
-                                    tint = Color(0xFF9A9AA5),
-                                    modifier = Modifier.size(19.dp)
-                                )
-                            },
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = {
-                                        confirmPasswordVisible = !confirmPasswordVisible
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = if (confirmPasswordVisible) {
-                                            Icons.Outlined.Visibility
-                                        } else {
-                                            Icons.Outlined.VisibilityOff
-                                        },
-                                        contentDescription = if (confirmPasswordVisible) {
-                                            "Hide password"
-                                        } else {
-                                            "Show password"
-                                        },
-                                        tint = Color(0xFF55555F),
-                                        modifier = Modifier.size(20.dp)
-                                    )
+                    OutlinedTextField(
+                        value = confirmPassword,
+                        onValueChange = {
+                            confirmPassword = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        visualTransformation = if (confirmPasswordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Password,
+                                contentDescription = null,
+                                tint = Color(0xFF9A9AA5),
+                                modifier = Modifier.size(19.dp)
+                            )
+                        },
+                        trailingIcon = {
+                            IconButton(
+                                onClick = {
+                                    confirmPasswordVisible = !confirmPasswordVisible
                                 }
-                            },
-                            placeholder = {
-                                Text(
-                                    text = "Enter Confirm Password",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
+                            ) {
+                                Icon(
+                                    imageVector = if (confirmPasswordVisible) {
+                                        Icons.Outlined.Visibility
+                                    } else {
+                                        Icons.Outlined.VisibilityOff
+                                    },
+                                    contentDescription = if (confirmPasswordVisible) {
+                                        "Hide password"
+                                    } else {
+                                        "Show password"
+                                    },
+                                    tint = Color(0xFF55555F),
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
-                        )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Enter Confirm Password",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
 
-                    Spacer(Modifier.height(10.dp))
-                    Row(modifier = Modifier.selectableGroup()
-                        .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier
+                            .selectableGroup()
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         LabelName(labelName = stringResource(id = R.string.gender))
                         genderRadioOptions.forEach { text ->
                             Row(
@@ -406,7 +412,7 @@ fun RegisterScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Spacer(Modifier.width(10.dp))
-                                Row( verticalAlignment = Alignment.CenterVertically){
+                                Row(verticalAlignment = Alignment.CenterVertically) {
                                     RadioButton(
                                         selected = (text == selectedGenderOption),
                                         onClick = null // null removes the extra 48dp padding, matching your checkbox fix
@@ -418,10 +424,13 @@ fun RegisterScreen(
                             }
                         }
                     }
-
-                    Row(modifier = Modifier.selectableGroup()
-                        .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(Modifier.height(5.dp))
+                    Row(
+                        modifier = Modifier
+                            .selectableGroup()
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         LabelName(labelName = stringResource(id = R.string.looking_for))
                         lookingForRadioOptions.forEach { text ->
                             Row(
@@ -435,7 +444,7 @@ fun RegisterScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Spacer(Modifier.width(10.dp))
-                                Row( verticalAlignment = Alignment.CenterVertically){
+                                Row(verticalAlignment = Alignment.CenterVertically) {
                                     RadioButton(
                                         selected = (text == selectedLookingForOption),
                                         onClick = null // null removes the extra 48dp padding, matching your checkbox fix
@@ -452,9 +461,11 @@ fun RegisterScreen(
 
         }
         Spacer(Modifier.weight(1f))
-        PrimaryButton(text = "Submit",
+        PrimaryButton(
+            text = "Submit",
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 40.dp),
-            onClick = onNext)
+            onClick = onNext
+        )
     }
 }
 

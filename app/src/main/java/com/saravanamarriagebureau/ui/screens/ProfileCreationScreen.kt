@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -53,8 +54,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.saravanamarriagebureau.R
+import com.saravanamarriagebureau.data.enums.MatchTab
+import com.saravanamarriagebureau.data.enums.ProfileTab
+import com.saravanamarriagebureau.data.model.Profile
+import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
@@ -82,6 +89,11 @@ fun ProfileCreationScreen(
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
     var isVisible by remember { mutableStateOf(false) }
+
+    var selectedTab by remember {
+        mutableStateOf(ProfileTab.PERSONAL)
+    }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -92,94 +104,35 @@ fun ProfileCreationScreen(
         Column(Modifier.padding(horizontal = 16.dp)) {
             Row(
                 Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        // 2. Change color dynamically on row click
-                        boxBackgroundColor = if (boxBackgroundColor == White) {
-                            Maroon
-                        } else {
-                            White
-                        }
-                    },
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(boxBackgroundColor)
-                        .weight(1f)
-                        .height(40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TextButton(
-                        onClick = {
-                            brideTextColor = if (brideTextColor == White) {
-                                Maroon
-                            } else {
-                                White
-                            }
-                        },
-                    ) {
-                        Text(
-                            "Personal",
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            color = brideTextColor
-                        )
-                    }
-                }
+                ProfileTabButton(
+                    text = stringResource(id = R.string.personal),
+                    selected = selectedTab == ProfileTab.PERSONAL,
+                    onClick = {
+                        selectedTab = ProfileTab.PERSONAL
+                    },
+                    modifier = Modifier.weight(1f)
+                )
 
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(boxBackgroundColor)
-                        .weight(1f)
-                        .height(40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TextButton(
-                        onClick = {
-                            brideTextColor = if (brideTextColor == White) {
-                                Maroon
-                            } else {
-                                White
-                            }
-                        },
-                    ) {
-                        Text(
-                            "Professional",
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            color = brideTextColor
-                        )
-                    }
-                }
+                ProfileTabButton(
+                    text = stringResource(id = R.string.professional),
+                    selected = selectedTab == ProfileTab.PROFESSIONAL,
+                    onClick = {
+                        selectedTab = ProfileTab.PROFESSIONAL
+                    },
+                    modifier = Modifier.weight(1f)
+                )
 
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(boxBackgroundColor)
-                        .weight(1f)
-                        .height(40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TextButton(
-                        onClick = {
-                            brideTextColor = if (brideTextColor == White) {
-                                Maroon
-                            } else {
-                                White
-                            }
-                        },
-                    ) {
-                        Text(
-                            "Photo",
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            color = brideTextColor
-                        )
-                    }
-                }
+                ProfileTabButton(
+                    text = stringResource(id = R.string.photo),
+                    selected = selectedTab == ProfileTab.PHOTO,
+                    onClick = {
+                        selectedTab = ProfileTab.PHOTO
+                    },
+                    modifier = Modifier.weight(1f)
+                )
 
             }
             Spacer(Modifier.height(12.dp))
@@ -595,6 +548,34 @@ fun ProfileCreationScreen(
             PrimaryButton("Submit", onSubmit)
         }
     }
+}
+
+@Composable
+fun ProfileTabButton(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    CustomButton(
+        text = text,
+        onClick = onClick,
+        modifier = modifier,
+        height = 40.dp,
+        width = 0.dp,
+        cornerRadius = 5.dp,
+
+        textColor = if (selected) White else Black,
+
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+
+        backgroundColor = if (selected) Maroon else White,
+
+        borderColor = if (selected) Maroon else Black,
+
+        borderStroke = 0.2.dp
+    )
 }
 
 @Preview

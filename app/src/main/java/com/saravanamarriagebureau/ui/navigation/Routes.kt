@@ -28,3 +28,11 @@ object Routes {
     const val Logout = "logout"
     const val ChoosePlan = "choose_plan"
 }
+
+fun profileRoute(profileId: String): String {
+    return "${Routes.Profile}/$profileId"
+}
+
+fun interestRoute(interestId: String): String {
+    return "${Routes.Interests}/$interestId"
+}

@@ -77,8 +77,8 @@ fun InvoiceScreen(onPay: () -> Unit, onBack: () -> Unit) {
             colors = CardDefaults.cardColors(
                 containerColor = White
             ),
-            border = CardDefaults.outlinedCardBorder(),
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(

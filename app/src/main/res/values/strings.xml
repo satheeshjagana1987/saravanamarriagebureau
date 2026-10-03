@@ -13,7 +13,9 @@
     <string name="update">Update</string>
     <string name="continue_txt">Continue</string>
     <string name="accept">Accept</string>
+    <string name="accepted">Accepted</string>
     <string name="reject">Reject</string>
+    <string name="rejected">Rejected</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="today">Today</string>
@@ -32,6 +34,12 @@
     <string name="religion">Religion</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="change_password">Change Password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="otp">OTP</string>
+    <string name="resend_otp">Resend OTP</string>
     <string name="personal">Personal</string>
     <string name="professional">Professional</string>
     <string name="photo">Photo</string>
@@ -41,4 +49,15 @@
     <string name="family_video">Family Video</string>
     <string name="voice_record">Voice Record</string>
     <string name="download">Download</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="generate_Invoice">Generate Invoice</string>
+    <string name="verified">Verified</string>
+    <string name="profile_under_review">Profile Under Review</string>
+    <string name="yearly_membership">Yearly Membership</string>
+    <string name="annual_membership">Annual Membership</string>
+    <string name="only_for_profile_viewing">Only for Profile Viewing</string>
+    <string name="year">Year</string>
+    <string name="view_plans">View Plans</string>
+    <string name="change_language">Change Language</string>
 </resources>

@@ -65,6 +65,7 @@ fun WelcomeScreen(
                     .fillMaxWidth()
                     .padding(vertical = 5.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Row(horizontalArrangement = Arrangement.SpaceBetween,

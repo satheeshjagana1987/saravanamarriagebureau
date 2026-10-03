@@ -2,6 +2,7 @@ package com.saravanamarriagebureau.ui.screens
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,9 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -43,15 +47,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.AppLogo
+import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.SecondaryButton
 import com.saravanamarriagebureau.ui.theme.Black
@@ -65,7 +73,8 @@ import com.saravanamarriagebureau.ui.theme.White
 fun LoginScreen(
     onLogin: () -> Unit,
     onRegister: () -> Unit,
-    onPrivacy: () -> Unit
+    onPrivacy: () -> Unit,
+    onForgot: () -> Unit
 ) {
     var mobileNumber by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -73,7 +82,9 @@ fun LoginScreen(
     var isCheckedRememberMe by remember { mutableStateOf(false) }
 
     Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .background(Cream)
             .padding(
                 start = 24.dp, end = 24.dp, top = 40.dp, bottom = 50.dp
@@ -83,167 +94,154 @@ fun LoginScreen(
         AppLogo()
         Spacer(Modifier.height(50.dp))
 
-        Box(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(10.dp))
-                .background(White)
-                .padding(16.dp)
+                .clip(RoundedCornerShape(5.dp))
+                .background(White),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                    .fillMaxWidth()
+                    .background(White)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
 
                 // Mobile Number
-                Column {
-                    Text(
-                        text = "Mobile Number / Email",
-                        fontSize = 14.sp,
-                        color = Maroon,
-                        fontWeight = FontWeight.Normal,
-                        modifier = Modifier.padding(bottom = 7.dp)
-                    )
+                LabelName(labelName = stringResource(id = R.string.mobile_number), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                Spacer(Modifier.height(5.dp))
+                OutlinedTextField(
+                    value = mobileNumber,
+                    onValueChange = {
+                        if (it.length <= 10 && it.all(Char::isDigit)) {
+                            mobileNumber = it
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFE2E2E8),
+                        unfocusedBorderColor = Color(0xFFE2E2E8),
+                        cursorColor = Color(0xFF555555),
+                        focusedTextColor = Color(0xFF333333),
+                        unfocusedTextColor = Color(0xFF333333)
+                    ),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.AccountBox,
+                            contentDescription = null,
+                            tint = Color(0xFF9A9AA5),
+                            modifier = Modifier.size(19.dp)
+                        )
+                    },
 
-                    OutlinedTextField(
-                        value = mobileNumber,
-                        onValueChange = {
-                            if (it.length <= 10 && it.all(Char::isDigit)) {
-                                mobileNumber = it
+                    placeholder = {
+                        Text(
+                            text = "Enter Mobile Number / Email",
+                            color = Color(0xFFB5B5BD),
+                            fontSize = 14.sp
+                        )
+                    }
+                )
+
+                Spacer(Modifier.height(15.dp))
+                LabelName(labelName = stringResource(id = R.string.password), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                Spacer(Modifier.height(5.dp))
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    visualTransformation = if (passwordVisible) {
+                        VisualTransformation.None
+                    } else {
+                        PasswordVisualTransformation()
+                    },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFE2E2E8),
+                        unfocusedBorderColor = Color(0xFFE2E2E8),
+                        cursorColor = Color(0xFF555555),
+                        focusedTextColor = Color(0xFF333333),
+                        unfocusedTextColor = Color(0xFF333333)
+                    ),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Password,
+                            contentDescription = null,
+                            tint = Color(0xFF9A9AA5),
+                            modifier = Modifier.size(19.dp)
+                        )
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                passwordVisible = !passwordVisible
                             }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFE2E2E8),
-                            unfocusedBorderColor = Color(0xFFE2E2E8),
-                            cursorColor = Color(0xFF555555),
-                            focusedTextColor = Color(0xFF333333),
-                            unfocusedTextColor = Color(0xFF333333)
-                        ),
-                        leadingIcon = {
+                        ) {
                             Icon(
-                                imageVector = Icons.Outlined.AccountBox,
-                                contentDescription = null,
-                                tint = Color(0xFF9A9AA5),
-                                modifier = Modifier.size(19.dp)
-                            )
-                        },
-
-                        placeholder = {
-                            Text(
-                                text = "Enter Mobile Number / Email",
-                                color = Color(0xFFB5B5BD),
-                                fontSize = 14.sp
+                                imageVector = if (passwordVisible) {
+                                    Icons.Outlined.Visibility
+                                } else {
+                                    Icons.Outlined.VisibilityOff
+                                },
+                                contentDescription = if (passwordVisible) {
+                                    "Hide password"
+                                } else {
+                                    "Show password"
+                                },
+                                tint = Color(0xFF55555F),
+                                modifier = Modifier.size(20.dp)
                             )
                         }
-                    )
-                }
+                    },
+                    placeholder = {
+                        Text(
+                            text = "Enter password",
+                            color = Color(0xFFB5B5BD),
+                            fontSize = 14.sp
+                        )
+                    }
+                )
 
-                // Password
-                Column {
-                    Text(
-                        text = "Password",
-                        fontSize = 14.sp,
-                        color = Maroon,
-                        fontWeight = FontWeight.Normal,
-                        modifier = Modifier.padding(bottom = 7.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = {
-                            password = it
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        visualTransformation = if (passwordVisible) {
-                            VisualTransformation.None
-                        } else {
-                            PasswordVisualTransformation()
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFE2E2E8),
-                            unfocusedBorderColor = Color(0xFFE2E2E8),
-                            cursorColor = Color(0xFF555555),
-                            focusedTextColor = Color(0xFF333333),
-                            unfocusedTextColor = Color(0xFF333333)
-                        ),
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Password,
-                                contentDescription = null,
-                                tint = Color(0xFF9A9AA5),
-                                modifier = Modifier.size(19.dp)
-                            )
-                        },
-                        trailingIcon = {
-                            IconButton(
-                                onClick = {
-                                    passwordVisible = !passwordVisible
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = if (passwordVisible) {
-                                        Icons.Outlined.Visibility
-                                    } else {
-                                        Icons.Outlined.VisibilityOff
-                                    },
-                                    contentDescription = if (passwordVisible) {
-                                        "Hide password"
-                                    } else {
-                                        "Show password"
-                                    },
-                                    tint = Color(0xFF55555F),
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                        },
-                        placeholder = {
-                            Text(
-                                text = "Enter password",
-                                color = Color(0xFFB5B5BD),
-                                fontSize = 14.sp
-                            )
-                        }
-                    )
-                }
-
+                Spacer(Modifier.height(15.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
-                ){
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Checkbox(
                             checked = isCheckedRememberMe,
                             onCheckedChange = null // Handled by the parent Row's toggleable modifier
                         )
                         Spacer(Modifier.width(5.dp))
-                        Text(text = "Remember Me",
-                            color = Maroon,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Normal)
+                        LabelName(labelName = stringResource(id = R.string.remember_me), textAlign = TextAlign.Center)
                     }
 
-                    Text(text = "Forgot Password?", color = Maroon,
-                        fontSize = 14.sp,
+                    LabelName(
+                        labelName = stringResource(id = R.string.forgot_password),
                         textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Normal)
+                        modifier = Modifier
+                            .clickable { onForgot() }
+                    )
                 }
             }
         }
         Spacer(Modifier.height(30.dp))
-        PrimaryButton("Login", onLogin)
+        PrimaryButton(stringResource(id = R.string.login), onLogin)
         Spacer(Modifier.height(20.dp))
         Row(
             modifier = Modifier
@@ -270,7 +268,7 @@ fun LoginScreen(
             )
         }
         Spacer(Modifier.height(20.dp))
-        SecondaryButton("Create New Account", onRegister)
+        SecondaryButton(stringResource(id = R.string.create_new_account), onRegister)
         Spacer(Modifier.height(24.dp))
         Spacer(Modifier.weight(1f))
 
@@ -305,5 +303,5 @@ fun changeAppLanguage(languageCode: String) {
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(onLogin = {}, onRegister = {}, onPrivacy = {})
+    LoginScreen(onLogin = {}, onRegister = {}, onPrivacy = {}, onForgot = {})
 }

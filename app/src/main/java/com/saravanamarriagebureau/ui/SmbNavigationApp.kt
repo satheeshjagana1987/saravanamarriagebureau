@@ -1,34 +1,16 @@
 package com.saravanamarriagebureau.ui
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.saravanamarriagebureau.ui.navigation.Routes
-import com.saravanamarriagebureau.ui.screens.AdminPanelScreen
-import com.saravanamarriagebureau.ui.screens.AdminVoiceScreen
-import com.saravanamarriagebureau.ui.screens.ContactsLockedScreen
 import com.saravanamarriagebureau.ui.screens.ForgotPasswordScreen
-import com.saravanamarriagebureau.ui.screens.HomeScreen
-import com.saravanamarriagebureau.ui.screens.InterestSentDialogScreen
-import com.saravanamarriagebureau.ui.screens.InterestsScreen
-import com.saravanamarriagebureau.ui.screens.InvoiceScreen
 import com.saravanamarriagebureau.ui.screens.LoginScreen
 import com.saravanamarriagebureau.ui.screens.MainScreenWithHamburger
-import com.saravanamarriagebureau.ui.screens.MatchFixedScreen
-import com.saravanamarriagebureau.ui.screens.MatchesScreen
-import com.saravanamarriagebureau.ui.screens.MembershipScreen
-import com.saravanamarriagebureau.ui.screens.OfferScreen
-import com.saravanamarriagebureau.ui.screens.ParentsTalkScreen
-import com.saravanamarriagebureau.ui.screens.PrivacyScreen
-import com.saravanamarriagebureau.ui.screens.ProfileCreationScreen
-import com.saravanamarriagebureau.ui.screens.ProfileViewScreen
 import com.saravanamarriagebureau.ui.screens.RegisterScreen
 import com.saravanamarriagebureau.ui.screens.SplashScreen
-import com.saravanamarriagebureau.ui.screens.VoiceBioScreen
 import com.saravanamarriagebureau.ui.screens.WelcomeScreen
-import com.saravanamarriagebureau.ui.viewmodel.MatchesViewModel
 
 @Composable
 fun SmbNavigationApp() {
@@ -42,7 +24,7 @@ fun SmbNavigationApp() {
             SplashScreen(
                 onFinished = {
 
-                    navController.navigate(Routes.Main) {
+                    navController.navigate(Routes.Welcome) {
 
                         popUpTo(Routes.Splash) {
                             inclusive = true
@@ -63,9 +45,10 @@ fun SmbNavigationApp() {
 
         composable(Routes.Login) {
             LoginScreen(
-                onLogin = { navController.navigate(Routes.Home) },
+                onLogin = { navController.navigate(Routes.Main) },
                 onRegister = { navController.navigate(Routes.Register) },
-                onPrivacy = { }
+                onPrivacy = { },
+                onForgot = { navController.navigate(Routes.ForgotPassword) }
             )
         }
 

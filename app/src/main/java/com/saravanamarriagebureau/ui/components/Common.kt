@@ -20,14 +20,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -210,21 +214,52 @@ fun ProfileCard(
             .clickable { onOpen() },
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = CardDefaults.outlinedCardBorder(),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-            ProfilePhoto("", Modifier.size(74.dp))
+            if(profile.isPaidUser) {
+                ProfilePhoto("", Modifier.size(74.dp))
+            } else {
+                BlurredProfileImage(R.drawable.profile_pic, isBlurred = true, modifier = Modifier.size(74.dp))
+            }
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text(profile.name, fontWeight = FontWeight.Bold, color = Black)
-                Spacer(Modifier.height(5.dp))
-                Text("${profile.age} yrs", color = TextSecondary, fontWeight = FontWeight.Normal)
-                Spacer(Modifier.height(5.dp))
-                Text(profile.education, color = TextSecondary, fontWeight = FontWeight.Normal)
-                Spacer(Modifier.height(5.dp))
-                if (profile.verified) {
-                    Text("● Admin Verified", color = Success, style = MaterialTheme.typography.labelSmall)
+                LabelName(
+                    labelName = profile.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Maroon,
+                    modifier = Modifier.padding(0.dp)
+                )
+                LabelName(
+                    labelName = "${profile.age} yrs",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
+                LabelName(
+                    labelName = profile.education,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
+                if (profile.isAdminVerified) {
+                    LabelName(
+                        labelName = "● "+stringResource(id = R.string.verified),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Success,
+                        modifier = Modifier.padding(0.dp)
+                    )
+                } else {
+                    LabelName(
+                        labelName = "● "+stringResource(id = R.string.profile_under_review),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Warning
+                    )
                 }
             }
             Icon(Icons.Default.FavoriteBorder,
@@ -246,37 +281,79 @@ fun InterestCard(
             .clickable { onOpen() },
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = CardDefaults.outlinedCardBorder(),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
             ProfilePhoto("", Modifier.size(74.dp))
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text(interest.name, fontWeight = FontWeight.Bold, color = Black)
-                Spacer(Modifier.height(5.dp))
-                Text("${interest.age} yrs", color = TextSecondary, fontWeight = FontWeight.Normal)
-                Spacer(Modifier.height(5.dp))
-                Text(interest.education, color = TextSecondary, fontWeight = FontWeight.Normal)
+                LabelName(
+                    labelName = interest.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Maroon,
+                    modifier = Modifier.padding(0.dp)
+                )
+                LabelName(
+                    labelName = "${interest.age} yrs",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
+                LabelName(
+                    labelName = interest.education,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
+                if (interest.isAdminVerified) {
+                    LabelName(
+                        labelName = "● "+stringResource(id = R.string.verified),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Success,
+                        modifier = Modifier.padding(0.dp)
+                    )
+                } else {
+                    LabelName(
+                        labelName = "● "+stringResource(id = R.string.profile_under_review),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Warning
+                    )
+                }
+
 
             }
             Spacer(modifier = Modifier.size(20.dp))
             Column(modifier = Modifier.fillMaxHeight()){
-                CustomButton(
-                    text = "Accept", onClick = {},
-                    modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                    height = 40.dp, width = 90.dp, cornerRadius = 20.dp, textColor = White,
-                    fontWeight = FontWeight.SemiBold, fontSize = 14.sp, backgroundColor = Success
-                )
-                Spacer(Modifier.height(10.dp))
-                CustomButton(
-                    text = "Reject", onClick = {},
-                    modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                    height = 40.dp, width = 90.dp, cornerRadius = 20.dp, textColor = White,
-                    fontWeight = FontWeight.SemiBold, fontSize = 14.sp, backgroundColor = Red
-                )
-
-
+                if(interest.accept || interest.reject) {
+                    LabelName(
+                        labelName = if (interest.accept) stringResource(id = R.string.accepted) else stringResource(
+                            id = R.string.rejected
+                        ),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (interest.accept) Success else Red,
+                        modifier = Modifier.padding(end = 5.dp)
+                    )
+                } else {
+                    CustomButton(
+                        text = stringResource(id = R.string.accept), onClick = {onAcceptRejectButton()},
+                        modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                        height = 40.dp, width = 90.dp, cornerRadius = 20.dp, textColor = White,
+                        fontWeight = FontWeight.SemiBold, fontSize = 14.sp, backgroundColor = Success
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    CustomButton(
+                        text = stringResource(id = R.string.reject), onClick = {onAcceptRejectButton()},
+                        modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                        height = 40.dp, width = 90.dp, cornerRadius = 20.dp, textColor = White,
+                        fontWeight = FontWeight.SemiBold, fontSize = 14.sp, backgroundColor = Red
+                    )
+                }
             }
         }
     }
@@ -387,17 +464,46 @@ fun VerticalDivider() {
 
 @Composable
 fun LabelName(
+    modifier: Modifier = Modifier,
     labelName: String,
     fontSize: TextUnit = 14.sp,
     fontWeight: FontWeight = FontWeight.Normal,
-    color: Color = Maroon
+    color: Color = Maroon,
+    textDecoration: TextDecoration = TextDecoration.None,
+    textAlign: TextAlign = TextAlign.Start,
 ){
     Text(
         text = labelName,
         fontSize = fontSize,
         color = color,
         fontWeight = fontWeight,
-        modifier = Modifier.padding(bottom = 7.dp)
+        modifier = modifier,
+        textDecoration = textDecoration,
+        textAlign = textAlign
+    )
+}
+
+@Composable
+fun BlurredProfileImage(
+    imageRes: Int,
+    isBlurred: Boolean,
+    modifier: Modifier = Modifier
+) {
+    // Determine blur radius based on the toggle state
+    val blurRadius = if (isBlurred) 16.dp else 0.dp
+
+    Image(
+        painter = painterResource(id = imageRes),
+        contentDescription = "Profile Image",
+        contentScale = ContentScale.Crop, // Ensures the profile image fills the circle properly
+        modifier = modifier
+            .size(120.dp)
+            .clip(CircleShape) // Standard circular profile shape
+            .blur(
+                radius = blurRadius,
+                // Bounding the blur to the circle shape prevents it from leaking out as a square blur
+                edgeTreatment = BlurredEdgeTreatment(CircleShape)
+            )
     )
 }
 

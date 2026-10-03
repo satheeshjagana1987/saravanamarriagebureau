@@ -44,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -52,7 +53,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.AppLogo
+import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.components.SecondaryButton
@@ -83,14 +86,18 @@ fun ForgotPasswordScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScreenHeader(title = "Forgot Password", onBack)
-        AppLogo()
+        Spacer(Modifier.height(20.dp))
+        ScreenHeader(title = stringResource(id = R.string.forgot_password), onBack)
         Spacer(Modifier.height(20.dp))
 
         Card(colors = CardDefaults.cardColors(containerColor = SuccessSoft)) {
-            Row(horizontalArrangement = Arrangement.Center,
+            Row(
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(10.dp).fillMaxWidth()) {
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth()
+            ) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = "Verified",
@@ -106,30 +113,27 @@ fun ForgotPasswordScreen(
                 )
             }
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)                     // 1. Outside Padding (Margin)
-                .clip(RoundedCornerShape(16.dp))    // 2. CLIP FIRST (Crucial Step!)
-                .background(Color.White)             // 3. Apply background to the clipped shape
-                .padding(16.dp)
-        ) {
-            Column(
+        Spacer(Modifier.height(40.dp))
+        Column(Modifier.padding(horizontal = 16.dp)) {
+            Card(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(White),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
             ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(White)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
+                ) {
 
-                // Mobile Number
-                Column {
-                    Text(
-                        text = "OTP",
-                        fontSize = 14.sp,
-                        color = Maroon,
-                        fontWeight = FontWeight.Normal,
-                        modifier = Modifier.padding(bottom = 7.dp)
-                    )
-
+                    // Mobile Number
+                    LabelName(labelName = stringResource(id = R.string.otp), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                    Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
                         value = mobileNumber,
                         onValueChange = {
@@ -170,18 +174,11 @@ fun ForgotPasswordScreen(
                             )
                         }
                     )
-                }
+                    Spacer(Modifier.height(15.dp))
 
-                // Password
-                Column {
-                    Text(
-                        text = "New Password",
-                        fontSize = 14.sp,
-                        color = Maroon,
-                        fontWeight = FontWeight.Normal,
-                        modifier = Modifier.padding(bottom = 7.dp)
-                    )
-
+                    // Password
+                    LabelName(labelName = stringResource(id = R.string.new_password), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                    Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
                         value = password,
                         onValueChange = {
@@ -242,18 +239,10 @@ fun ForgotPasswordScreen(
                             )
                         }
                     )
-                }
+                    Spacer(Modifier.height(15.dp))
 
-                // Confirm Password
-                Column {
-                    Text(
-                        text = "Confirm New Password",
-                        fontSize = 14.sp,
-                        color = Maroon,
-                        fontWeight = FontWeight.Normal,
-                        modifier = Modifier.padding(bottom = 7.dp)
-                    )
-
+                    LabelName(labelName = stringResource(id = R.string.confirm_new_password), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                    Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
                         value = confirmPassword,
                         onValueChange = {
@@ -330,17 +319,13 @@ fun ForgotPasswordScreen(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal
             )
-
-            Text(
-                text = "Resend OTP", color = Red,
-                fontSize = 14.sp,
-                textDecoration = TextDecoration.Underline,
-                fontWeight = FontWeight.Normal
-            )
+            Spacer(Modifier.height(10.dp))
+           LabelName(labelName = stringResource(id = R.string.resend_otp),
+               textDecoration = TextDecoration.Underline, color = Success)
         }
         Spacer(Modifier.weight(1f))
         PrimaryButton(
-            text = "Reset Password",
+            text = stringResource(id = R.string.reset_password),
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
             onClick = onReset
         )

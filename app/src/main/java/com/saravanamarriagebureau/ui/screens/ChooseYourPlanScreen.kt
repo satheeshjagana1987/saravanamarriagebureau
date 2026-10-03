@@ -20,10 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.saravanamarriagebureau.R
+import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Black
@@ -61,9 +64,15 @@ fun ChooseYourPlanScreen(
 fun MembershipScreen(onContinue: () -> Unit) {
     Column(Modifier.fillMaxSize()) {
         PlanCard("Dasara Offer", "Free Registration", "₹0", selected = true)
-        PlanCard("Yearly Membership", "For profile viewing only", "₹299 / Year", selected = false)
+        PlanCard(stringResource(id = R.string.yearly_membership), "For profile viewing only", "₹299 / Year", selected = false)
         Spacer(Modifier.weight(1f))
-        PrimaryButton("Continue", onClick = {onContinue})
+        PrimaryButton(
+            "Continue",
+            onClick = {onContinue},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp, end = 16.dp, bottom = 50.dp)
+        )
     }
 }
 
@@ -73,15 +82,34 @@ private fun PlanCard(title: String, subtitle: String, price: String, selected: B
         Modifier.fillMaxWidth().padding(vertical = 8.dp),
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = CardDefaults.outlinedCardBorder()
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(title, color = Black, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                LabelName(
+                    labelName = title,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Black,
+                    modifier = Modifier.padding(0.dp)
+                )
                 Spacer(Modifier.height(5.dp))
-                Text(price, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Maroon)
+                LabelName(
+                    labelName = price,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Maroon,
+                    modifier = Modifier.padding(0.dp)
+                )
                 Spacer(Modifier.height(5.dp))
-                Text(subtitle, color = Warning, fontSize = 14.sp, fontWeight = FontWeight.Normal)
+
+                LabelName(
+                    labelName = subtitle,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Success,
+                    modifier = Modifier.padding(0.dp)
+                )
             }
             Icon(
                 Icons.Default.CheckCircle,
