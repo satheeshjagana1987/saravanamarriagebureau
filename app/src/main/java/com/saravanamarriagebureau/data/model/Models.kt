@@ -48,6 +48,7 @@ data class Profile(
     val isPaidUser: Boolean = false,
     val religion: String,
     val gender: Gender? = null,
+    val isMatchFixed: Boolean = false,
 )
 
 data class Match(

@@ -66,6 +66,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.Gender
+import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.enums.ProfileTab
 import com.saravanamarriagebureau.data.model.LanguageOption
@@ -74,10 +75,12 @@ import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.GenderSelection
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
+import com.saravanamarriagebureau.ui.components.ProfilePhoto
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,13 +108,13 @@ fun ProfileCreationScreen(
         mutableStateOf(ProfileTab.PERSONAL)
     }
     var isPersonalVisible by rememberSaveable {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
     var isProfessionalVisible by rememberSaveable {
         mutableStateOf(false)
     }
     var isPhotoVisible by rememberSaveable {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
 
 
@@ -411,7 +414,12 @@ fun ProfileCreationScreen(
                 }
                 Spacer(Modifier.height(10.dp))
                 if (isProfessionalVisible) {
-                    Column {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(White)
+                            .padding(16.dp),
+                    ) {
                         LabelName(
                             labelName = stringResource(id = R.string.education),
                             fontSize = 14.sp,
@@ -453,7 +461,7 @@ fun ProfileCreationScreen(
                             color = Maroon,
                             fontWeight = FontWeight.Normal
                         )
-                        Spacer(Modifier.height(15.dp))
+                        Spacer(Modifier.height(5.dp))
                         OutlinedTextField(
                             value = height,
                             onValueChange = {
@@ -489,7 +497,7 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(15.dp))
                         LabelName(
                             labelName = stringResource(id = R.string.profession),
                             fontSize = 14.sp,
@@ -524,94 +532,202 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-                    }
-                    Spacer(Modifier.height(10.dp))
-                    Row() {
+                        Spacer(Modifier.height(5.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            LabelName(
+                                labelName = stringResource(id = R.string.gender),
+                                fontSize = 14.sp,
+                                color = Maroon,
+                                fontWeight = FontWeight.Normal
+                            )
+                            RadioButton(
+                                selected = selectedGender == stringResource(R.string.male),
+                                onClick = {
+                                    selectedGender = "Male"
+                                }
+                            )
+
+                            LabelName(
+                                labelName = stringResource(id = R.string.male),
+                                fontSize = 14.sp,
+                                color = Black,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            RadioButton(
+                                selected = selectedGender == stringResource(R.string.female),
+                                onClick = {
+                                    selectedGender = "Female"
+                                }
+                            )
+
+                            LabelName(
+                                labelName = stringResource(id = R.string.female),
+                                fontSize = 14.sp,
+                                color = Black,
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
+
+                        Spacer(Modifier.height(10.dp))
                         LabelName(
-                            labelName = stringResource(id = R.string.gender),
+                            labelName = stringResource(id = R.string.marital_status),
                             fontSize = 14.sp,
                             color = Maroon,
                             fontWeight = FontWeight.Normal
                         )
-                        Gender.entries.forEach { gender ->
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = maritalStatus,
+                            onValueChange = {
+                                maritalStatus = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
 
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .selectable(
-                                        selected = selectedGender == gender.genderName,
-                                        onClick = {
-                                        },
-                                        role = Role.RadioButton
-                                    )
-                                    .padding(vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
 
-                                RadioButton(
-                                    selected = selectedGender == gender.genderName,
-                                    onClick = {
-                                    }
-                                )
-
-                                Spacer(
-                                    modifier = Modifier.width(8.dp)
-                                )
-
+                            placeholder = {
                                 Text(
-                                    text = gender.genderName,
-                                    style = MaterialTheme.typography.bodyLarge
+                                    text = "Enter Marital Status",
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
                                 )
                             }
-                        }
+                        )
+
+                        Spacer(Modifier.height(15.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.religion),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = maritalStatus,
+                            onValueChange = {
+                                maritalStatus = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+
+                            placeholder = {
+                                Text(
+                                    text = "Enter Religion",
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        )
+
                     }
-
-                    Spacer(Modifier.height(10.dp))
-                    LabelName(
-                        labelName = stringResource(id = R.string.marital_status),
-                        fontSize = 14.sp,
-                        color = Maroon,
-                        fontWeight = FontWeight.Normal
-                    )
-                    Spacer(Modifier.height(5.dp))
-                    OutlinedTextField(
-                        value = maritalStatus,
-                        onValueChange = {
-                            maritalStatus = it
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFE2E2E8),
-                            unfocusedBorderColor = Color(0xFFE2E2E8),
-                            cursorColor = Color(0xFF555555),
-                            focusedTextColor = Color(0xFF333333),
-                            unfocusedTextColor = Color(0xFF333333)
-                        ),
-
-                        placeholder = {
-                            Text(
-                                text = "Enter Marital Status",
-                                color = Color(0xFFB5B5BD),
-                                fontSize = 14.sp
-                            )
-                        }
-                    )
                 }
             }
 
             if (isPhotoVisible) {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(White)
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        ProfilePhoto("", Modifier.size(100.dp))
+                        Spacer(Modifier.weight(1f))
+                        CustomButtonForUpload(
+                            text = stringResource(id = R.string.upload),
+                            onClick = {},
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                    Spacer(Modifier.height(20.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        LabelName(
+                            labelName = stringResource(id = R.string.family_video),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.weight(1f))
+                        CustomButtonForUpload(
+                            text = stringResource(id = R.string.upload),
+                            onClick = {},
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+
+                    Spacer(Modifier.height(20.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        LabelName(
+                            labelName = stringResource(id = R.string.bride_groom_voice_record),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.weight(1f))
+                        CustomButtonForUpload(
+                            text = stringResource(id = R.string.upload),
+                            onClick = {},
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+
+                    Spacer(Modifier.height(20.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        LabelName(
+                            labelName = stringResource(id = R.string.parent_voice_record),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.weight(1f))
+                        CustomButtonForUpload(
+                            text = stringResource(id = R.string.upload),
+                            onClick = {},
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                    Spacer(Modifier.height(30.dp))
                     LabelName(
-                        labelName = stringResource(id = R.string.height),
-                        fontSize = 14.sp,
-                        color = Maroon,
+                        labelName = stringResource(id = R.string.video_voice_limit),
+                        fontSize = 12.sp,
+                        color = Red,
                         fontWeight = FontWeight.Normal
                     )
+
                 }
             }
             Spacer(Modifier.height(20.dp))
@@ -644,6 +760,33 @@ fun ProfileTabButton(
         backgroundColor = if (selected) Maroon else White,
 
         borderColor = if (selected) Maroon else Black,
+
+        borderStroke = 0.2.dp
+    )
+}
+
+@Composable
+fun CustomButtonForUpload(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    CustomButton(
+        text = text,
+        onClick = onClick,
+        height = 40.dp,
+        width = 0.dp,
+        modifier = modifier,
+        cornerRadius = 5.dp,
+
+        textColor = White,
+
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+
+        backgroundColor = Maroon,
+
+        borderColor = Maroon,
 
         borderStroke = 0.2.dp
     )

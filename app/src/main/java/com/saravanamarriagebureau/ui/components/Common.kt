@@ -1,6 +1,8 @@
 package com.saravanamarriagebureau.ui.components
 
+import android.content.Context
 import android.widget.GridLayout
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -64,7 +67,12 @@ fun AppLogo(compact: Boolean = false) {
         }
         if (!compact) {
             Text("Saravana Bhava", color = Maroon, fontWeight = FontWeight.Bold, fontSize = 28.sp)
-            Text("Marriage Bureau", color = Maroon, fontWeight = FontWeight.SemiBold, fontSize = 28.sp)
+            Text(
+                "Marriage Bureau",
+                color = Maroon,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 28.sp
+            )
         }
     }
 }
@@ -79,7 +87,9 @@ fun PrimaryButton(
     Button(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.fillMaxWidth().height(50.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(50.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Maroon)
     ) {
@@ -88,10 +98,12 @@ fun PrimaryButton(
 }
 
 @Composable
-fun SecondaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier,) {
+fun SecondaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth().height(50.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(50.dp),
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(text, color = Black, fontWeight = FontWeight.SemiBold)
@@ -113,28 +125,43 @@ fun CustomButton(
     backgroundColor: Color,
     borderStroke: Dp = 1.dp,
     borderColor: Color = Gray,
-    
-) {
+
+    ) {
     Button(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.width(width).height(height),
+        modifier = modifier
+            .width(width)
+            .height(height),
         shape = RoundedCornerShape(size = cornerRadius),
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
         contentPadding = PaddingValues(0.dp),
         border = BorderStroke(borderStroke, borderColor)
     ) {
-        Text(text, fontWeight = fontWeight, color = textColor,
-            fontSize = fontSize, textAlign = TextAlign.Center)
+        Text(
+            text, fontWeight = fontWeight, color = textColor,
+            fontSize = fontSize, textAlign = TextAlign.Center
+        )
     }
 }
 
 @Composable
-fun BorderLineCustomButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier,
-                height: Dp, width: Dp, cornerRadius: Dp, textColor: Color, fontWeight: FontWeight, fontSize: TextUnit) {
+fun BorderLineCustomButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    height: Dp,
+    width: Dp,
+    cornerRadius: Dp,
+    textColor: Color,
+    fontWeight: FontWeight,
+    fontSize: TextUnit
+) {
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier.width(width).height(height),
+        modifier = modifier
+            .width(width)
+            .height(height),
         shape = RoundedCornerShape(size = cornerRadius)
     ) {
         Text(text, color = textColor, fontWeight = fontWeight, fontSize = fontSize)
@@ -148,7 +175,9 @@ fun ScreenHeader(
     action: (@Composable () -> Unit)? = null
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (onBack != null) {
@@ -212,18 +241,30 @@ fun ProfileCard(
     onInterest: () -> Unit,
     onOpen: () -> Unit
 ) {
+    val context = LocalContext.current
     Card(
-        modifier = Modifier.fillMaxWidth()
-            .clickable { onOpen() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                if (profile.isAdminVerified) {
+                    onOpen()
+                } else {
+                    Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT).show()
+                }
+            },
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-            if(profile.isPaidUser) {
+            if (profile.isPaidUser) {
                 ProfilePhoto("", Modifier.size(74.dp))
             } else {
-                BlurredProfileImage(R.drawable.profile_pic, isBlurred = true, modifier = Modifier.size(74.dp))
+                BlurredProfileImage(
+                    R.drawable.profile_pic,
+                    isBlurred = true,
+                    modifier = Modifier.size(74.dp)
+                )
             }
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
@@ -250,7 +291,7 @@ fun ProfileCard(
                 )
                 if (profile.isAdminVerified) {
                     LabelName(
-                        labelName = "● "+stringResource(id = R.string.verified),
+                        labelName = "● " + stringResource(id = R.string.verified),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Success,
@@ -258,17 +299,23 @@ fun ProfileCard(
                     )
                 } else {
                     LabelName(
-                        labelName = "● "+stringResource(id = R.string.profile_under_review),
+                        labelName = "● " + stringResource(id = R.string.profile_under_review),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Warning
                     )
                 }
             }
-            Icon(Icons.Default.FavoriteBorder,
-                null, tint = Maroon,
-                modifier = Modifier.size(30.dp).clickable{onInterest()},
-            )
+            if (profile.isAdminVerified) {
+                Icon(
+                    Icons.Default.FavoriteBorder,
+                    null, tint = Maroon,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable { onInterest() },
+                )
+            }
+
         }
     }
 }
@@ -280,7 +327,8 @@ fun InterestCard(
     onAcceptRejectButton: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .clickable { onOpen() },
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -313,7 +361,7 @@ fun InterestCard(
                 )
                 if (interest.isAdminVerified) {
                     LabelName(
-                        labelName = "● "+stringResource(id = R.string.verified),
+                        labelName = "● " + stringResource(id = R.string.verified),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Success,
@@ -321,7 +369,7 @@ fun InterestCard(
                     )
                 } else {
                     LabelName(
-                        labelName = "● "+stringResource(id = R.string.profile_under_review),
+                        labelName = "● " + stringResource(id = R.string.profile_under_review),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Warning
@@ -331,8 +379,8 @@ fun InterestCard(
 
             }
             Spacer(modifier = Modifier.size(20.dp))
-            Column(modifier = Modifier.fillMaxHeight()){
-                if(interest.accept || interest.reject) {
+            Column(modifier = Modifier.fillMaxHeight()) {
+                if (interest.accept || interest.reject) {
                     LabelName(
                         labelName = if (interest.accept) stringResource(id = R.string.accepted) else stringResource(
                             id = R.string.rejected
@@ -344,17 +392,39 @@ fun InterestCard(
                     )
                 } else {
                     CustomButton(
-                        text = stringResource(id = R.string.accept), onClick = {onAcceptRejectButton()},
-                        modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                        height = 40.dp, width = 90.dp, cornerRadius = 20.dp, textColor = White,
-                        fontWeight = FontWeight.SemiBold, fontSize = 14.sp, backgroundColor = Success
+                        text = stringResource(id = R.string.accept),
+                        onClick = { onAcceptRejectButton() },
+                        modifier = Modifier.padding(
+                            start = 0.dp,
+                            top = 0.dp,
+                            end = 0.dp,
+                            bottom = 0.dp
+                        ),
+                        height = 40.dp,
+                        width = 90.dp,
+                        cornerRadius = 20.dp,
+                        textColor = White,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                        backgroundColor = Success
                     )
                     Spacer(Modifier.height(10.dp))
                     CustomButton(
-                        text = stringResource(id = R.string.reject), onClick = {onAcceptRejectButton()},
-                        modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                        height = 40.dp, width = 90.dp, cornerRadius = 20.dp, textColor = White,
-                        fontWeight = FontWeight.SemiBold, fontSize = 14.sp, backgroundColor = Red
+                        text = stringResource(id = R.string.reject),
+                        onClick = { onAcceptRejectButton() },
+                        modifier = Modifier.padding(
+                            start = 0.dp,
+                            top = 0.dp,
+                            end = 0.dp,
+                            bottom = 0.dp
+                        ),
+                        height = 40.dp,
+                        width = 90.dp,
+                        cornerRadius = 20.dp,
+                        textColor = White,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                        backgroundColor = Red
                     )
                 }
             }
@@ -474,7 +544,7 @@ fun LabelName(
     color: Color = Maroon,
     textDecoration: TextDecoration = TextDecoration.None,
     textAlign: TextAlign = TextAlign.Start,
-){
+) {
     Text(
         text = labelName,
         fontSize = fontSize,
@@ -508,6 +578,15 @@ fun BlurredProfileImage(
                 edgeTreatment = BlurredEdgeTreatment(CircleShape)
             )
     )
+}
+
+@Composable
+fun ShowToast(
+    context: Context,
+    message: String,
+    duration: Int = Toast.LENGTH_SHORT
+){
+    Toast.makeText(context, message, duration).show()
 }
 
 @Composable

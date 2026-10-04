@@ -91,6 +91,7 @@ fun RegisterScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(Modifier.height(20.dp))
         ScreenHeader("Create Your Account", onBack)
         Spacer(Modifier.height(10.dp))
         Column(Modifier.padding(horizontal = 16.dp)) {
@@ -99,6 +100,7 @@ fun RegisterScreen(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(5.dp))
                     .background(White),
+                colors = CardDefaults.cardColors(containerColor = White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
             ) {
                 Column(
@@ -424,7 +426,7 @@ fun RegisterScreen(
                             }
                         }
                     }
-                    Spacer(Modifier.height(5.dp))
+                    Spacer(Modifier.height(10.dp))
                     Row(
                         modifier = Modifier
                             .selectableGroup()

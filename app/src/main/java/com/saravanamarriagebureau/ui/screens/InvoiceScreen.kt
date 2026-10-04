@@ -242,12 +242,13 @@ fun InvoiceScreen(onPay: () -> Unit, onBack: () -> Unit) {
         }
         Spacer(Modifier.height(20.dp))
         Text(
-            text = "Contacts will be revealed after successful payment.",
+            text = "Contact info will be revealed after successful payment.",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp, color = Red,
             modifier = Modifier.fillMaxWidth(),
         )
+        Spacer(Modifier.height(20.dp))
         Spacer(Modifier.weight(1f))
         PrimaryButton(
             text = "Pay Now (₹50,000)", onClick = onPay,

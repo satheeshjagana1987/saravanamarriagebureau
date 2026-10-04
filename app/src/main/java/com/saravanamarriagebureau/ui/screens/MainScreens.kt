@@ -21,9 +21,9 @@ import com.saravanamarriagebureau.ui.components.*
 import com.saravanamarriagebureau.ui.theme.*
 
 val demoProfiles = listOf(
-    Profile(id = "1", name = "Pooja S", age = 26, height = "5'4\"", education = "B.Tech", profession = "Software Engineer", location = "Guntur", responded = false, imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, isPaidUser = true, religion = "Hindu"),
-    Profile(id = "2", name = "Sai Charan", age = 28, height = "5'8\"", education = "MBA", profession = "Business", location = "Hyderabad", responded = true, imageUrl = null, mobileNumber = 1234567890, isAdminVerified = false, religion = "Hindu"),
-    Profile(id = "3", name = "Lavanya", age = 25, height = "5'3\"", education = "B.Sc", profession = "Teacher", location = "Bangalore", responded = true, imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Muslim")
+    Profile(id = "1", name = "Pooja S", age = 26, height = "5'4\"", education = "B.Tech", profession = "Software Engineer", location = "Guntur", responded = false, imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, isPaidUser = true, religion = "Hindu", isMatchFixed = true),
+    Profile(id = "2", name = "Sai Charan", age = 28, height = "5'8\"", education = "MBA", profession = "Business", location = "Hyderabad", responded = true, imageUrl = null, mobileNumber = 1234567890, isAdminVerified = false, religion = "Hindu", isMatchFixed = false),
+    Profile(id = "3", name = "Lavanya", age = 25, height = "5'3\"", education = "B.Sc", profession = "Teacher", location = "Bangalore", responded = true, imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Muslim", isMatchFixed = true)
 )
 
 @Composable

@@ -72,7 +72,7 @@ fun MainScreenWithHamburger() {
     val drawerItems = listOf(
         DrawerScreen.ChangePassword,
         DrawerScreen.ChangeLanguage,
-        DrawerScreen.Logout,
+//        DrawerScreen.Logout,
 
         )
 
@@ -96,7 +96,9 @@ fun MainScreenWithHamburger() {
             DrawerScreen.ChangePassword.route,
             Routes.InterestSent,
             Routes.ChoosePlan,
-            Routes.ChangeLanguage
+            Routes.ChangeLanguage,
+            Routes.MatchFixed,
+            Routes.Invoice,
         ) && !isProfileScreen
 
     // -----------------------------------------
@@ -419,7 +421,6 @@ fun MainScreenWithHamburger() {
                 composable(
                     DrawerScreen.ChangeLanguage.route
                 ) {
-
                     ChangeLanguageScreen(
 
                         onBack = {
@@ -441,6 +442,16 @@ fun MainScreenWithHamburger() {
                         onBack = {
                             navController.popBackStack()
                         }
+                    )
+                }
+
+                composable(
+                    DrawerScreen.Logout.route
+                ) {
+                    LogoutDialog(
+//                        onLogout = {
+////                            navController.navigate(Routes.Login)
+//                        },
                     )
                 }
 

@@ -44,7 +44,7 @@ fun InterestsScreen(
         Interest(id = "1", name = "Pooja S", age = 26, height = "5'4\"", education = "B.Tech", profession = "Software Engineer", location = "Guntur",
             imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, isPaidUser = true, religion = "Hindu", accept = false, reject = false, isMatched = false),
         Interest(id = "2", name = "Sai Charan", age = 28, height = "5'8\"", education = "MBA", profession = "Business", location = "Hyderabad",
-            imageUrl = null, mobileNumber = 1234567890, isAdminVerified = false, religion = "Hindu", accept = true, reject = false,  isMatched = true),
+            imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Hindu", accept = true, reject = false,  isMatched = true),
         Interest(id = "3", name = "Lavanya", age = 25, height = "5'3\"", education = "B.Sc", profession = "Teacher", location = "Bangalore",
             imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Muslim", accept = false, reject = true,  isMatched = false)
     )

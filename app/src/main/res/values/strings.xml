@@ -28,6 +28,11 @@
     <string name="interests">Interests</string>
     <string name="profile">Profile</string>
     <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="upload">Upload</string>
+    <string name="logout_dialog_content">Are you sure you want to log out?</string>
     <string name="register">Register</string>
     <string name="age">Age</string>
     <string name="height">Height</string>
@@ -44,9 +49,12 @@
     <string name="professional">Professional</string>
     <string name="photo">Photo</string>
     <string name="education">Education</string>
+    <string name="family_video">Family Video</string>
+    <string name="bride_groom_voice_record">Bride/Groom Voice Record</string>
+    <string name="parent_voice_record">Parent Voice Record</string>
+    <string name="video_voice_limit">Video and Voice Record Max 20sec</string>
     <string name="profession">Profession</string>
     <string name="location">Location</string>
-    <string name="family_video">Family Video</string>
     <string name="voice_record">Voice Record</string>
     <string name="download">Download</string>
     <string name="remember_me">Remember Me</string>

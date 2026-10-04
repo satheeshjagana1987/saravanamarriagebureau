@@ -68,7 +68,7 @@ fun ProfileViewScreen(
         ScreenHeader("Profile", onBack)
         Column(
             Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(Cream),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -299,15 +299,17 @@ fun ProfileViewScreen(
                             value = "Download"
                         )
                     }
+                    Spacer(Modifier.height(20.dp))
+                    if(profile.isMatchFixed) {
+                        PrimaryButton(
+                            text = stringResource(id = R.string.match_fixed),
+                            modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
+                            onClick = onMatchFixed
+                        )
+                    }
                 }
             }
         }
-        Spacer(Modifier.weight(1f))
-        PrimaryButton(
-            text = stringResource(id = R.string.reset_password),
-            modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
-            onClick = onMatchFixed
-        )
     }
 }
 
