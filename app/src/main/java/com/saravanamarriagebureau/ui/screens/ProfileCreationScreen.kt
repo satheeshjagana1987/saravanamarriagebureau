@@ -1,6 +1,7 @@
 package com.saravanamarriagebureau.ui.screens
 
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.visible
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -27,26 +30,32 @@ import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -54,11 +63,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.LocaleListCompat
 import com.saravanamarriagebureau.R
+import com.saravanamarriagebureau.data.enums.Gender
 import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.enums.ProfileTab
+import com.saravanamarriagebureau.data.model.LanguageOption
 import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.ui.components.CustomButton
+import com.saravanamarriagebureau.ui.components.GenderSelection
+import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Black
@@ -82,16 +96,27 @@ fun ProfileCreationScreen(
     var profession by remember { mutableStateOf("") }
     var religion by remember { mutableStateOf("") }
     var mobileNumber by remember { mutableStateOf("") }
-    var boxBackgroundColor by remember { mutableStateOf(Maroon) }
-    var brideTextColor by remember { mutableStateOf(White) }
     // Location dropdown
     val options = listOf("Amaravathi, Guntur, Vizag")
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
-    var isVisible by remember { mutableStateOf(false) }
 
     var selectedTab by remember {
         mutableStateOf(ProfileTab.PERSONAL)
+    }
+    var isPersonalVisible by rememberSaveable {
+        mutableStateOf(true)
+    }
+    var isProfessionalVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var isPhotoVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+
+    var selectedGender by remember {
+        mutableStateOf("")
     }
 
     Column(
@@ -112,6 +137,9 @@ fun ProfileCreationScreen(
                     selected = selectedTab == ProfileTab.PERSONAL,
                     onClick = {
                         selectedTab = ProfileTab.PERSONAL
+                        isPersonalVisible = !isPersonalVisible
+                        isProfessionalVisible = false
+                        isPhotoVisible = false
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -121,6 +149,10 @@ fun ProfileCreationScreen(
                     selected = selectedTab == ProfileTab.PROFESSIONAL,
                     onClick = {
                         selectedTab = ProfileTab.PROFESSIONAL
+                        isProfessionalVisible = !isProfessionalVisible
+                        isPersonalVisible = false
+                        isPhotoVisible = false
+
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -130,38 +162,39 @@ fun ProfileCreationScreen(
                     selected = selectedTab == ProfileTab.PHOTO,
                     onClick = {
                         selectedTab = ProfileTab.PHOTO
+                        isPhotoVisible = !isPhotoVisible
+                        isPersonalVisible = false
+                        isProfessionalVisible = false
                     },
                     modifier = Modifier.weight(1f)
                 )
 
             }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(20.dp))
 
-            Box(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(White)
-                    .padding(16.dp)
+                    .clip(RoundedCornerShape(10.dp)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-
-                    // Full Name
+                if (isPersonalVisible) {
                     Column(
-                        modifier = Modifier.visible(visible = true)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(White)
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(0.dp)
                     ) {
-                        Text(
-                            text = "Full Name",
+
+                        LabelName(
+                            labelName = stringResource(id = R.string.full_name),
                             fontSize = 14.sp,
                             color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
+                            fontWeight = FontWeight.Normal
                         )
-
+                        Spacer(Modifier.height(5.dp))
                         OutlinedTextField(
                             value = name,
                             onValueChange = {
@@ -196,18 +229,16 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-                    }
 
-                    // Mobile Number
-                    Column {
-                        Text(
-                            text = "Mobile Number",
+                        Spacer(Modifier.height(10.dp))
+
+                        LabelName(
+                            labelName = stringResource(id = R.string.mobile_number),
                             fontSize = 14.sp,
                             color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
+                            fontWeight = FontWeight.Normal
                         )
-
+                        Spacer(Modifier.height(5.dp))
                         OutlinedTextField(
                             value = mobileNumber,
                             onValueChange = {
@@ -243,18 +274,15 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-                    }
 
-                    // Email
-                    Column {
-                        Text(
-                            text = "Email",
+                        Spacer(Modifier.height(10.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.email),
                             fontSize = 14.sp,
                             color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
+                            fontWeight = FontWeight.Normal
                         )
-
+                        Spacer(Modifier.height(5.dp))
                         OutlinedTextField(
                             value = email,
                             onValueChange = {
@@ -288,18 +316,17 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-                    }
 
-                    // DOB
-                    Column {
-                        Text(
-                            text = "Date of Birth",
+                        Spacer(Modifier.height(10.dp))
+                        // DOB
+
+                        LabelName(
+                            labelName = stringResource(id = R.string.date_of_birth),
                             fontSize = 14.sp,
                             color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
+                            fontWeight = FontWeight.Normal
                         )
-
+                        Spacer(Modifier.height(5.dp))
                         OutlinedTextField(
                             value = dob,
                             onValueChange = {
@@ -333,18 +360,16 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-                    }
 
-                    // Password
-                    Column {
-                        Text(
-                            text = "Location",
+                        Spacer(Modifier.height(10.dp))
+                        // Password
+                        LabelName(
+                            labelName = stringResource(id = R.string.location),
                             fontSize = 14.sp,
                             color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
+                            fontWeight = FontWeight.Normal
                         )
-
+                        Spacer(Modifier.height(5.dp))
                         ExposedDropdownMenuBox(
                             expanded = expanded,
                             onExpandedChange = { expanded = !expanded },
@@ -352,7 +377,9 @@ fun ProfileCreationScreen(
                             // 2. The Anchor Text Field (users click this to open the dropdown)
                             OutlinedTextField(
                                 // The menuAnchor modifier binds the width and position to the menu layout
-                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth(),
                                 readOnly = true,
                                 value = selectedOptionText,
                                 onValueChange = {},
@@ -381,16 +408,52 @@ fun ProfileCreationScreen(
                             }
                         }
                     }
-
+                }
+                Spacer(Modifier.height(10.dp))
+                if (isProfessionalVisible) {
                     Column {
-                        Text(
-                            text = "Height",
+                        LabelName(
+                            labelName = stringResource(id = R.string.education),
                             fontSize = 14.sp,
                             color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
+                            fontWeight = FontWeight.Normal
                         )
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = education,
+                            onValueChange = {
+                                education = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
 
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+
+                            placeholder = {
+                                Text(
+                                    text = "Enter Education",
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        )
+                        Spacer(Modifier.height(15.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.height),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.height(15.dp))
                         OutlinedTextField(
                             value = height,
                             onValueChange = {
@@ -426,55 +489,14 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-                    }
-
-                    Column {
-                        Text(
-                            text = "Education",
+                        Spacer(Modifier.height(10.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.profession),
                             fontSize = 14.sp,
                             color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
+                            fontWeight = FontWeight.Normal
                         )
-
-                        OutlinedTextField(
-                            value = education,
-                            onValueChange = {
-                                education = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-
-                            placeholder = {
-                                Text(
-                                    text = "Enter Education",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        )
-                    }
-
-                    Column {
-                        Text(
-                            text = "Profession",
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
-                        )
-
+                        Spacer(Modifier.height(5.dp))
                         OutlinedTextField(
                             value = profession,
                             onValueChange = {
@@ -503,49 +525,98 @@ fun ProfileCreationScreen(
                             }
                         )
                     }
-
-                    Column {
-                        Text(
-                            text = "Marital Status",
+                    Spacer(Modifier.height(10.dp))
+                    Row() {
+                        LabelName(
+                            labelName = stringResource(id = R.string.gender),
                             fontSize = 14.sp,
                             color = Maroon,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 7.dp)
+                            fontWeight = FontWeight.Normal
                         )
+                        Gender.entries.forEach { gender ->
 
-                        OutlinedTextField(
-                            value = maritalStatus,
-                            onValueChange = {
-                                maritalStatus = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .selectable(
+                                        selected = selectedGender == gender.genderName,
+                                        onClick = {
+                                        },
+                                        role = Role.RadioButton
+                                    )
+                                    .padding(vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
+                                RadioButton(
+                                    selected = selectedGender == gender.genderName,
+                                    onClick = {
+                                    }
+                                )
 
-                            placeholder = {
+                                Spacer(
+                                    modifier = Modifier.width(8.dp)
+                                )
+
                                 Text(
-                                    text = "Enter Marital Status",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
+                                    text = gender.genderName,
+                                    style = MaterialTheme.typography.bodyLarge
                                 )
                             }
-                        )
+                        }
                     }
+
+                    Spacer(Modifier.height(10.dp))
+                    LabelName(
+                        labelName = stringResource(id = R.string.marital_status),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    OutlinedTextField(
+                        value = maritalStatus,
+                        onValueChange = {
+                            maritalStatus = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+
+                        placeholder = {
+                            Text(
+                                text = "Enter Marital Status",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
+                }
+            }
+
+            if (isPhotoVisible) {
+                Column {
+                    LabelName(
+                        labelName = stringResource(id = R.string.height),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
                 }
             }
             Spacer(Modifier.height(20.dp))
             Spacer(Modifier.weight(1f))
-            PrimaryButton("Submit", onSubmit)
+            PrimaryButton(stringResource(id = R.string.submit), onSubmit)
         }
     }
 }
@@ -580,6 +651,6 @@ fun ProfileTabButton(
 
 @Preview
 @Composable
-fun ProfileCreationScreenPreview(){
+fun ProfileCreationScreenPreview() {
     ProfileCreationScreen(onSubmit = {}, onBack = {})
 }

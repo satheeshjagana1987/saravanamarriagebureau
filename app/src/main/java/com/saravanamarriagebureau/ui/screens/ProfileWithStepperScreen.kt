@@ -12,13 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,56 +24,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.saravanamarriagebureau.ui.components.PlayButton
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.CardBorder
-import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
-import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.TextSecondary
+import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
-fun OfferScreen(onContinue: () -> Unit) {
-    Column(Modifier.fillMaxSize().background(Cream).padding(16.dp)) {
-        ScreenHeader("Anubandham", action = { Text("🔔") })
-        Card(
-            Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFFFE9B5))
-        ) {
-            Column(
-                Modifier.fillMaxWidth().padding(18.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Dasara Offer", color = Color(0xFFB25C00), fontWeight = FontWeight.Bold)
-                Text("Free Registration", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                Text("₹0/-", style = MaterialTheme.typography.displaySmall, color = Maroon, fontWeight = FontWeight.Black)
-                Text("Oct 20 - Oct 27")
-                Spacer(Modifier.height(12.dp))
-                Button(onClick = onContinue) { Text("FREE REGISTRATION") }
-            }
-        }
-        Spacer(Modifier.height(16.dp))
-        Card(Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(20.dp)) {
-                Text("After 7 days, Annual Membership", color = TextSecondary)
-                Text("₹299 / Year", style = MaterialTheme.typography.headlineMedium, color = Maroon, fontWeight = FontWeight.Bold)
-                Text("Only for Profile Viewing")
-                Spacer(Modifier.height(12.dp))
-                PrimaryButton("View Plans", onContinue)
-            }
-        }
-        Spacer(Modifier.weight(1f))
-        BottomBarPreview()
-    }
-}
-
-@Composable
-fun VoiceBioScreen(onNext: () -> Unit, onBack: () -> Unit) {
+fun ProfileWithStepperScreen(onNext: () -> Unit, onBack: () -> Unit) {
     Column(
-        Modifier.fillMaxSize().padding(16.dp),
+        Modifier.fillMaxSize().padding(16.dp).background(White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ScreenHeader("Voice Bio", onBack)
@@ -144,15 +103,10 @@ private fun Stepper(current: Int) {
     }
 }
 
+@Preview
 @Composable
-private fun BottomBarPreview() {
-    Row(
-        Modifier.fillMaxWidth().padding(top = 20.dp),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        Text("⌂\nHome", color = Maroon, textAlign = TextAlign.Center)
-        Text("♡\nMatches", textAlign = TextAlign.Center)
-        Text("▣\nMessages", textAlign = TextAlign.Center)
-        Text("◉\nProfile", textAlign = TextAlign.Center)
-    }
+fun ProfileWithStepperScreenPreview(){
+    ProfileWithStepperScreen(onNext = {}, onBack = {})
 }
+
+

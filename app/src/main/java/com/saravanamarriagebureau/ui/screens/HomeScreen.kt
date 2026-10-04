@@ -31,6 +31,7 @@ import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.Warning
+import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
 fun HomeScreen(
@@ -42,35 +43,19 @@ fun HomeScreen(
             .background(Cream)
             .padding(16.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.splash_bg),
-            contentDescription = "A descriptive label for accessibility",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp) // Set sizing or styling
-        )
-        Spacer(Modifier.height(20.dp))
-
-        Image(
-            painter = painterResource(id = R.drawable.splash_bg),
-            contentDescription = "A descriptive label for accessibility",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp) // Set sizing or styling
-        )
+        OfferScreen()
         Spacer(Modifier.height(20.dp))
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { },
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(5.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
         ) {
             Column(
-                Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally
+                Modifier.padding(20.dp).background(White),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LabelName(
                     labelName = stringResource(id = R.string.annual_membership),

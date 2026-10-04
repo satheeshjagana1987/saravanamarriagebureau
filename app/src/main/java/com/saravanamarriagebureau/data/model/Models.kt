@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.saravanamarriagebureau.data.enums.Gender
 import com.saravanamarriagebureau.ui.navigation.Routes
 
 data class LoginRequest(
@@ -46,6 +47,7 @@ data class Profile(
     val isAdminVerified: Boolean = false,
     val isPaidUser: Boolean = false,
     val religion: String,
+    val gender: Gender? = null,
 )
 
 data class Match(
@@ -96,7 +98,7 @@ sealed class BottomBarScreen(val route: String, val title: String, val icon: Ima
     object Home : BottomBarScreen(Routes.Home, "Home", Icons.Default.Home)
     object Matches : BottomBarScreen(Routes.Matches, "Matches", Icons.Default.Search)
     object Interests : BottomBarScreen(Routes.Interests, "Interests", Icons.Default.Person)
-    object ProfileCreation : BottomBarScreen(Routes.ProfileCreation, "Profile", Icons.Default.Person)
+    object ProfileCreation : BottomBarScreen(Routes.profileWithStepper, "Profile", Icons.Default.Person)
 }
 
 // Secondary Side Drawer Destinations

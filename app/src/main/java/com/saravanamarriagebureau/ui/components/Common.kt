@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.R
+import com.saravanamarriagebureau.data.enums.Gender
 import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.ui.theme.*
@@ -508,26 +511,53 @@ fun BlurredProfileImage(
 }
 
 @Composable
-fun ActionButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    text: String,
-    modifier: Modifier,
-    onClick: () -> Unit
+fun GenderSelection(
+    selectedGender: Gender?,
+    onGenderSelected: (Gender) -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .width(100.dp)
-            .clickable { onClick() },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
+    Column {
 
-        Icon(
-            imageVector = icon,
-            contentDescription = text,
-            tint = Maroon,
-            modifier = Modifier.size(40.dp)
+        Text(
+            text = "Gender",
+            style = MaterialTheme.typography.titleMedium
         )
 
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+
+        Gender.entries.forEach { gender ->
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .selectable(
+                        selected = selectedGender == gender,
+                        onClick = {
+                            onGenderSelected(gender)
+                        },
+                        role = Role.RadioButton
+                    )
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                RadioButton(
+                    selected = selectedGender == gender,
+                    onClick = {
+                        onGenderSelected(gender)
+                    }
+                )
+
+                Spacer(
+                    modifier = Modifier.width(8.dp)
+                )
+
+                Text(
+                    text = gender.genderName,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
     }
 }

@@ -27,6 +27,7 @@ object Routes {
     const val ChangeLanguage = "change_language"
     const val Logout = "logout"
     const val ChoosePlan = "choose_plan"
+    const val profileWithStepper = "profile_with_stepper"
 }
 
 fun profileRoute(profileId: String): String {

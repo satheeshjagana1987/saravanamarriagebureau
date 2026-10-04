@@ -60,4 +60,7 @@
     <string name="year">Year</string>
     <string name="view_plans">View Plans</string>
     <string name="change_language">Change Language</string>
+    <string name="marital_status">Marital Status</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
 </resources>
