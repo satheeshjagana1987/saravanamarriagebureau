@@ -1,4 +1,4 @@
-package com.saravanamarriagebureau.ui.screens
+package com.saravanamarriagebureau.ui.screens.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
@@ -38,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.InterestTab
-import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.data.model.demoInterests
 import com.saravanamarriagebureau.ui.components.DividerLine
 import com.saravanamarriagebureau.ui.components.LabelName

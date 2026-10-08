@@ -1,9 +1,7 @@
-package com.saravanamarriagebureau.ui.screens
+package com.saravanamarriagebureau.ui.screens.registration
 
-import android.R.attr.text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,27 +12,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.AccountBox
-import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.Password
+import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,42 +39,41 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.R
-import com.saravanamarriagebureau.ui.components.AppLogo
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
-import com.saravanamarriagebureau.ui.components.SecondaryButton
-import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
-import com.saravanamarriagebureau.ui.theme.Gray
-import com.saravanamarriagebureau.ui.theme.Maroon
-import com.saravanamarriagebureau.ui.theme.Red
-import com.saravanamarriagebureau.ui.theme.Success
-import com.saravanamarriagebureau.ui.theme.SuccessSoft
 import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
-fun ForgotPasswordScreen(
-    onReset: () -> Unit,
+fun RegisterScreen(
+    onNext: () -> Unit,
     onBack: () -> Unit
 ) {
+    var profileFor by remember { mutableStateOf("Bride") }
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var dob by remember { mutableStateOf("") }
+    var location by remember { mutableStateOf("") }
     var mobileNumber by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+    val genderRadioOptions = listOf("Male", "Female")
+    var selectedGenderOption by remember { mutableStateOf(genderRadioOptions[0]) }
+    val lookingForRadioOptions = listOf("Bride", "Groom")
+    var selectedLookingForOption by remember { mutableStateOf(lookingForRadioOptions[0]) }
+
 
     Column(
         Modifier
@@ -87,63 +83,31 @@ fun ForgotPasswordScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(20.dp))
-        ScreenHeader(title = stringResource(id = R.string.forgot_password), onBack)
-        Spacer(Modifier.height(20.dp))
-
-        Card(colors = CardDefaults.cardColors(containerColor = SuccessSoft)) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Verified",
-                    tint = Success,
-                    modifier = Modifier.size(20.dp)
-                )
-                Text(
-                    "OTP sent to 9999900000",
-                    Modifier.padding(start = 10.dp),
-                    color = Success,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-        Spacer(Modifier.height(40.dp))
+        ScreenHeader("Create Your Account", onBack)
+        Spacer(Modifier.height(10.dp))
         Column(Modifier.padding(horizontal = 16.dp)) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(White)
-                        .padding(16.dp),
+                        .padding(10.dp),
                     verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
 
-                    // Mobile Number
-                    LabelName(labelName = stringResource(id = R.string.otp), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
-                    Spacer(Modifier.height(5.dp))
+                    // Full Name
+                    LabelName(labelName = stringResource(id = R.string.full_name))
                     OutlinedTextField(
-                        value = mobileNumber,
+                        value = name,
                         onValueChange = {
-                            if (it.length <= 10 && it.all(Char::isDigit)) {
-                                mobileNumber = it
-                            }
+                            name = it
                         },
-                        keyboardOptions = KeyboardOptions(
-                            // Changes the on-screen keyboard to a number pad
-                            keyboardType = KeyboardType.Number
-                        ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(52.dp),
@@ -158,7 +122,7 @@ fun ForgotPasswordScreen(
                         ),
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Outlined.Password,
+                                imageVector = Icons.Outlined.AccountBox,
                                 contentDescription = null,
                                 tint = Color(0xFF9A9AA5),
                                 modifier = Modifier.size(19.dp)
@@ -167,17 +131,133 @@ fun ForgotPasswordScreen(
 
                         placeholder = {
                             Text(
-                                text = "Enter OTP",
+                                text = "Enter Full Name",
                                 color = Color(0xFFB5B5BD),
-                                fontSize = 14.sp,
+                                fontSize = 14.sp
                             )
                         }
                     )
-                    Spacer(Modifier.height(15.dp))
+                    Spacer(Modifier.height(10.dp))
 
+                    // Mobile Number
+                    LabelName(labelName = stringResource(id = R.string.mobile_number))
+
+                    OutlinedTextField(
+                        value = mobileNumber,
+                        onValueChange = {
+                            if (it.length <= 10 && it.all(Char::isDigit)) {
+                                mobileNumber = it
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Phone,
+                                contentDescription = null,
+                                tint = Color(0xFF9A9AA5),
+                                modifier = Modifier.size(19.dp)
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Enter Mobile Number",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
+                    Spacer(Modifier.height(10.dp))
+
+                    // Email
+                    LabelName(labelName = stringResource(id = R.string.email))
+
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = {
+                            email = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Mail,
+                                contentDescription = null,
+                                tint = Color(0xFF9A9AA5),
+                                modifier = Modifier.size(19.dp)
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Enter Email",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
+
+                    Spacer(Modifier.height(10.dp))
+                    // DOB
+                    LabelName(labelName = stringResource(id = R.string.date_of_birth))
+
+                    OutlinedTextField(
+                        value = dob,
+                        onValueChange = {
+                            dob = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.CalendarMonth,
+                                contentDescription = null,
+                                tint = Color(0xFF9A9AA5),
+                                modifier = Modifier.size(19.dp)
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "DD / MM / YYYY",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
+
+                    Spacer(Modifier.height(10.dp))
                     // Password
-                    LabelName(labelName = stringResource(id = R.string.new_password), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
-                    Spacer(Modifier.height(5.dp))
+                    LabelName(labelName = stringResource(id = R.string.password))
+
                     OutlinedTextField(
                         value = password,
                         onValueChange = {
@@ -232,16 +312,17 @@ fun ForgotPasswordScreen(
                         },
                         placeholder = {
                             Text(
-                                text = "Enter New Password",
+                                text = "Enter Password",
                                 color = Color(0xFFB5B5BD),
                                 fontSize = 14.sp
                             )
                         }
                     )
-                    Spacer(Modifier.height(15.dp))
+                    Spacer(Modifier.height(10.dp))
 
-                    LabelName(labelName = stringResource(id = R.string.confirm_new_password), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
-                    Spacer(Modifier.height(5.dp))
+                    // Confirm Password
+                    LabelName(labelName = stringResource(id = R.string.confirm_password))
+
                     OutlinedTextField(
                         value = confirmPassword,
                         onValueChange = {
@@ -296,45 +377,92 @@ fun ForgotPasswordScreen(
                         },
                         placeholder = {
                             Text(
-                                text = "Enter Confirm New Password",
+                                text = "Enter Confirm Password",
                                 color = Color(0xFFB5B5BD),
                                 fontSize = 14.sp
                             )
                         }
                     )
+
+                    Spacer(Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier
+                            .selectableGroup()
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        LabelName(labelName = stringResource(id = R.string.gender))
+                        genderRadioOptions.forEach { text ->
+                            Row(
+                                modifier = Modifier
+                                    .selectable(
+                                        selected = (text == selectedGenderOption),
+                                        onClick = { selectedGenderOption = text },
+                                        role = Role.RadioButton
+                                    ),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Spacer(Modifier.width(10.dp))
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    RadioButton(
+                                        selected = (text == selectedGenderOption),
+                                        onClick = null // null removes the extra 48dp padding, matching your checkbox fix
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(text = text)
+                                }
+
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier
+                            .selectableGroup()
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        LabelName(labelName = stringResource(id = R.string.looking_for))
+                        lookingForRadioOptions.forEach { text ->
+                            Row(
+                                modifier = Modifier
+                                    .selectable(
+                                        selected = (text == selectedLookingForOption),
+                                        onClick = { selectedLookingForOption = text },
+                                        role = Role.RadioButton
+                                    ),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Spacer(Modifier.width(10.dp))
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    RadioButton(
+                                        selected = (text == selectedLookingForOption),
+                                        onClick = null // null removes the extra 48dp padding, matching your checkbox fix
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(text = text)
+                                }
+
+                            }
+                        }
+                    }
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally //,
-        ) {
-            Text(
-                text = "Resend option available after 2mins",
-                color = Red,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal
-            )
-            Spacer(Modifier.height(10.dp))
-           LabelName(labelName = stringResource(id = R.string.resend_otp),
-               textDecoration = TextDecoration.Underline, color = Success)
+
         }
         Spacer(Modifier.weight(1f))
         PrimaryButton(
-            text = stringResource(id = R.string.reset_password),
-            modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
-            onClick = onReset
+            text = "Submit",
+            modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 40.dp),
+            onClick = onNext
         )
     }
-
 }
 
 @Preview
 @Composable
-fun ForgotPasswordScreenPreview() {
-    ForgotPasswordScreen(onReset = {}, onBack = {})
+fun RegisterScreenPreview() {
+    RegisterScreen(onNext = {}, onBack = {})
 }
-

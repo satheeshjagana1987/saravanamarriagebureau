@@ -1,4 +1,4 @@
-package com.saravanamarriagebureau.ui.viewmodel
+package com.saravanamarriagebureau.ui.screens.matches
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

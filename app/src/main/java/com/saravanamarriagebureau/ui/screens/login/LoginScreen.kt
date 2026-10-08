@@ -57,6 +57,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.AppLogo
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.SecondaryButton
 import com.saravanamarriagebureau.ui.theme.Black
@@ -262,7 +263,7 @@ fun LoginScreen(
             }
 
             LoginUIState.Loading -> {
-                CircularProgressIndicator()
+                LoadingView()
             }
 
             is LoginUIState.Success -> {

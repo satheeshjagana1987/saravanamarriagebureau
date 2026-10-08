@@ -1,4 +1,4 @@
-package com.saravanamarriagebureau.ui.screens
+package com.saravanamarriagebureau.ui.screens.interests
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.ui.components.BorderLineCustomButton
 import com.saravanamarriagebureau.ui.components.CustomButton
-import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon

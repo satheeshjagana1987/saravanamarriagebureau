@@ -6,12 +6,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.saravanamarriagebureau.ui.navigation.Routes
-import com.saravanamarriagebureau.ui.screens.ForgotPasswordScreen
+import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgotPasswordScreen
 import com.saravanamarriagebureau.ui.screens.login.LoginScreen
-import com.saravanamarriagebureau.ui.screens.MainScreenWithHamburger
-import com.saravanamarriagebureau.ui.screens.RegisterScreen
-import com.saravanamarriagebureau.ui.screens.SplashScreen
-import com.saravanamarriagebureau.ui.screens.WelcomeScreen
+import com.saravanamarriagebureau.ui.screens.userdashboard.MainScreenWithHamburger
+import com.saravanamarriagebureau.ui.screens.registration.RegisterScreen
+import com.saravanamarriagebureau.ui.screens.splash.SplashScreen
+import com.saravanamarriagebureau.ui.screens.splash.WelcomeScreen
 import com.saravanamarriagebureau.ui.screens.admin.AdminLandingScreen
 
 @Composable

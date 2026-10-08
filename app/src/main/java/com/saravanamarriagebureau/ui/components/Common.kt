@@ -644,7 +644,6 @@ fun ShowToast(
 
 @Composable
 fun LoadingView() {
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

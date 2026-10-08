@@ -1,4 +1,4 @@
-package com.saravanamarriagebureau.ui.screens
+package com.saravanamarriagebureau.ui.screens.userdashboard
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -34,6 +34,17 @@ import com.saravanamarriagebureau.data.model.BottomBarScreen
 import com.saravanamarriagebureau.data.model.DrawerScreen
 import com.saravanamarriagebureau.ui.navigation.Routes
 import com.saravanamarriagebureau.ui.navigation.profileRoute
+import com.saravanamarriagebureau.ui.screens.AdminVoiceScreen
+import com.saravanamarriagebureau.ui.screens.ContactsLockedScreen
+import com.saravanamarriagebureau.ui.screens.PrivacyScreen
+import com.saravanamarriagebureau.ui.screens.changepassword.ChangePasswordScreen
+import com.saravanamarriagebureau.ui.screens.interests.InterestSentDialogScreen
+import com.saravanamarriagebureau.ui.screens.interests.InterestsScreen
+import com.saravanamarriagebureau.ui.screens.invoice.InvoiceScreen
+import com.saravanamarriagebureau.ui.screens.invoice.MatchFixedScreen
+import com.saravanamarriagebureau.ui.screens.matches.MatchesScreen
+import com.saravanamarriagebureau.ui.screens.profile.ProfileCreationScreen
+import com.saravanamarriagebureau.ui.screens.profile.ProfileViewScreen
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -514,7 +525,7 @@ fun MainScreenWithHamburger() {
 
                 // Match Fixed
                 composable(Routes.MatchFixed) {
-                    MatchFixedScreen (
+                    MatchFixedScreen(
                         onBack = {
                             navController.popBackStack()
                         },
@@ -583,13 +594,6 @@ fun MainScreenWithHamburger() {
                     )
                 }
 
-                // =================================================
-                // ADMIN PANEL
-                // =================================================
-
-                composable(Routes.AdminPanel) {
-                    AdminPanelScreen()
-                }
             }
         }
     }

@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.saravanamarriagebureau.ui.SmbNavigationApp
-import com.saravanamarriagebureau.ui.screens.MainScreenWithHamburger
 import com.saravanamarriagebureau.ui.theme.SaravanaMarriageBureauTheme
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -1,4 +1,4 @@
-package com.saravanamarriagebureau.ui.screens
+package com.saravanamarriagebureau.ui.screens.userdashboard
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
