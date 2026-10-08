@@ -1,10 +1,9 @@
-package com.saravanamarriagebureau.ui.screens
+package com.saravanamarriagebureau.ui.screens.login
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,17 +17,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.AccountBox
-import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,15 +33,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,6 +52,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.AppLogo
 import com.saravanamarriagebureau.ui.components.LabelName
@@ -66,7 +63,6 @@ import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Gray
 import com.saravanamarriagebureau.ui.theme.Maroon
-import com.saravanamarriagebureau.ui.theme.TextSecondary
 import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
@@ -74,12 +70,20 @@ fun LoginScreen(
     onLogin: () -> Unit,
     onRegister: () -> Unit,
     onPrivacy: () -> Unit,
-    onForgot: () -> Unit
+    onForgot: () -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
-    var mobileNumber by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var mobileNumber by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var password by rememberSaveable {
+        mutableStateOf("")
+    }
     var passwordVisible by remember { mutableStateOf(false) }
     var isCheckedRememberMe by remember { mutableStateOf(false) }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         Modifier
@@ -242,8 +246,39 @@ fun LoginScreen(
             }
         }
         Spacer(Modifier.height(30.dp))
-        PrimaryButton(stringResource(id = R.string.login), onLogin)
+        PrimaryButton(stringResource(id = R.string.login),
+            onClick = {
+                viewModel.login(
+                    mobile = mobileNumber,
+                    password = password
+                )
+            })
         Spacer(Modifier.height(20.dp))
+
+        when (val state = uiState) {
+
+            LoginUIState.Idle -> {
+                // Nothing
+            }
+
+            LoginUIState.Loading -> {
+                CircularProgressIndicator()
+            }
+
+            is LoginUIState.Success -> {
+                Text(
+                    text = state.message ?: "Login successful"
+                )
+            }
+
+            is LoginUIState.Error -> {
+                Text(
+                    text = state.message,
+                    color = Color.Red
+                )
+            }
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()

@@ -643,6 +643,54 @@ fun ShowToast(
 }
 
 @Composable
+fun LoadingView() {
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        CircularProgressIndicator()
+
+        Text(
+            text = "Loading...",
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Composable
+fun ErrorView(
+    message: String,
+    onRetry: () -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        Text(
+            text = message
+        )
+
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+
+            Text(
+                text = "Retry"
+            )
+        }
+    }
+}
+
+@Composable
 fun GenderSelection(
     selectedGender: Gender?,
     onGenderSelected: (Gender) -> Unit

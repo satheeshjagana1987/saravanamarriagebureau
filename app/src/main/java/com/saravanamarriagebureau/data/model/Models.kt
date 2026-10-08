@@ -56,10 +56,27 @@ data class Profile(
     val isMatchFixed: Boolean = false,
 )
 
+data class ProfileResponse(
+    val id: String,
+    val name: String,
+    val age: Int,
+    val height: String,
+    val education: String,
+    val profession: String,
+    val location: String,
+    val responded: Boolean = false,
+    val imageUrl: String? = null,
+    val mobileNumber: Int,
+    val isAdminVerified: Boolean = false,
+    val isPaidUser: Boolean = false,
+    val religion: String,
+    val gender: Gender? = null,
+    val isMatchFixed: Boolean = false,
+)
+
 data class Match(
     val id: String,
     val profile: Profile,
-    val matchPercent: Int = 90
 )
 
 data class Invoice(
@@ -90,6 +107,24 @@ data class Interest(
     val type: InterestTab,
     val status: InterestStatus,
     val isPaymentDone: Boolean = false,
+)
+
+data class ForgetPasswordRequest(
+    val otp: String,
+    val password: String,
+    val confirmPassword: String
+)
+
+data class ChangePasswordRequest(
+    val currentPassword: String,
+    val newPassword: String,
+    val confirmNewPassword: String
+)
+
+data class PasswordResponse(
+    val token: String,
+    val userId: String,
+    val name: String
 )
 
 data class LanguageOption(
