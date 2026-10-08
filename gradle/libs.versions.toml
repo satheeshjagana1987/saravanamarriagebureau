@@ -11,6 +11,7 @@ composeBom = "2026.02.01"
 appcompat = "1.8.0"
 
 [libraries]
+androidx-activity = { module = "androidx.activity:activity", version.ref = "activityCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

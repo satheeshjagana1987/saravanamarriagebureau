@@ -108,13 +108,13 @@ fun ProfileCreationScreen(
         mutableStateOf(ProfileTab.PERSONAL)
     }
     var isPersonalVisible by rememberSaveable {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
     var isProfessionalVisible by rememberSaveable {
         mutableStateOf(false)
     }
     var isPhotoVisible by rememberSaveable {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
 
@@ -177,8 +177,8 @@ fun ProfileCreationScreen(
 
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
@@ -412,7 +412,6 @@ fun ProfileCreationScreen(
                         }
                     }
                 }
-                Spacer(Modifier.height(10.dp))
                 if (isProfessionalVisible) {
                     Column(
                         modifier = Modifier
@@ -643,91 +642,90 @@ fun ProfileCreationScreen(
 
                     }
                 }
-            }
+                if (isPhotoVisible) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(White)
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            ProfilePhoto("", Modifier.size(100.dp))
+                            Spacer(Modifier.weight(1f))
+                            CustomButtonForUpload(
+                                text = stringResource(id = R.string.upload),
+                                onClick = {},
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                        Spacer(Modifier.height(20.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            LabelName(
+                                labelName = stringResource(id = R.string.family_video),
+                                fontSize = 14.sp,
+                                color = Maroon,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Spacer(Modifier.weight(1f))
+                            CustomButtonForUpload(
+                                text = stringResource(id = R.string.upload),
+                                onClick = {},
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
 
-            if (isPhotoVisible) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(White)
-                        .padding(16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        ProfilePhoto("", Modifier.size(100.dp))
-                        Spacer(Modifier.weight(1f))
-                        CustomButtonForUpload(
-                            text = stringResource(id = R.string.upload),
-                            onClick = {},
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                    Spacer(Modifier.height(20.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
+                        Spacer(Modifier.height(20.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            LabelName(
+                                labelName = stringResource(id = R.string.bride_groom_voice_record),
+                                fontSize = 14.sp,
+                                color = Maroon,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Spacer(Modifier.weight(1f))
+                            CustomButtonForUpload(
+                                text = stringResource(id = R.string.upload),
+                                onClick = {},
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+
+                        Spacer(Modifier.height(20.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            LabelName(
+                                labelName = stringResource(id = R.string.parent_voice_record),
+                                fontSize = 14.sp,
+                                color = Maroon,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Spacer(Modifier.weight(1f))
+                            CustomButtonForUpload(
+                                text = stringResource(id = R.string.upload),
+                                onClick = {},
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                        Spacer(Modifier.height(30.dp))
                         LabelName(
-                            labelName = stringResource(id = R.string.family_video),
-                            fontSize = 14.sp,
-                            color = Maroon,
+                            labelName = stringResource(id = R.string.video_voice_limit),
+                            fontSize = 12.sp,
+                            color = Red,
                             fontWeight = FontWeight.Normal
                         )
-                        Spacer(Modifier.weight(1f))
-                        CustomButtonForUpload(
-                            text = stringResource(id = R.string.upload),
-                            onClick = {},
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
 
-                    Spacer(Modifier.height(20.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        LabelName(
-                            labelName = stringResource(id = R.string.bride_groom_voice_record),
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(Modifier.weight(1f))
-                        CustomButtonForUpload(
-                            text = stringResource(id = R.string.upload),
-                            onClick = {},
-                            modifier = Modifier.weight(1f),
-                        )
                     }
-
-                    Spacer(Modifier.height(20.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        LabelName(
-                            labelName = stringResource(id = R.string.parent_voice_record),
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(Modifier.weight(1f))
-                        CustomButtonForUpload(
-                            text = stringResource(id = R.string.upload),
-                            onClick = {},
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                    Spacer(Modifier.height(30.dp))
-                    LabelName(
-                        labelName = stringResource(id = R.string.video_voice_limit),
-                        fontSize = 12.sp,
-                        color = Red,
-                        fontWeight = FontWeight.Normal
-                    )
-
                 }
             }
             Spacer(Modifier.height(20.dp))

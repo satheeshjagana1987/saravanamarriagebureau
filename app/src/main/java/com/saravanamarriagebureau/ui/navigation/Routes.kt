@@ -16,6 +16,7 @@ object Routes {
     const val AdminVoice = "admin_voice"
     const val Matches = "matches"
     const val Privacy = "privacy"
+    const val Search = "search"
     const val InterestSent = "interest_sent"
     const val MatchFixed = "match_fixed"
     const val Invoice = "invoice"
@@ -28,10 +29,12 @@ object Routes {
     const val Logout = "logout"
     const val ChoosePlan = "choose_plan"
     const val profileWithStepper = "profile_with_stepper"
+    const val Admin = "admin"
+
 }
 
-fun profileRoute(profileId: String): String {
-    return "${Routes.Profile}/$profileId"
+fun profileRoute(profileId: String, type: String): String {
+    return "${Routes.Profile}/$profileId/$type"
 }
 
 fun interestRoute(interestId: String): String {

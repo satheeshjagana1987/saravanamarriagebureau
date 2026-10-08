@@ -4,13 +4,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Interests
+import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.saravanamarriagebureau.data.enums.Gender
+import com.saravanamarriagebureau.data.enums.InterestStatus
+import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.ui.navigation.Routes
 
 data class LoginRequest(
@@ -82,6 +87,9 @@ data class Interest(
     val accept: Boolean = false,
     val reject: Boolean = true,
     val isMatched: Boolean = false,
+    val type: InterestTab,
+    val status: InterestStatus,
+    val isPaymentDone: Boolean = false,
 )
 
 data class LanguageOption(
@@ -97,14 +105,39 @@ data class Branches(
 // Primary Bottom Bar Destinations
 sealed class BottomBarScreen(val route: String, val title: String, val icon: ImageVector) {
     object Home : BottomBarScreen(Routes.Home, "Home", Icons.Default.Home)
-    object Matches : BottomBarScreen(Routes.Matches, "Matches", Icons.Default.Search)
-    object Interests : BottomBarScreen(Routes.Interests, "Interests", Icons.Default.Person)
+    object Matches : BottomBarScreen(Routes.Matches, "Matches", Icons.Default.Groups)
+    object Search : BottomBarScreen(Routes.Search, "Search", Icons.Default.Search)
+    object Interests : BottomBarScreen(Routes.Interests, "Interests", Icons.Default.Interests)
     object ProfileCreation : BottomBarScreen(Routes.profileWithStepper, "Profile", Icons.Default.Person)
 }
 
 // Secondary Side Drawer Destinations
 sealed class DrawerScreen(val route: String, val title: String, val icon: ImageVector) {
     object ChangeLanguage : DrawerScreen(Routes.ChangeLanguage, "ChangeLanguage", Icons.Default.Settings)
-    object ChangePassword : DrawerScreen(Routes.ChangePassword, "ChangePassword", Icons.Default.Info)
+    object ChangePassword : DrawerScreen(Routes.ChangePassword, "ChangePassword", Icons.Default.Password)
     object Logout : DrawerScreen(Routes.Logout, "Logout", Icons.AutoMirrored.Filled.ExitToApp)
 }
+
+val demoInterests = listOf(
+    Interest(id = "1", name = "Pooja S", age = 26, height = "5'4\"", education = "B.Tech", profession = "Software Engineer", location = "Guntur",
+        imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, isPaidUser = true, religion = "Hindu", accept = false, reject = false, isMatched = false, type = InterestTab.RECEIVED, status = InterestStatus.PENDING),
+    Interest(id = "2", name = "Sai Charan", age = 28, height = "5'8\"", education = "MBA", profession = "Business", location = "Hyderabad",
+        imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Hindu", accept = true, reject = false,  isMatched = false, type = InterestTab.RECEIVED, status = InterestStatus.ACCEPTED),
+    Interest(id = "3", name = "Lavanya", age = 25, height = "5'3\"", education = "B.Sc", profession = "Teacher", location = "Bangalore",
+        imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Muslim", accept = false, reject = true,  isMatched = false, type = InterestTab.RECEIVED, status = InterestStatus.REJECTED),
+
+    Interest(id = "4", name = "Pooja S", age = 26, height = "5'4\"", education = "B.Tech", profession = "Software Engineer", location = "Guntur",
+        imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, isPaidUser = true, religion = "Hindu", accept = false, reject = false, isMatched = false, type = InterestTab.SENT, status = InterestStatus.PENDING),
+    Interest(id = "5", name = "Sai Charan", age = 28, height = "5'8\"", education = "MBA", profession = "Business", location = "Hyderabad",
+        imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Hindu", accept = true, reject = false,  isMatched = false, type = InterestTab.SENT, status = InterestStatus.ACCEPTED),
+    Interest(id = "6", name = "Lavanya", age = 25, height = "5'3\"", education = "B.Sc", profession = "Teacher", location = "Bangalore",
+        imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Muslim", accept = false, reject = true,  isMatched = false, type = InterestTab.SENT, status = InterestStatus.REJECTED),
+
+    Interest(id = "7", name = "Pooja S", age = 26, height = "5'4\"", education = "B.Tech", profession = "Software Engineer", location = "Guntur",
+        imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, isPaidUser = true, religion = "Hindu", accept = false, reject = false, isMatched = true, type = InterestTab.MATCH_FIXED, status = InterestStatus.PENDING),
+    Interest(id = "8", name = "Sai Charan", age = 28, height = "5'8\"", education = "MBA", profession = "Business", location = "Hyderabad",
+        imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Hindu", accept = true, reject = false,  isMatched = true, type = InterestTab.MATCH_FIXED, status = InterestStatus.DONE, isPaymentDone = true),
+    Interest(id = "9", name = "Lavanya", age = 25, height = "5'3\"", education = "B.Sc", profession = "Teacher", location = "Bangalore",
+        imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Muslim", accept = false, reject = true,  isMatched = true, type = InterestTab.MATCH_FIXED, status = InterestStatus.DONE,  isPaymentDone = true)
+
+)

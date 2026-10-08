@@ -97,9 +97,8 @@ fun RegisterScreen(
         Column(Modifier.padding(horizontal = 16.dp)) {
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(White),
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(containerColor = White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
             ) {

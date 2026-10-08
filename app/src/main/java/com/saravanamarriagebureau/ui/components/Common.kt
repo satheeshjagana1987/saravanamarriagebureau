@@ -44,6 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.Gender
+import com.saravanamarriagebureau.data.enums.InterestStatus
+import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.ui.theme.*
@@ -379,27 +381,27 @@ fun InterestCard(
 
             }
             Spacer(modifier = Modifier.size(20.dp))
-            Column(modifier = Modifier.fillMaxHeight()) {
-                if (interest.accept || interest.reject) {
-                    LabelName(
-                        labelName = if (interest.accept) stringResource(id = R.string.accepted) else stringResource(
-                            id = R.string.rejected
-                        ),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = if (interest.accept) Success else Red,
-                        modifier = Modifier.padding(end = 5.dp)
-                    )
-                } else {
+            InterestStatusContent(
+                interest = interest,
+                onAcceptRejectButton = onAcceptRejectButton
+            )
+        }
+    }
+}
+
+@Composable
+fun InterestStatusContent(
+    interest: Interest,
+    onAcceptRejectButton: () -> Unit
+) {
+    when (interest.status) {
+        InterestStatus.PENDING -> {
+            if (interest.type == InterestTab.RECEIVED) {
+                Column {
                     CustomButton(
-                        text = stringResource(id = R.string.accept),
-                        onClick = { onAcceptRejectButton() },
-                        modifier = Modifier.padding(
-                            start = 0.dp,
-                            top = 0.dp,
-                            end = 0.dp,
-                            bottom = 0.dp
-                        ),
+                        text = stringResource(R.string.accept),
+                        onClick = onAcceptRejectButton,
+                        modifier = Modifier,
                         height = 40.dp,
                         width = 90.dp,
                         cornerRadius = 20.dp,
@@ -408,16 +410,15 @@ fun InterestCard(
                         fontSize = 14.sp,
                         backgroundColor = Success
                     )
-                    Spacer(Modifier.height(10.dp))
+
+                    Spacer(
+                        Modifier.height(10.dp)
+                    )
+
                     CustomButton(
-                        text = stringResource(id = R.string.reject),
-                        onClick = { onAcceptRejectButton() },
-                        modifier = Modifier.padding(
-                            start = 0.dp,
-                            top = 0.dp,
-                            end = 0.dp,
-                            bottom = 0.dp
-                        ),
+                        text = stringResource(R.string.reject),
+                        onClick = onAcceptRejectButton,
+                        modifier = Modifier,
                         height = 40.dp,
                         width = 90.dp,
                         cornerRadius = 20.dp,
@@ -427,9 +428,61 @@ fun InterestCard(
                         backgroundColor = Red
                     )
                 }
+
+            } else {
+                if(interest.type == InterestTab.MATCH_FIXED) {
+                    StatusText(
+                        text = stringResource(id = R.string.payment_pending),
+                        color = Warning
+                    )
+                } else {
+                    // SENT + PENDING
+                    StatusText(
+                        text = stringResource(id = R.string.pending),
+                        color = Warning
+                    )
+                }
             }
         }
+
+        InterestStatus.ACCEPTED -> {
+
+            StatusText(
+                text = stringResource(R.string.accepted),
+                color = Success
+            )
+        }
+
+        InterestStatus.REJECTED -> {
+
+            StatusText(
+                text = stringResource(R.string.rejected),
+                color = Red
+            )
+        }
+
+        InterestStatus.DONE -> {
+
+            StatusText(
+                text = stringResource(R.string.payment_completed),
+                color = Success
+            )
+        }
     }
+}
+
+@Composable
+fun StatusText(
+    text: String,
+    color: Color
+) {
+    LabelName(
+        labelName = text,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Bold,
+        color = color,
+        modifier = Modifier.padding(end = 5.dp)
+    )
 }
 
 @Composable

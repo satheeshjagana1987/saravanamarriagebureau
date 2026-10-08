@@ -23,7 +23,7 @@ import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
 fun LogoutDialog(
-//    onLogout: () -> Unit
+    onLogout: () -> Unit
 ) {
     val showDialog = remember { mutableStateOf(false) }
 
@@ -78,6 +78,6 @@ fun LogoutDialog(
 @Composable
 fun LogoutDialogPreview() {
     LogoutDialog(
-//        onLogout = {},
+        onLogout = {},
     )
 }

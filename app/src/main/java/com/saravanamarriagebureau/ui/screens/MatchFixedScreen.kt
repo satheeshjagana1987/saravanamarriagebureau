@@ -15,6 +15,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +37,7 @@ import androidx.core.os.LocaleListCompat
 import com.saravanamarriagebureau.data.model.Branches
 import com.saravanamarriagebureau.data.model.LanguageOption
 import com.saravanamarriagebureau.ui.components.DividerLine
+import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.components.VerticalDivider
@@ -42,6 +45,7 @@ import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Gray
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.Rose
 import com.saravanamarriagebureau.ui.theme.TextSecondary
 import com.saravanamarriagebureau.ui.theme.White
@@ -79,8 +83,8 @@ fun MatchFixedScreen(
             colors = CardDefaults.cardColors(
                 containerColor = White
             ),
-            border = CardDefaults.outlinedCardBorder(),
-            shape = RoundedCornerShape(8.dp)) {
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+            shape = RoundedCornerShape(10.dp)) {
             Column {
                 Text(
                     text = "Success Fee",

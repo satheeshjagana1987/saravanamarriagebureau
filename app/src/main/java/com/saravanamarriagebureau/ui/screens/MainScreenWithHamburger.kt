@@ -35,6 +35,7 @@ import com.saravanamarriagebureau.data.model.DrawerScreen
 import com.saravanamarriagebureau.ui.navigation.Routes
 import com.saravanamarriagebureau.ui.navigation.profileRoute
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,6 +62,7 @@ fun MainScreenWithHamburger() {
     val bottomItems = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Matches,
+        BottomBarScreen.Search,
         BottomBarScreen.Interests,
         BottomBarScreen.ProfileCreation
     )
@@ -73,7 +75,6 @@ fun MainScreenWithHamburger() {
         DrawerScreen.ChangePassword,
         DrawerScreen.ChangeLanguage,
 //        DrawerScreen.Logout,
-
         )
 
     // -----------------------------------------
@@ -112,6 +113,9 @@ fun MainScreenWithHamburger() {
 
         BottomBarScreen.Matches.route ->
             BottomBarScreen.Matches.title
+
+        BottomBarScreen.Search.route ->
+            BottomBarScreen.Search.title
 
         BottomBarScreen.Interests.route ->
             BottomBarScreen.Interests.title
@@ -337,7 +341,7 @@ fun MainScreenWithHamburger() {
                     MatchesScreen(
                         onProfile = { profile ->
                             navController.navigate(
-                                profileRoute(profile.id)
+                                profileRoute(profile.id, type = "")
                             )
                         },
 
@@ -345,6 +349,10 @@ fun MainScreenWithHamburger() {
                             navController.navigate(Routes.InterestSent)
                         }
                     )
+                }
+
+                composable(BottomBarScreen.Search.route) {
+                    SearchScreen()
                 }
 
                 // =================================================
@@ -355,8 +363,9 @@ fun MainScreenWithHamburger() {
 
                     InterestsScreen(
                         onInterestItemClick = { interest ->
+                            Timber.e("profile  InterestsScreen ==>  ${interest.type}")
                             navController.navigate(
-                                profileRoute(interest.id)
+                                profileRoute(profileId = interest.id, type = interest.type.name)
                             )
                         },
                         onAcceptRejectButton = {
@@ -390,15 +399,20 @@ fun MainScreenWithHamburger() {
                 // =================================================
 
                 composable(
-                    route = "${Routes.Profile}/{profileId}"
+                    route = "${Routes.Profile}/{profileId}/{type}"
                 ) { backStackEntry ->
 
                     val profileId = backStackEntry.arguments
                         ?.getString("profileId")
                         ?: return@composable
 
+                    val profileType = backStackEntry.arguments
+                        ?.getString("type")
+                        ?: return@composable
+
                     ProfileViewScreen(
                         profileId = profileId,
+                        profileType = profileType,
 
                         onBack = {
                             navController.popBackStack()
@@ -448,11 +462,11 @@ fun MainScreenWithHamburger() {
                 composable(
                     DrawerScreen.Logout.route
                 ) {
-                    LogoutDialog(
+//                    LogoutDialog(
 //                        onLogout = {
-////                            navController.navigate(Routes.Login)
+//                            navController.navigate(Routes.Login)
 //                        },
-                    )
+//                    )
                 }
 
                 // =================================================

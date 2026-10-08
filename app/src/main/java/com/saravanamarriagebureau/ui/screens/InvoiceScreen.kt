@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.ui.components.DividerLine
+import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.components.SecondaryButton
@@ -241,8 +242,8 @@ fun InvoiceScreen(onPay: () -> Unit, onBack: () -> Unit) {
             }
         }
         Spacer(Modifier.height(20.dp))
-        Text(
-            text = "Contact info will be revealed after successful payment.",
+        LabelName(
+            labelName = "Contact info will be revealed after successful payment.",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp, color = Red,

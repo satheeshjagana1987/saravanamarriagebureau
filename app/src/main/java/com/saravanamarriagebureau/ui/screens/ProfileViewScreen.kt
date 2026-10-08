@@ -32,11 +32,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.R
+import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.Profile
+import com.saravanamarriagebureau.data.model.demoInterests
 import com.saravanamarriagebureau.ui.components.DividerLine
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
@@ -44,18 +47,21 @@ import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.Warning
+import timber.log.Timber
 
 @Composable
 fun ProfileViewScreen(
     onBack: () -> Unit,
     onInterest: () -> Unit,
     profileId: String,
+    profileType: String,
     onMatchFixed: () -> Unit = {}
 ) {
 
-    val profile = demoProfiles.find {
+    val profile = demoInterests.find {
         it.id == profileId
     } ?: return
 
@@ -272,20 +278,21 @@ fun ProfileViewScreen(
                         )
 
                         DividerLine()
+                        if(profile.isPaymentDone) {
+                            ProfileInfoRow(
+                                label = stringResource(id = R.string.location),
+                                value = profile.location
+                            )
 
-                        ProfileInfoRow(
-                            label = stringResource(id = R.string.location),
-                            value = profile.location
-                        )
+                            DividerLine()
 
-                        DividerLine()
+                            ProfileInfoRow(
+                                label = stringResource(id = R.string.mobile_number),
+                                value = profile.mobileNumber.toString()
+                            )
 
-                        ProfileInfoRow(
-                            label = stringResource(id = R.string.mobile_number),
-                            value = profile.mobileNumber.toString()
-                        )
-
-                        DividerLine()
+                            DividerLine()
+                        }
 
                         ProfileInfoRow(
                             label = "Family Video",
@@ -299,10 +306,20 @@ fun ProfileViewScreen(
                             value = "Download"
                         )
                     }
-                    Spacer(Modifier.height(20.dp))
-                    if(profile.isMatchFixed) {
+                    Spacer(Modifier.weight(1f))
+                    Timber.e("profile ==>  $profile")
+                    Timber.e("profile ==> id ${profile.id} name ${profile.name} isMatched ${profile.isMatched} isPaymentDone ${profile.isPaymentDone}")
+                    if(profile.type == InterestTab.MATCH_FIXED && !profile.isPaymentDone) {
+                        LabelName(
+                            labelName = "Contact info will be revealed after successful payment.",
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp, color = Red,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(Modifier.height(20.dp))
                         PrimaryButton(
-                            text = stringResource(id = R.string.match_fixed),
+                            text = stringResource(id = R.string.proceed_payment),
                             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
                             onClick = onMatchFixed
                         )
@@ -316,5 +333,5 @@ fun ProfileViewScreen(
 @Preview
 @Composable
 fun ProfileViewScreenPreview() {
-    ProfileViewScreen(onBack = {}, onInterest = {}, profileId = "", onMatchFixed = {})
+    ProfileViewScreen(onBack = {}, onInterest = {}, profileId = "", onMatchFixed = {}, profileType = "")
 }

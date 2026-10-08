@@ -14,8 +14,11 @@
     <string name="continue_txt">Continue</string>
     <string name="accept">Accept</string>
     <string name="accepted">Accepted</string>
+    <string name="pending">Pending</string>
     <string name="reject">Reject</string>
     <string name="rejected">Rejected</string>
+    <string name="payment_completed">Payment Completed</string>
+    <string name="payment_pending">Payment Pending</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="today">Today</string>
@@ -24,6 +27,7 @@
     <string name="received">Received</string>
     <string name="sent">Sent</string>
     <string name="match_fixed">Match Fixed</string>
+    <string name="proceed_payment">Proceed to Payment</string>
     <string name="Matches">Matches</string>
     <string name="interests">Interests</string>
     <string name="profile">Profile</string>
@@ -71,4 +75,5 @@
     <string name="marital_status">Marital Status</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
+    <string name="search">Search</string>
 </resources>

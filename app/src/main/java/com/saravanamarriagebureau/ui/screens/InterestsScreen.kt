@@ -20,9 +20,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.saravanamarriagebureau.data.enums.InterestStatus
 import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.Profile
+import com.saravanamarriagebureau.data.model.demoInterests
 import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.InterestCard
 import com.saravanamarriagebureau.ui.theme.Black
@@ -33,21 +35,33 @@ import com.saravanamarriagebureau.ui.theme.White
 @Composable
 fun InterestsScreen(
     onInterestItemClick: (Interest) -> Unit,
-    onAcceptRejectButton: () -> Unit
+    onAcceptRejectButton: () -> Unit,
 ) {
 
     var selectedTab by remember {
         mutableStateOf(InterestTab.RECEIVED)
     }
 
-    val demoInterests = listOf(
-        Interest(id = "1", name = "Pooja S", age = 26, height = "5'4\"", education = "B.Tech", profession = "Software Engineer", location = "Guntur",
-            imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, isPaidUser = true, religion = "Hindu", accept = false, reject = false, isMatched = false),
-        Interest(id = "2", name = "Sai Charan", age = 28, height = "5'8\"", education = "MBA", profession = "Business", location = "Hyderabad",
-            imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Hindu", accept = true, reject = false,  isMatched = true),
-        Interest(id = "3", name = "Lavanya", age = 25, height = "5'3\"", education = "B.Sc", profession = "Teacher", location = "Bangalore",
-            imageUrl = null, mobileNumber = 1234567890, isAdminVerified = true, religion = "Muslim", accept = false, reject = true,  isMatched = false)
-    )
+    // Change list based on selected tab
+    val filteredInterests = when (selectedTab) {
+        InterestTab.RECEIVED -> {
+            demoInterests.filter { interest ->
+                interest.type == InterestTab.RECEIVED
+            }
+        }
+
+        InterestTab.SENT -> {
+            demoInterests.filter { interest ->
+                interest.type == InterestTab.SENT
+            }
+        }
+
+        InterestTab.MATCH_FIXED -> {
+            demoInterests.filter { interest ->
+                interest.isMatched
+            }
+        }
+    }
 
     Column(
         Modifier
@@ -92,7 +106,10 @@ fun InterestsScreen(
                 modifier = Modifier.padding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(demoInterests) { interest ->
+                items(
+                    items = filteredInterests,
+                    key = { it.id }
+                ) { interest ->
                     InterestCard(
                         interest,
                         onOpen = {onInterestItemClick(interest)},

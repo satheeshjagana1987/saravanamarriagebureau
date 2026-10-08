@@ -96,9 +96,8 @@ fun LoginScreen(
 
         Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(5.dp))
-                .background(White),
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(10.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
         ) {
@@ -234,6 +233,8 @@ fun LoginScreen(
                     LabelName(
                         labelName = stringResource(id = R.string.forgot_password),
                         textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Maroon,
                         modifier = Modifier
                             .clickable { onForgot() }
                     )

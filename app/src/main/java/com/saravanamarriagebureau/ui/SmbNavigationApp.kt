@@ -1,6 +1,7 @@
 package com.saravanamarriagebureau.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -11,14 +12,17 @@ import com.saravanamarriagebureau.ui.screens.MainScreenWithHamburger
 import com.saravanamarriagebureau.ui.screens.RegisterScreen
 import com.saravanamarriagebureau.ui.screens.SplashScreen
 import com.saravanamarriagebureau.ui.screens.WelcomeScreen
+import com.saravanamarriagebureau.ui.screens.admin.AdminDestination
+import com.saravanamarriagebureau.ui.screens.admin.AdminLandingScreen
 
 @Composable
-fun SmbNavigationApp() {
+fun SmbNavigationApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = Routes.Splash
+        startDestination = Routes.Splash,
+        modifier = modifier
     ) {
         composable(Routes.Splash) {
             SplashScreen(
@@ -45,7 +49,7 @@ fun SmbNavigationApp() {
 
         composable(Routes.Login) {
             LoginScreen(
-                onLogin = { navController.navigate(Routes.Main) },
+                onLogin = { navController.navigate(Routes.Admin) },
                 onRegister = { navController.navigate(Routes.Register) },
                 onPrivacy = { },
                 onForgot = { navController.navigate(Routes.ForgotPassword) }
@@ -68,6 +72,10 @@ fun SmbNavigationApp() {
 
         composable(Routes.Main) {
             MainScreenWithHamburger()
+        }
+
+        composable(Routes.Admin) {
+            AdminLandingScreen()
         }
 
 //        composable(Routes.Offer) {

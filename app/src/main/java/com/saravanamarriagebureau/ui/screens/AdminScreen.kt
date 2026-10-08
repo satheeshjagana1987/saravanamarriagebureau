@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.saravanamarriagebureau.ui.components.ProfilePhoto
 import com.saravanamarriagebureau.ui.theme.*
@@ -72,4 +73,10 @@ private fun AdminStat(title: String, value: String) {
             Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         }
     }
+}
+
+@Preview
+@Composable
+fun AdminPanelScreenPreview(){
+    AdminPanelScreen()
 }
