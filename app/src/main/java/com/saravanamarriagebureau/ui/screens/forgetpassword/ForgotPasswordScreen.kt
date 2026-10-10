@@ -43,10 +43,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.screens.login.LoginUIState
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
@@ -56,14 +60,20 @@ import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
 fun ForgotPasswordScreen(
+    mobile: String,
     onReset: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: VerifyResetOTPViewModel = hiltViewModel(),
+    resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel(),
 ) {
-    var mobileNumber by remember { mutableStateOf("") }
+    var otp by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val resetPasswordUiState by resetPasswordViewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         Modifier
@@ -117,14 +127,18 @@ fun ForgotPasswordScreen(
                 ) {
 
                     // Mobile Number
-                    LabelName(labelName = stringResource(id = R.string.otp), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                    LabelName(
+                        labelName = stringResource(id = R.string.otp),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
                     Spacer(Modifier.height(5.dp))
+
                     OutlinedTextField(
-                        value = mobileNumber,
+                        value = otp,
                         onValueChange = {
-                            if (it.length <= 10 && it.all(Char::isDigit)) {
-                                mobileNumber = it
-                            }
+                            otp = it
                         },
                         keyboardOptions = KeyboardOptions(
                             // Changes the on-screen keyboard to a number pad
@@ -159,10 +173,54 @@ fun ForgotPasswordScreen(
                             )
                         }
                     )
-                    Spacer(Modifier.height(15.dp))
 
+                    Spacer(Modifier.height(20.dp))
+
+                    PrimaryButton(
+                        text = stringResource(id = R.string.verify_otp),
+                        modifier = Modifier.padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 16.dp),
+                        onClick = {
+                            viewModel.verifyResetOTP(
+                                mobile = mobile,
+                                otp = otp
+                            )
+                        }
+                    )
+
+                    when (val state = uiState) {
+
+                        VerifyResetOTPPasswordUIState.Idle -> {
+                            // Nothing
+                        }
+
+                        VerifyResetOTPPasswordUIState.Loading -> {
+                            LoadingView()
+                        }
+
+                        is VerifyResetOTPPasswordUIState.Success -> {
+                            Text(
+                                text = state.message ?: "OTP verified successfully"
+                            )
+                        }
+
+                        is VerifyResetOTPPasswordUIState.Error -> {
+                            Text(
+                                text = state.message,
+                                color = Color.Red
+                            )
+                        }
+
+                        else -> {}
+                    }
+
+                    Spacer(Modifier.height(25.dp))
                     // Password
-                    LabelName(labelName = stringResource(id = R.string.new_password), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                    LabelName(
+                        labelName = stringResource(id = R.string.new_password),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
                     Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
                         value = password,
@@ -226,7 +284,12 @@ fun ForgotPasswordScreen(
                     )
                     Spacer(Modifier.height(15.dp))
 
-                    LabelName(labelName = stringResource(id = R.string.confirm_new_password), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                    LabelName(
+                        labelName = stringResource(id = R.string.confirm_new_password),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
                     Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
                         value = confirmPassword,
@@ -305,15 +368,49 @@ fun ForgotPasswordScreen(
                 fontWeight = FontWeight.Normal
             )
             Spacer(Modifier.height(10.dp))
-           LabelName(labelName = stringResource(id = R.string.resend_otp),
-               textDecoration = TextDecoration.Underline, color = Success)
+            LabelName(
+                labelName = stringResource(id = R.string.resend_otp),
+                textDecoration = TextDecoration.Underline, color = Success
+            )
         }
         Spacer(Modifier.weight(1f))
         PrimaryButton(
             text = stringResource(id = R.string.reset_password),
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
-            onClick = onReset
+            onClick = {
+                resetPasswordViewModel.resetPassword(
+                    newPassword = password,
+                    confirmPassword = confirmPassword
+                )
+            }
         )
+
+        when (val state = resetPasswordUiState) {
+
+            ResetPasswordUiState.Idle -> {
+                // Nothing
+            }
+
+            ResetPasswordUiState.Loading -> {
+                LoadingView()
+            }
+
+            is ResetPasswordUiState.Success -> {
+                Text(
+                    text = state.message ?: "Password reset successfully"
+                )
+                onReset()
+            }
+
+            is ResetPasswordUiState.Error -> {
+                Text(
+                    text = state.message,
+                    color = Color.Red
+                )
+            }
+
+            else -> {}
+        }
     }
 
 }
@@ -321,6 +418,6 @@ fun ForgotPasswordScreen(
 @Preview
 @Composable
 fun ForgotPasswordScreenPreview() {
-    ForgotPasswordScreen(onReset = {}, onBack = {})
+    ForgotPasswordScreen(mobile = "", onReset = {}, onBack = {})
 }
 

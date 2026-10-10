@@ -6,5 +6,7 @@ object Constants {
     const val KEY_USER_ID = "user_id"
     const val KEY_IS_LOGGED_IN = "is_logged_in"
     const val KEY_ACCESS_TOKEN = "access_token"
+    const val KEY_RESET_TOKEN = "reset_token"
     const val KEY_USER_NAME = "user_name"
+    const val NA = "NA"
 }

@@ -89,4 +89,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
     // Image cropping
     implementation("com.vanniktech:android-image-cropper:4.7.0")
+
+    // Video playback
+    implementation("androidx.media3:media3-exoplayer:1.11.1")
+    implementation("androidx.media3:media3-ui:1.11.1")
 }

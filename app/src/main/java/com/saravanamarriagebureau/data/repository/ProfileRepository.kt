@@ -37,7 +37,7 @@ class ProfileRepository @Inject constructor(
                     profession = profession,
                     religion = religion,
                     fullAddress = fullAddress,
-//                    email = email,
+                    email = email,
                 )
             )
         }

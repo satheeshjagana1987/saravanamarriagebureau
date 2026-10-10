@@ -2,7 +2,7 @@ package com.saravanamarriagebureau.data.repository
 
 import com.saravanamarriagebureau.data.api.SmbApi
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
-import com.saravanamarriagebureau.data.model.PasswordResponse
+import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.safeApiCall
 import javax.inject.Inject
@@ -14,7 +14,7 @@ class ChangePasswordRepository @Inject constructor(
         currentPassword: String,
         newPassword: String,
         confirmNewPassword: String
-    ): ApiResult<PasswordResponse> {
+    ): ApiResult<ForgetPasswordResponse> {
         return safeApiCall {
             api.changePassword(
                 ChangePasswordRequest(

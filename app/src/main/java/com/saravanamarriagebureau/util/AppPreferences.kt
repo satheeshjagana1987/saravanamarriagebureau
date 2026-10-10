@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.saravanamarriagebureau.util.Constants.KEY_ACCESS_TOKEN
 import com.saravanamarriagebureau.util.Constants.KEY_IS_LOGGED_IN
+import com.saravanamarriagebureau.util.Constants.KEY_RESET_TOKEN
 import com.saravanamarriagebureau.util.Constants.KEY_USER_ID
 import com.saravanamarriagebureau.util.Constants.KEY_USER_NAME
 import com.saravanamarriagebureau.util.Constants.PREF_NAME
@@ -49,6 +50,16 @@ class AppPreferences @Inject constructor(
 
     fun getAccessToken(): String? {
         return preferences.getString(KEY_ACCESS_TOKEN, null)
+    }
+
+    fun saveResetToken(resetToken: String) {
+        preferences.edit()
+            .putString(KEY_RESET_TOKEN, resetToken)
+            .apply()
+    }
+
+    fun getResetToken(): String? {
+        return preferences.getString(KEY_RESET_TOKEN, null)
     }
 
     fun saveUserName(name: String) {

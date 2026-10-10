@@ -279,7 +279,6 @@ fun ProfileCard(
                     color = Maroon,
                     modifier = Modifier.padding(0.dp)
                 )
-                Spacer(Modifier.height(5.dp))
                 LabelName(
                     labelName = "${profile.age} yrs",
                     fontSize = 14.sp,
@@ -287,7 +286,6 @@ fun ProfileCard(
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
-                Spacer(Modifier.height(5.dp))
                 LabelName(
                     labelName = profile.education,
                     fontSize = 14.sp,
@@ -295,7 +293,6 @@ fun ProfileCard(
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
-                Spacer(Modifier.height(5.dp))
                 if (profile.isAdminVerified == 1) {
                     LabelName(
                         labelName = "● " + stringResource(id = R.string.verified),

@@ -60,6 +60,8 @@ import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.SecondaryButton
+import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgetPasswordUIState
+import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgetPasswordViewModel
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Gray
@@ -73,8 +75,9 @@ fun LoginScreen(
     onLogin: () -> Unit,
     onRegister: () -> Unit,
     onPrivacy: () -> Unit,
-    onForgot: () -> Unit,
-    viewModel: LoginViewModel = hiltViewModel()
+    onForgot: (String) -> Unit,
+    viewModel: LoginViewModel = hiltViewModel(),
+    forgetPasswordViewModel: ForgetPasswordViewModel = hiltViewModel()
 ) {
     var mobileNumber by rememberSaveable {
         mutableStateOf("")
@@ -87,6 +90,7 @@ fun LoginScreen(
     var isCheckedRememberMe by remember { mutableStateOf(false) }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiStateForgetPassword by forgetPasswordViewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         Modifier
@@ -243,7 +247,11 @@ fun LoginScreen(
                         fontWeight = FontWeight.SemiBold,
                         color = Maroon,
                         modifier = Modifier
-                            .clickable { onForgot() }
+                            .clickable {
+                               forgetPasswordViewModel.forgetPassword(
+                                   mobile = mobileNumber
+                               )
+                            }
                     )
                 }
             }
@@ -252,8 +260,8 @@ fun LoginScreen(
         PrimaryButton(stringResource(id = R.string.login),
             onClick = {
                 viewModel.login(
-                    mobile = "9999999999",
-                    password = "1234Test"
+                    mobile = mobileNumber,
+                    password = password
                 )
             })
         Spacer(Modifier.height(20.dp))
@@ -272,7 +280,7 @@ fun LoginScreen(
                 Text(
                     text = state.message ?: "Login successful"
                 )
-                onLogin()
+               onLogin()
             }
 
             is LoginUIState.Error -> {
@@ -281,6 +289,32 @@ fun LoginScreen(
                     color = Color.Red
                 )
             }
+        }
+
+        when (val state = uiStateForgetPassword) {
+
+            ForgetPasswordUIState.Idle -> {
+                // Nothing
+            }
+
+            ForgetPasswordUIState.Loading -> {
+                LoadingView()
+            }
+
+            is ForgetPasswordUIState.Success -> {
+                Text(
+                    text = state.message ?: "OTP sent successfully"
+                )
+                onForgot(mobileNumber)
+            }
+
+            is ForgetPasswordUIState.Error -> {
+                Text(
+                    text = state.message,
+                    color = Color.Red
+                )
+            }
+
         }
 
         Row(

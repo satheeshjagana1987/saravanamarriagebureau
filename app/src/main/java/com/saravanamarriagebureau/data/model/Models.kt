@@ -76,7 +76,7 @@ data class ProfileRequest(
     val education: String,
     val profession: String,
     val religion: String,
-//    val email: String,
+    val email: String,
     val fullAddress: String,
 )
 
@@ -151,9 +151,34 @@ data class Interest(
 )
 
 data class ForgetPasswordRequest(
+    val mobile: String,
+)
+
+data class VerifyResetOTPRequest(
     val otp: String,
-    val password: String,
-    val confirmPassword: String
+    val mobile: String,
+)
+
+data class ResetPasswordRequest(
+    val resetToken: String,
+    val newPassword: String,
+    val confirmPassword: String,
+)
+
+data class VerifyResetOTP(
+    val resetToken: String,
+    val expiresIn: String
+)
+
+data class ResetPasswordResponse(
+    val success: Boolean,
+    val data: ResetPasswordData,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class ResetPasswordData(
+    val message: String
 )
 
 data class ChangePasswordRequest(
@@ -162,7 +187,8 @@ data class ChangePasswordRequest(
     val confirmNewPassword: String
 )
 
-data class PasswordResponse(
+data class ForgetPasswordResponse(
+    val success: Boolean,
     val message: String,
 )
 

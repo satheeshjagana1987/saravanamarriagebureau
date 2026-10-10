@@ -48,6 +48,7 @@
     <string name="confirm_new_password">Confirm New Password</string>
     <string name="current_password">Current Password</string>
     <string name="otp">OTP</string>
+    <string name="verify_otp">Verify OTP</string>
     <string name="resend_otp">Resend OTP</string>
     <string name="personal">Personal</string>
     <string name="professional">Professional</string>

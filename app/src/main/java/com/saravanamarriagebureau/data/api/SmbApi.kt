@@ -3,18 +3,21 @@ package com.saravanamarriagebureau.data.api
 import com.saravanamarriagebureau.data.model.ApiResponse
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
 import com.saravanamarriagebureau.data.model.ForgetPasswordRequest
+import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
 import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.Invoice
 import com.saravanamarriagebureau.data.model.LoginData
 import com.saravanamarriagebureau.data.model.LoginRequest
 import com.saravanamarriagebureau.data.model.Match
-import com.saravanamarriagebureau.data.model.PasswordResponse
-import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.data.model.ProfileRequest
 import com.saravanamarriagebureau.data.model.ProfileResponse
 import com.saravanamarriagebureau.data.model.RegisterRequest
 import com.saravanamarriagebureau.data.model.RegisterResponse
+import com.saravanamarriagebureau.data.model.ResetPasswordRequest
+import com.saravanamarriagebureau.data.model.ResetPasswordResponse
 import com.saravanamarriagebureau.data.model.UploadResponse
+import com.saravanamarriagebureau.data.model.VerifyResetOTP
+import com.saravanamarriagebureau.data.model.VerifyResetOTPRequest
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -22,7 +25,6 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -46,11 +48,17 @@ interface SmbApi {
         @Body request: ProfileRequest
     ): Response<ApiResponse<ProfileResponse>>
 
-    @POST("auth/forgetPassword")
-    suspend fun forgetPassword(@Body request: ForgetPasswordRequest): Response<ApiResponse<PasswordResponse>>
+    @POST("auth/forgot-password")
+    suspend fun forgetPassword(@Body request: ForgetPasswordRequest): Response<ApiResponse<ForgetPasswordResponse>>
+
+    @POST("auth/verify-reset-otp")
+    suspend fun verifyResetOTP(@Body request: VerifyResetOTPRequest): Response<ApiResponse<VerifyResetOTP>>
+
+    @POST("auth/reset-password")
+    suspend fun resetPassword(@Body request: ResetPasswordRequest): Response<ApiResponse<ResetPasswordResponse>>
 
     @POST("auth/changePassword")
-    suspend fun changePassword(@Body request: ChangePasswordRequest): Response<ApiResponse<PasswordResponse>>
+    suspend fun changePassword(@Body request: ChangePasswordRequest): Response<ApiResponse<ForgetPasswordResponse>>
 
     @Multipart
     @POST("api/upload")

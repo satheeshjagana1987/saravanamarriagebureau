@@ -48,3 +48,7 @@ fun profileRoute(profileId: String, type: String): String {
 fun interestRoute(interestId: String): String {
     return "${Routes.Interests}/$interestId"
 }
+
+fun forgotPassword(mobile: String): String {
+    return "${Routes.ForgotPassword}/$mobile"
+}

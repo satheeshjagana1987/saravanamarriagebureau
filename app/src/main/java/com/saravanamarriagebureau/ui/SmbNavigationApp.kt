@@ -2,10 +2,13 @@ package com.saravanamarriagebureau.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.saravanamarriagebureau.ui.navigation.Routes
+import com.saravanamarriagebureau.ui.navigation.forgotPassword
 import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgotPasswordScreen
 import com.saravanamarriagebureau.ui.screens.login.LoginScreen
 import com.saravanamarriagebureau.ui.screens.userdashboard.MainScreenWithHamburger
@@ -51,15 +54,27 @@ fun SmbNavigationApp(modifier: Modifier = Modifier) {
                 onLogin = { navController.navigate(Routes.Main) },
                 onRegister = { navController.navigate(Routes.Register) },
                 onPrivacy = { },
-                onForgot = { navController.navigate(Routes.ForgotPassword) }
+                onForgot = { mobile ->
+                    navController.navigate(
+                        forgotPassword(mobile)
+                    )
+                }
             )
         }
 
-        composable(Routes.ForgotPassword) {
+        composable(
+            route = "${Routes.ForgotPassword}/{mobile}"
+        ) { backStackEntry ->
+
+            val mobile = backStackEntry.arguments
+                ?.getString("mobile")
+                ?: return@composable
             ForgotPasswordScreen(
+                mobile = mobile,
                 onReset = { navController.navigate(Routes.Login) },
                 onBack = { navController.popBackStack() }
             )
+
         }
 
         composable(Routes.Register) {
