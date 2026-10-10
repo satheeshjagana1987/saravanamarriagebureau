@@ -1,5 +1,10 @@
 package com.saravanamarriagebureau.ui.screens.profile
 
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,8 +23,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Height
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -27,11 +34,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,13 +49,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.ProfileTab
 import com.saravanamarriagebureau.ui.components.CustomButton
@@ -60,13 +77,15 @@ import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.White
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileCreationScreen(
     onSubmit: () -> Unit,
     onBack: () -> Unit,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    imageViewModel: ImageViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var name by remember { mutableStateOf("") }
@@ -97,10 +116,67 @@ fun ProfileCreationScreen(
         mutableStateOf(false)
     }
 
-
     var selectedGender by remember {
         mutableStateOf("")
     }
+
+    var selectedMaritalStatus by remember {
+        mutableStateOf("")
+    }
+
+    val state by imageViewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    var pendingCameraUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    // 1. Crop launcher must be declared first
+    val cropLauncher = rememberLauncherForActivityResult(
+        contract = CropImageContract()
+    ) { result ->
+        if (result.isSuccessful) {
+            result.uriContent?.let { croppedUri ->
+                imageViewModel.setImage(croppedUri)
+            }
+        } else {
+            result.error?.let { error ->
+                // Handle crop error
+                Log.e("ImageCrop", "Crop failed", error)
+            }
+        }
+    }
+
+// 2. Create a reusable crop callback
+    val launchCrop: (Uri) -> Unit = { uri ->
+        cropLauncher.launch(
+            CropImageContractOptions(
+                uri = uri,
+                cropImageOptions = CropImageOptions(
+                    guidelines = CropImageView.Guidelines.ON
+                )
+            )
+        )
+    }
+
+    // Open gallery
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri?.let { imageViewModel.setImage(it) }
+    }
+
+    // Capture a full-size photo
+    val cameraLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            pendingCameraUri?.let {
+                imageViewModel.setImage(it)
+            }
+        }
+    }
+
 
     Column(
         Modifier
@@ -337,7 +413,7 @@ fun ProfileCreationScreen(
                             },
                             placeholder = {
                                 Text(
-                                    text = "DD / MM / YYYY",
+                                    text = "YYYY-MM-DD",
                                     color = Color(0xFFB5B5BD),
                                     fontSize = 14.sp
                                 )
@@ -353,43 +429,39 @@ fun ProfileCreationScreen(
                             fontWeight = FontWeight.Normal
                         )
                         Spacer(Modifier.height(5.dp))
-                        ExposedDropdownMenuBox(
-                            expanded = expanded,
-                            onExpandedChange = { expanded = !expanded },
-                        ) {
-                            // 2. The Anchor Text Field (users click this to open the dropdown)
-                            OutlinedTextField(
-                                // The menuAnchor modifier binds the width and position to the menu layout
-                                modifier = Modifier
-                                    .menuAnchor()
-                                    .fillMaxWidth(),
-                                readOnly = true,
-                                value = selectedOptionText,
-                                onValueChange = {},
-                                shape = RoundedCornerShape(12.dp),
-                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedBorderColor = Color(0xFFE2E2E8),
-                                ),
-                            )
-
-                            // 3. The actual Popup Dropdown overlay
-                            ExposedDropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false },
-                            ) {
-                                options.forEach { selectionOption ->
-                                    DropdownMenuItem(
-                                        text = { Text(selectionOption) },
-                                        onClick = {
-                                            selectedOptionText = selectionOption
-                                            expanded = false
-                                        },
-                                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                                    )
-                                }
+                        OutlinedTextField(
+                            value = location,
+                            onValueChange = {
+                                location = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.LocationOn,
+                                    contentDescription = null,
+                                    tint = Color(0xFF9A9AA5),
+                                    modifier = Modifier.size(19.dp)
+                                )
+                            },
+                            placeholder = {
+                                Text(
+                                    text = "Enter Location",
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
                             }
-                        }
+                        )
                     }
                 }
                 if (isProfessionalVisible) {
@@ -520,9 +592,9 @@ fun ProfileCreationScreen(
                                 fontWeight = FontWeight.Normal
                             )
                             RadioButton(
-                                selected = selectedGender == stringResource(R.string.male),
+                                selected = selectedGender == stringResource(R.string.male).uppercase(),
                                 onClick = {
-                                    selectedGender = "Male"
+                                    selectedGender = "MALE"
                                 }
                             )
 
@@ -534,9 +606,9 @@ fun ProfileCreationScreen(
                             )
                             Spacer(Modifier.width(10.dp))
                             RadioButton(
-                                selected = selectedGender == stringResource(R.string.female),
+                                selected = selectedGender == stringResource(R.string.female).uppercase(),
                                 onClick = {
-                                    selectedGender = "Female"
+                                    selectedGender = "FEMALE"
                                 }
                             )
 
@@ -549,40 +621,42 @@ fun ProfileCreationScreen(
                         }
 
                         Spacer(Modifier.height(10.dp))
-                        LabelName(
-                            labelName = stringResource(id = R.string.marital_status),
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(Modifier.height(5.dp))
-                        OutlinedTextField(
-                            value = maritalStatus,
-                            onValueChange = {
-                                maritalStatus = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            LabelName(
+                                labelName = stringResource(id = R.string.marital_status),
+                                fontSize = 14.sp,
+                                color = Maroon,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Spacer(Modifier.height(5.dp))
+                            RadioButton(
+                                selected = selectedMaritalStatus == stringResource(R.string.single),
+                                onClick = {
+                                    selectedMaritalStatus = "Single"
+                                }
+                            )
 
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
+                            LabelName(
+                                labelName = stringResource(id = R.string.single),
+                                fontSize = 14.sp,
+                                color = Black,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            RadioButton(
+                                selected = selectedMaritalStatus == stringResource(R.string.others),
+                                onClick = {
+                                    selectedMaritalStatus = "Others"
+                                }
+                            )
 
-                            placeholder = {
-                                Text(
-                                    text = "Enter Marital Status",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        )
+                            LabelName(
+                                labelName = stringResource(id = R.string.others),
+                                fontSize = 14.sp,
+                                color = Black,
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
 
                         Spacer(Modifier.height(15.dp))
                         LabelName(
@@ -593,9 +667,9 @@ fun ProfileCreationScreen(
                         )
                         Spacer(Modifier.height(5.dp))
                         OutlinedTextField(
-                            value = maritalStatus,
+                            value = religion,
                             onValueChange = {
-                                maritalStatus = it
+                                religion = it
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -635,11 +709,93 @@ fun ProfileCreationScreen(
                         ) {
                             ProfilePhoto("", Modifier.size(100.dp))
                             Spacer(Modifier.weight(1f))
-                            CustomButtonForUpload(
-                                text = stringResource(id = R.string.upload),
-                                onClick = {},
-                                modifier = Modifier.weight(1f),
-                            )
+//                            CustomButtonForUpload(
+//                                text = stringResource(id = R.string.upload),
+//                                onClick = {},
+//                                modifier = Modifier.weight(1f),
+//                            )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(20.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Text(
+                                    text = "Image Upload",
+                                    style = MaterialTheme.typography.headlineMedium
+                                )
+
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Button(
+                                        onClick = {
+                                            galleryLauncher.launch(
+                                                androidx.activity.result.PickVisualMediaRequest(
+                                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                )
+                                            )
+                                        }
+                                    ) {
+                                        Text("Gallery")
+                                    }
+
+                                    Button(
+                                        onClick = {
+                                            val file = File.createTempFile(
+                                                "camera_",
+                                                ".jpg",
+                                                context.cacheDir
+                                            )
+
+                                            pendingCameraUri = FileProvider.getUriForFile(
+                                                context,
+                                                "${context.packageName}.fileprovider",
+                                                file
+                                            )
+
+                                            cameraLauncher.launch(pendingCameraUri!!)
+                                        }
+                                    ) {
+                                        Text("Camera")
+                                    }
+                                }
+
+                                state.imageUri?.let { uri ->
+                                    Image(
+                                        painter = rememberAsyncImagePainter(uri),
+                                        contentDescription = "Selected image",
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(280.dp)
+                                    )
+                                }
+
+                                Button(
+                                    onClick = { imageViewModel.uploadImage() },
+                                    enabled = state.imageUri != null &&
+                                            !state.isLoading,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        if (state.isLoading) "Uploading..."
+                                        else "Upload Image"
+                                    )
+                                }
+
+                                if (state.isLoading) {
+                                    LoadingView()
+                                }
+
+                                state.message?.let {
+                                    Text(it, color = MaterialTheme.colorScheme.primary)
+                                }
+
+                                state.error?.let {
+                                    Text(it, color = MaterialTheme.colorScheme.error)
+                                }
+                            }
                         }
                         Spacer(Modifier.height(20.dp))
                         Row(
@@ -714,17 +870,12 @@ fun ProfileCreationScreen(
                 text = stringResource(id = R.string.submit),
                 onClick = {
                     viewModel.updateProfile(
-                        name = name,
-                        age = "",
                         height = height,
                         education = education,
                         profession = profession,
-                        location = location,
-                        imageUrl = "",
-                        mobileNumber = mobileNumber,
+                        religion = religion,
+                        fullAddress = location,
                         email = email,
-                        gender = selectedGender,
-                        religion = religion
                     )
                 }
             )

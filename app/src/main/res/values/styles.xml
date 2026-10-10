@@ -6,4 +6,13 @@
         <item name="android:navigationBarColor">#FFF9F5</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
+    <style name="CropperTheme"
+        parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="colorPrimary">#800000</item>
+        <item name="colorPrimaryDark">#600000</item>
+        <item name="colorAccent">#800000</item>
+
+    </style>
 </resources>

@@ -65,6 +65,8 @@ import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Gray
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
+import com.saravanamarriagebureau.util.AppPreferences
+import timber.log.Timber
 
 @Composable
 fun LoginScreen(
@@ -250,8 +252,8 @@ fun LoginScreen(
         PrimaryButton(stringResource(id = R.string.login),
             onClick = {
                 viewModel.login(
-                    mobile = mobileNumber,
-                    password = password
+                    mobile = "9999999999",
+                    password = "1234Test"
                 )
             })
         Spacer(Modifier.height(20.dp))

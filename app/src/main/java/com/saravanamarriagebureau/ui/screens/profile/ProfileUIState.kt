@@ -1,5 +1,6 @@
 package com.saravanamarriagebureau.ui.screens.profile
 
+import com.saravanamarriagebureau.data.model.ProfileData
 import com.saravanamarriagebureau.data.model.ProfileResponse
 
 sealed class ProfileUIState {

@@ -81,4 +81,6 @@
     <string name="pending_payments">Pending Payments</string>
     <string name="mutual_interests">Mutual Interests</string>
     <string name="approve">Approve</string>
+    <string name="single">Single</string>
+    <string name="others">Others</string>
 </resources>

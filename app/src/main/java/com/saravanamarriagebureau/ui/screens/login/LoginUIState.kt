@@ -1,6 +1,6 @@
 package com.saravanamarriagebureau.ui.screens.login
 
-import com.saravanamarriagebureau.data.model.LoginResponse
+import com.saravanamarriagebureau.data.model.LoginData
 
 sealed class LoginUIState {
 
@@ -9,7 +9,7 @@ sealed class LoginUIState {
     data object Loading : LoginUIState()
 
     data class Success(
-        val data: LoginResponse,
+        val data: LoginData,
         val message: String? = null
     ) : LoginUIState()
 

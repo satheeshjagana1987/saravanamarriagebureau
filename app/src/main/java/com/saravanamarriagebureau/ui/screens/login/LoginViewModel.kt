@@ -4,15 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.LoginRepository
 import com.saravanamarriagebureau.util.ApiResult
+import com.saravanamarriagebureau.util.AppPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val _uiState =
@@ -37,16 +40,18 @@ class LoginViewModel @Inject constructor(
             ) {
 
                 is ApiResult.Success -> {
-
                     _uiState.value =
                         LoginUIState.Success(
                             data = result.data,
                             message = result.message
                         )
+                    appPreferences.saveAccessToken(
+                        result.data.accessToken
+                    )
+
                 }
 
                 is ApiResult.Error -> {
-
                     _uiState.value =
                         LoginUIState.Error(
                             message = result.message

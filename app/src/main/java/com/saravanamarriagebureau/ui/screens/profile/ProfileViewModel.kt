@@ -22,18 +22,47 @@ class ProfileViewModel @Inject constructor(
 
     val uiState = _uiState.asStateFlow()
 
+
+    fun loadProfile(profileId: String) {
+        viewModelScope.launch {
+            _uiState.value = ProfileUIState.Loading
+
+            when (val result = profileRepository.getProfile()) {
+                is ApiResult.Success -> {
+                    val response = result.data
+
+                    if (response.success) {
+                        _uiState.value =
+                            ProfileUIState.Success(
+                                data = response
+                            )
+                    } else {
+                        _uiState.value =
+                            ProfileUIState.Error(
+                                "Unable to load profile"
+                            )
+                    }
+                }
+
+                is ApiResult.Error -> {
+                    _uiState.value =
+                        ProfileUIState.Error(
+                            result.message
+                        )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
     fun updateProfile(
-        name: String,
-        age: String,
         height: String,
         education: String,
         profession: String,
-        location: String,
-        imageUrl: String? = null,
-        mobileNumber: String,
         religion: String,
-        gender: String,
-        email: String
+        email: String,
+        fullAddress: String,
     ) {
 
         viewModelScope.launch {
@@ -42,17 +71,12 @@ class ProfileViewModel @Inject constructor(
 
             when (
                 val result = profileRepository.updateProfile(
-                    name = name,
-                    age = age,
                     height = height,
                     education = education,
                     profession = profession,
-                    location = location,
-                    imageUrl = imageUrl,
-                    mobileNumber = mobileNumber,
+                    religion = religion,
+                    fullAddress = fullAddress,
                     email = email,
-                    gender = gender,
-                    religion = religion
                 )
             ) {
 

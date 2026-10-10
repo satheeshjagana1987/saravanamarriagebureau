@@ -48,7 +48,7 @@ fun SmbNavigationApp(modifier: Modifier = Modifier) {
 
         composable(Routes.Login) {
             LoginScreen(
-                onLogin = { navController.navigate(Routes.Admin) },
+                onLogin = { navController.navigate(Routes.Main) },
                 onRegister = { navController.navigate(Routes.Register) },
                 onPrivacy = { },
                 onForgot = { navController.navigate(Routes.ForgotPassword) }

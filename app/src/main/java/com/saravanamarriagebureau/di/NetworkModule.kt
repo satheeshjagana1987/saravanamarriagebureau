@@ -1,6 +1,7 @@
 package com.saravanamarriagebureau.di
 
 import com.saravanamarriagebureau.data.api.SmbApi
+import com.saravanamarriagebureau.util.AppPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +16,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://api.example.com/"
+    private const val BASE_URL = "https://sixties-dumping-tactile.ngrok-free.dev/api/v1/"
+
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(
+        appPreferences: AppPreferences
+    ): AuthInterceptor {
+        return AuthInterceptor(appPreferences)
+    }
 
     @Provides
     @Singleton
@@ -27,10 +36,12 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttp(
-        logging: HttpLoggingInterceptor
+        logging: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor
     ): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
             .build()
 
     @Provides

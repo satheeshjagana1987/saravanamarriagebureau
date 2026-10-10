@@ -86,4 +86,7 @@ dependencies {
     testImplementation(libs.junit)
     implementation("androidx.activity:activity-compose:1.12.1")
     implementation(libs.androidx.activity)
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    // Image cropping
+    implementation("com.vanniktech:android-image-cropper:4.7.0")
 }

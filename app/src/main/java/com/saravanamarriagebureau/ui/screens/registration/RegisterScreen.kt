@@ -76,7 +76,7 @@ fun RegisterScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
-    val genderRadioOptions = listOf("Male", "Female")
+    val genderRadioOptions = listOf("MALE", "FEMALE")
     var selectedGenderOption by remember { mutableStateOf(genderRadioOptions[0]) }
     val lookingForRadioOptions = listOf("Bride", "Groom")
     var selectedLookingForOption by remember { mutableStateOf(lookingForRadioOptions[0]) }

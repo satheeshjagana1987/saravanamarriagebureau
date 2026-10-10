@@ -1,9 +1,6 @@
 package com.saravanamarriagebureau.data.repository
 
 import com.saravanamarriagebureau.data.api.SmbApi
-import com.saravanamarriagebureau.data.model.LoginRequest
-import com.saravanamarriagebureau.data.model.LoginResponse
-import com.saravanamarriagebureau.data.model.Match
 import com.saravanamarriagebureau.data.model.RegisterRequest
 import com.saravanamarriagebureau.data.model.RegisterResponse
 import com.saravanamarriagebureau.util.ApiResult
@@ -25,10 +22,10 @@ class RegisterRepository @Inject constructor(
         return safeApiCall {
             api.register(
                 RegisterRequest(
-                    name = name,
+                    fullName = name,
                     mobile = mobile,
                     email = email,
-                    dob = dob,
+                    dateOfBirth = dob,
                     password = password,
                     confirmPassword = confirmPassword,
                     gender = gender
