@@ -270,6 +270,7 @@ fun LoginScreen(
                 Text(
                     text = state.message ?: "Login successful"
                 )
+                onLogin()
             }
 
             is LoginUIState.Error -> {

@@ -2,9 +2,9 @@ package com.saravanamarriagebureau.ui.screens.matches
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.saravanamarriagebureau.data.model.Profile
-import com.saravanamarriagebureau.data.repository.SmbRepository
-import com.saravanamarriagebureau.ui.screens.demoProfiles
+import com.saravanamarriagebureau.data.model.Match
+import com.saravanamarriagebureau.data.repository.MatchesRepository
+import com.saravanamarriagebureau.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,40 +12,47 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class MatchesUiState(
-    val loading: Boolean = false,
-    val profiles: List<Profile> = demoProfiles,
-    val message: String? = null
-)
 
 @HiltViewModel
 class MatchesViewModel @Inject constructor(
-    private val repository: SmbRepository
+    private val matchesRepository: MatchesRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(MatchesUiState())
-    val state: StateFlow<MatchesUiState> = _state.asStateFlow()
+    private val _matches = MutableStateFlow<List<Match>>(emptyList())
+    val matches: StateFlow<List<Match>> = _matches.asStateFlow()
 
-    fun load() {
-        viewModelScope.launch {
-            _state.value = _state.value.copy(loading = true)
-            runCatching { repository.matches() }
-                .onSuccess { matches ->
-                    _state.value = MatchesUiState(profiles = matches.map { it.profile })
-                }
-                .onFailure {
-                    _state.value = MatchesUiState(
-                        profiles = demoProfiles,
-                        message = "Showing demo profiles. Connect your API to load live matches."
-                    )
-                }
-        }
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+
+    init {
+        fetchMatches()
     }
 
-    fun sendInterest(profileId: String) {
+    fun fetchMatches() {
         viewModelScope.launch {
-            runCatching { repository.sendInterest(profileId) }
-            _state.value = _state.value.copy(message = "Interest sent successfully")
+            _isLoading.value = true
+            _error.value = null
+
+            try {
+                when (val result = matchesRepository.getMatches()) {
+                    is ApiResult.Success -> {
+                        _matches.value = result.data
+                    }
+
+                    is ApiResult.Error -> {
+                        _error.value = result.message
+                    }
+
+                    else -> {}
+                }
+            } catch (e: Exception) {
+                _error.value = e.message ?: "Something went wrong"
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 }

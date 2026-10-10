@@ -13,6 +13,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.saravanamarriagebureau.ui.SmbNavigationApp
+import com.saravanamarriagebureau.ui.navigation.Routes
+import com.saravanamarriagebureau.ui.navigation.profileRoute
+import com.saravanamarriagebureau.ui.screens.interests.InterestsScreen
+import com.saravanamarriagebureau.ui.screens.profile.ProfileViewScreen
+import timber.log.Timber
 
 @Composable
 fun AdminLandingScreen() {
@@ -21,10 +26,9 @@ fun AdminLandingScreen() {
 
     val destinations = listOf(
         AdminDestination.Dashboard,
-        AdminDestination.Users,
-        AdminDestination.Matches,
         AdminDestination.Interests,
-        AdminDestination.Payments
+        AdminDestination.Payments,
+        AdminDestination.Settings
     )
 
     Scaffold(
@@ -42,23 +46,88 @@ fun AdminLandingScreen() {
         ) {
 
             composable(AdminDestination.Dashboard.route) {
-                // DashboardScreen()
-            }
-
-            composable(AdminDestination.Users.route) {
-                // UserManagementScreen()
-            }
-
-            composable(AdminDestination.Matches.route) {
-                // MatchesManagementScreen()
+               AdminDashboardScreen(
+                   onNavigate = { route ->
+                       adminNavController.navigate(route)
+                   }
+               )
             }
 
             composable(AdminDestination.Interests.route) {
-                // InterestManagementScreen()
+                AdminInterestsScreen(
+                    onInterestItemClick = { interest ->
+                        Timber.e("profile  InterestsScreen ==>  ${interest.type}")
+                        adminNavController.navigate(
+                            profileRoute(profileId = interest.id, type = interest.type.name)
+                        )
+                    },
+                )
             }
 
             composable(AdminDestination.Payments.route) {
-                // PaymentManagementScreen()
+               AdminPaymentsScreen()
+            }
+
+            composable(AdminDestination.Settings.route) {
+                AdminSettingsScreen()
+            }
+
+            composable(Routes.Users) {
+                AdminUsersScreen(
+                    onProfile = { profile ->
+                        adminNavController.navigate(
+                            profileRoute(profile.id, type = "")
+                        )
+                    }
+                )
+            }
+
+            composable(
+                route = "${Routes.Profile}/{profileId}/{type}"
+            ) { backStackEntry ->
+
+                val profileId = backStackEntry.arguments
+                    ?.getString("profileId")
+                    ?: return@composable
+
+                val profileType = backStackEntry.arguments
+                    ?.getString("type")
+                    ?: return@composable
+
+                AdminUserDetailsScreen(
+                    profileId = profileId,
+                    profileType = profileType,
+
+                    onBack = {
+                        adminNavController.popBackStack()
+                    },
+
+                )
+            }
+
+            composable(Routes.PendingPayments) {
+                AdminPaymentsScreen()
+            }
+
+            composable(Routes.PendingProfiles) {
+                AdminUsersScreen(
+                    onProfile = { profile ->
+                        adminNavController.navigate(
+                            profileRoute(profile.id, type = "")
+                        )
+                    }
+                )
+            }
+
+            composable(Routes.MutualInterests) {
+                AdminInterestsScreen(
+                    onInterestItemClick = { interest ->
+                        Timber.e("profile  InterestsScreen ==>  ${interest.type}")
+                        adminNavController.navigate(
+                            profileRoute(profileId = interest.id, type = interest.type.name)
+                        )
+                    },
+                )
             }
         }
     }

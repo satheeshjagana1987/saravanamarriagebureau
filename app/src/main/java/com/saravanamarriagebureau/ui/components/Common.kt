@@ -13,9 +13,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Verified
@@ -248,7 +250,7 @@ fun ProfileCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (profile.isAdminVerified) {
+                if (profile.isAdminVerified == 1) {
                     onOpen()
                 } else {
                     Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT).show()
@@ -277,6 +279,7 @@ fun ProfileCard(
                     color = Maroon,
                     modifier = Modifier.padding(0.dp)
                 )
+                Spacer(Modifier.height(5.dp))
                 LabelName(
                     labelName = "${profile.age} yrs",
                     fontSize = 14.sp,
@@ -284,6 +287,7 @@ fun ProfileCard(
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
+                Spacer(Modifier.height(5.dp))
                 LabelName(
                     labelName = profile.education,
                     fontSize = 14.sp,
@@ -291,7 +295,8 @@ fun ProfileCard(
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
-                if (profile.isAdminVerified) {
+                Spacer(Modifier.height(5.dp))
+                if (profile.isAdminVerified == 1) {
                     LabelName(
                         labelName = "● " + stringResource(id = R.string.verified),
                         fontSize = 12.sp,
@@ -308,7 +313,7 @@ fun ProfileCard(
                     )
                 }
             }
-            if (profile.isAdminVerified) {
+            if (profile.isAdminVerified == 1) {
                 Icon(
                     Icons.Default.FavoriteBorder,
                     null, tint = Maroon,
@@ -319,6 +324,93 @@ fun ProfileCard(
             }
 
         }
+    }
+}
+
+@Composable
+fun AdminUserCard(
+    profile: Profile,
+    onOpen: () -> Unit
+) {
+    val context = LocalContext.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                if (profile.isAdminVerified == 1) {
+                    onOpen()
+                } else {
+                    Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT).show()
+                }
+            },
+        shape = RoundedCornerShape(5.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
+            ProfilePhoto("", Modifier.size(74.dp))
+            Spacer(Modifier.width(10.dp))
+            Column(Modifier.weight(1f)) {
+                LabelName(
+                    labelName = profile.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Maroon,
+                    modifier = Modifier.padding(0.dp)
+                )
+                Spacer(Modifier.height(5.dp))
+                LabelName(
+                    labelName = "${profile.age} yrs",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
+                Spacer(Modifier.height(5.dp))
+                LabelName(
+                    labelName = profile.education,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            AdminUserStatusContent(
+                profile = profile
+            )
+        }
+    }
+}
+
+@Composable
+fun AdminUserStatusContent(
+    profile: Profile
+) {
+    when (profile.isAdminVerified) {
+        0 -> {
+            AdminStatusText(
+                text = stringResource(R.string.pending),
+                color = Warning
+            )
+        }
+
+        1 -> {
+
+            AdminStatusText(
+                text = stringResource(R.string.accepted),
+                color = Success
+            )
+        }
+
+        2 -> {
+
+            AdminStatusText(
+                text = stringResource(R.string.rejected),
+                color = Red
+            )
+        }
+
     }
 }
 
@@ -403,7 +495,7 @@ fun InterestStatusContent(
                         onClick = onAcceptRejectButton,
                         modifier = Modifier,
                         height = 40.dp,
-                        width = 90.dp,
+                        width = 80.dp,
                         cornerRadius = 20.dp,
                         textColor = White,
                         fontWeight = FontWeight.SemiBold,
@@ -420,7 +512,7 @@ fun InterestStatusContent(
                         onClick = onAcceptRejectButton,
                         modifier = Modifier,
                         height = 40.dp,
-                        width = 90.dp,
+                        width = 85.dp,
                         cornerRadius = 20.dp,
                         textColor = White,
                         fontWeight = FontWeight.SemiBold,
@@ -472,6 +564,125 @@ fun InterestStatusContent(
 }
 
 @Composable
+fun AdminInterestCard(
+    interest: Interest,
+    onOpen: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onOpen() },
+        shape = RoundedCornerShape(5.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
+            ProfilePhoto("", Modifier.size(74.dp))
+            Spacer(Modifier.width(10.dp))
+            Column(Modifier.weight(1f)) {
+                LabelName(
+                    labelName = interest.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Maroon,
+                    modifier = Modifier.padding(0.dp)
+                )
+                LabelName(
+                    labelName = "${interest.age} yrs",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
+                LabelName(
+                    labelName = interest.education,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
+                if (interest.isAdminVerified) {
+                    LabelName(
+                        labelName = "● " + stringResource(id = R.string.verified),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Success,
+                        modifier = Modifier.padding(0.dp)
+                    )
+                } else {
+                    LabelName(
+                        labelName = "● " + stringResource(id = R.string.profile_under_review),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Warning
+                    )
+                }
+
+
+            }
+            Spacer(modifier = Modifier.size(20.dp))
+            AdminInterestStatusContent(
+                interest = interest
+            )
+        }
+    }
+}
+
+@Composable
+fun AdminInterestStatusContent(
+    interest: Interest
+) {
+    when (interest.status) {
+        InterestStatus.PENDING -> {
+            if (interest.type == InterestTab.RECEIVED) {
+                AdminStatusText(
+                    text = stringResource(id = R.string.pending),
+                    color = Warning
+                )
+
+            } else {
+                if(interest.type == InterestTab.MATCH_FIXED) {
+                    AdminStatusText(
+                        text = stringResource(id = R.string.payment_pending),
+                        color = Warning
+                    )
+                } else {
+                    // SENT + PENDING
+                    AdminStatusText(
+                        text = stringResource(id = R.string.pending),
+                        color = Warning
+                    )
+                }
+            }
+        }
+
+        InterestStatus.ACCEPTED -> {
+
+            AdminStatusText(
+                text = stringResource(R.string.accepted),
+                color = Success
+            )
+        }
+
+        InterestStatus.REJECTED -> {
+
+            AdminStatusText(
+                text = stringResource(R.string.rejected),
+                color = Red
+            )
+        }
+
+        InterestStatus.DONE -> {
+
+            AdminStatusText(
+                text = stringResource(R.string.payment_completed),
+                color = Success
+            )
+        }
+    }
+}
+
+@Composable
 fun StatusText(
     text: String,
     color: Color
@@ -486,7 +697,32 @@ fun StatusText(
 }
 
 @Composable
-fun PlayButton() {
+fun AdminStatusText(
+    text: String,
+    color: Color
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        LabelName(
+            labelName = text,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = color,
+            modifier = Modifier.padding(end = 5.dp)
+        )
+        Spacer(Modifier.width(5.dp))
+        Icon(
+            imageVector = Icons.Default.KeyboardArrowRight,
+            contentDescription = null, tint = TextSecondary,
+        )
+    }
+
+}
+
+@Composable
+fun PlayButton(
+) {
     Box(
         modifier = Modifier
             .size(58.dp)

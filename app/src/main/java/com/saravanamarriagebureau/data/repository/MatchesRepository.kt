@@ -14,5 +14,4 @@ class MatchesRepository @Inject constructor(
             api.getMatches()
         }
     }
-
 }

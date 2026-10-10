@@ -20,6 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.ui.components.CustomButton
@@ -33,8 +35,13 @@ import com.saravanamarriagebureau.ui.theme.White
 @Composable
 fun MatchesScreen(
     onProfile: (Profile) -> Unit,
-    onInterestSent: () -> Unit
+    onInterestSent: () -> Unit,
+    viewModel: MatchesViewModel = hiltViewModel()
 ) {
+
+    val matches by viewModel.matches.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val error by viewModel.error.collectAsStateWithLifecycle()
 
     var selectedTab by remember {
         mutableStateOf(MatchTab.TODAY)
@@ -52,7 +59,7 @@ fun MatchesScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 MatchTabButton(
-                    text = "Today",
+                    text = "Pending",
                     selected = selectedTab == MatchTab.TODAY,
                     onClick = {
                         selectedTab = MatchTab.TODAY

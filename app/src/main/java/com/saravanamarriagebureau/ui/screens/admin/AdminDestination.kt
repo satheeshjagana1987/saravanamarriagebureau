@@ -6,7 +6,9 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Interests
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.saravanamarriagebureau.ui.navigation.Routes
 
 sealed class AdminDestination (
     val route: String,
@@ -14,7 +16,7 @@ sealed class AdminDestination (
     val icon: ImageVector
 ) {
     data object Dashboard : AdminDestination(
-        route = "dashboard",
+        route = Routes.AdminDashboard,
         label = "Dashboard",
         icon = Icons.Default.Dashboard
     )
@@ -41,5 +43,11 @@ sealed class AdminDestination (
         route = "payments",
         label = "Payments",
         icon = Icons.Default.Payments
+    )
+
+    data object Settings : AdminDestination(
+        route = "settings",
+        label = "Settings",
+        icon = Icons.Default.Settings
     )
 }

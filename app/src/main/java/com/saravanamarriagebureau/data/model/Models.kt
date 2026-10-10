@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.saravanamarriagebureau.data.enums.Gender
 import com.saravanamarriagebureau.data.enums.InterestStatus
 import com.saravanamarriagebureau.data.enums.InterestTab
+import com.saravanamarriagebureau.data.enums.UsersTab
 import com.saravanamarriagebureau.ui.navigation.Routes
 
 data class LoginRequest(
@@ -30,53 +31,63 @@ data class LoginResponse(
 )
 
 data class RegisterRequest(
-    val profileFor: String,
     val name: String,
     val mobile: String,
-    val email: String?,
+    val email: String,
     val dob: String,
-    val location: String
+    val password: String,
+    val confirmPassword: String,
+    val gender: String,
+)
+
+data class RegisterResponse(
+    val message: String
 )
 
 data class Profile(
-    val id: String,
+    val id: String = "",
     val name: String,
-    val age: Int,
+    val age: String,
     val height: String,
     val education: String,
     val profession: String,
     val location: String,
     val responded: Boolean = false,
     val imageUrl: String? = null,
-    val mobileNumber: Int,
-    val isAdminVerified: Boolean = false,
+    val mobileNumber: String,
+    val isAdminVerified: Int = 0,
     val isPaidUser: Boolean = false,
     val religion: String,
-    val gender: Gender? = null,
+    val gender: String = "",
     val isMatchFixed: Boolean = false,
+    val email: String = ""
 )
 
 data class ProfileResponse(
     val id: String,
     val name: String,
-    val age: Int,
+    val age: String,
     val height: String,
     val education: String,
     val profession: String,
     val location: String,
-    val responded: Boolean = false,
     val imageUrl: String? = null,
     val mobileNumber: Int,
     val isAdminVerified: Boolean = false,
     val isPaidUser: Boolean = false,
     val religion: String,
-    val gender: Gender? = null,
+    val gender: String,
     val isMatchFixed: Boolean = false,
 )
 
 data class Match(
     val id: String,
-    val profile: Profile,
+    val name: String,
+    val age: String,
+    val height: String,
+    val education: String,
+    val profession: String,
+    val imageUrl: String? = null,
 )
 
 data class Invoice(
@@ -122,9 +133,7 @@ data class ChangePasswordRequest(
 )
 
 data class PasswordResponse(
-    val token: String,
-    val userId: String,
-    val name: String
+    val message: String,
 )
 
 data class LanguageOption(

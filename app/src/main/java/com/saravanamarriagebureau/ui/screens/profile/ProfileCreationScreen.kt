@@ -45,12 +45,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.ProfileTab
 import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfilePhoto
+import com.saravanamarriagebureau.ui.screens.registration.RegisterUIState
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
@@ -61,8 +65,10 @@ import com.saravanamarriagebureau.ui.theme.White
 @Composable
 fun ProfileCreationScreen(
     onSubmit: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var dob by remember { mutableStateOf("") }
@@ -704,7 +710,49 @@ fun ProfileCreationScreen(
             }
             Spacer(Modifier.height(20.dp))
             Spacer(Modifier.weight(1f))
-            PrimaryButton(stringResource(id = R.string.submit), onSubmit)
+            PrimaryButton(
+                text = stringResource(id = R.string.submit),
+                onClick = {
+                    viewModel.updateProfile(
+                        name = name,
+                        age = "",
+                        height = height,
+                        education = education,
+                        profession = profession,
+                        location = location,
+                        imageUrl = "",
+                        mobileNumber = mobileNumber,
+                        email = email,
+                        gender = selectedGender,
+                        religion = religion
+                    )
+                }
+            )
+
+            when (val state = uiState) {
+
+                ProfileUIState.Idle -> {
+                    // Nothing
+                }
+
+                ProfileUIState.Loading -> {
+                    LoadingView()
+                }
+
+                is ProfileUIState.Success -> {
+                    Text(
+                        text = state.message ?: "Profile updated"
+                    )
+                    onSubmit()
+                }
+
+                is ProfileUIState.Error -> {
+                    Text(
+                        text = state.message,
+                        color = Color.Red
+                    )
+                }
+            }
         }
     }
 }

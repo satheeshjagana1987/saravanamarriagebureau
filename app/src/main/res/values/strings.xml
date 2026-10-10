@@ -76,4 +76,9 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="search">Search</string>
+    <string name="users">Users</string>
+    <string name="pending_profiles">Pending Profiles</string>
+    <string name="pending_payments">Pending Payments</string>
+    <string name="mutual_interests">Mutual Interests</string>
+    <string name="approve">Approve</string>
 </resources>

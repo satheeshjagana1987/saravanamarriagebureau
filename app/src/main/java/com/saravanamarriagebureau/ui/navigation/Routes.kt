@@ -30,6 +30,14 @@ object Routes {
     const val ChoosePlan = "choose_plan"
     const val profileWithStepper = "profile_with_stepper"
     const val Admin = "admin"
+    const val Users = "users"
+    const val PendingProfiles = "pending_profiles"
+    const val PendingPayments = "pending_payments"
+    const val MutualInterests = "mutual_interests"
+    const val AdminDashboard = "admin_dashboard"
+    const val AdminSettings = "admin_settings"
+    const val AdminInterests = "admin_interests"
+    const val AdminPayments = "admin_payments"
 
 }
 
