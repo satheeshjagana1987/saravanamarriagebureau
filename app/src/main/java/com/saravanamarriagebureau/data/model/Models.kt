@@ -23,6 +23,7 @@ data class LoginData(
     val accessToken: String,
     val tokenType: String,
     val expiresIn: String,
+    val userType: String?,
     val user: User,
     val additionalProp1: Map<String, Any> = emptyMap()
 )
@@ -90,24 +91,44 @@ data class ProfileResponse(
 data class ProfileData(
     val id: String,
     val userId: String,
+    val fullName: String,
+    val mobile: String,
+    val dateOfBirth: String,
+    val email: String,
+    val image: ProfileMedia,
+    val videos: List<ProfileMedia>,
+    val voiceNotes: List<ProfileMedia>,
+    val isPaidUser: Boolean,
     val isAdminVerified: Boolean,
-    val height: String,
-    val education: String,
-    val profession: String,
-    val fullAddress: String,
-    val religion: String,
+    val height: String?,
+    val education: String?,
+    val profession: String?,
+    val income: String?,
+    val city: String?,
+    val fullAddress: String?,
+    val maritalStatus: String?,
+    val religion: String?,
+    val community: String?,
+    val family: FamilyData,
+    val horoscope: String?,
+    val alternateMobile: String?,
+    val registeringFor: String,
+    val lookingFor: String?,
     val createdAt: String,
-    val updatedAt: String,
+    val updatedAt: String
+)
+
+data class ProfileMedia(
+    val mediaId: String,
+    val mediaType: String,
+    val status: String,
+    val downloadEndpoint: String
 )
 
 data class FamilyData(
     val fatherName: String,
     val motherName: String,
     val siblings: String
-)
-
-data class UploadResponse(
-    val message: String
 )
 
 data class Match(
@@ -188,6 +209,33 @@ data class ChangePasswordRequest(
 )
 
 data class ForgetPasswordResponse(
+    val success: Boolean,
+    val message: String,
+)
+
+data class MediaUploadInitiatedRequest(
+    val mediaType: String,
+    val contentType: String,
+    val fileSize: Long,
+    val originalFileName: String,
+)
+
+data class MediaUploadInitiatedResponse(
+    val success: Boolean,
+    val message: String,
+)
+
+data class UploadResponse(
+    val success: Boolean,
+    val data: UploadData,
+    val message: String
+)
+
+data class UploadData(
+    val mediaId: String
+)
+
+data class MediaUploadCompleteResponse(
     val success: Boolean,
     val message: String,
 )

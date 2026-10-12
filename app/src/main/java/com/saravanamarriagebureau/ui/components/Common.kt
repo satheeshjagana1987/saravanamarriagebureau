@@ -44,6 +44,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.Gender
 import com.saravanamarriagebureau.data.enums.InterestStatus
@@ -877,18 +879,85 @@ fun ShowToast(
 
 @Composable
 fun LoadingView() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
 
-        CircularProgressIndicator()
+            CircularProgressIndicator()
+            Spacer(Modifier.height(20.dp))
+            Text(
+                text = "Please wait...",
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}
 
-        Text(
-            text = "Loading...",
-            modifier = Modifier.padding(16.dp)
-        )
+@Composable
+fun LoadingDialog(
+    message: String = "Loading, please wait...",
+    isLoading: Boolean = true
+) {
+    if (isLoading) {
+        Dialog(
+            onDismissRequest = { },
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = true
+            )
+        ) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                shape = RoundedCornerShape(20.dp),
+                color = Color.White,
+                shadowElevation = 8.dp
+            ) {
+                Column(
+                    modifier = Modifier.padding(
+                        horizontal = 24.dp,
+                        vertical = 28.dp
+                    ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(44.dp),
+                        color = Color(0xFF6750A4),
+                        strokeWidth = 4.dp
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text(
+                        text = "Please wait",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF222222)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = message,
+                        fontSize = 14.sp,
+                        color = Color(0xFF777777),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
     }
 }
 

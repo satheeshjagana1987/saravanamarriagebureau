@@ -9,6 +9,9 @@ import com.saravanamarriagebureau.data.model.Invoice
 import com.saravanamarriagebureau.data.model.LoginData
 import com.saravanamarriagebureau.data.model.LoginRequest
 import com.saravanamarriagebureau.data.model.Match
+import com.saravanamarriagebureau.data.model.MediaUploadCompleteResponse
+import com.saravanamarriagebureau.data.model.MediaUploadInitiatedRequest
+import com.saravanamarriagebureau.data.model.MediaUploadInitiatedResponse
 import com.saravanamarriagebureau.data.model.ProfileRequest
 import com.saravanamarriagebureau.data.model.ProfileResponse
 import com.saravanamarriagebureau.data.model.RegisterRequest
@@ -25,6 +28,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -60,11 +64,19 @@ interface SmbApi {
     @POST("auth/changePassword")
     suspend fun changePassword(@Body request: ChangePasswordRequest): Response<ApiResponse<ForgetPasswordResponse>>
 
+    @POST("profile/media/upload")
+    suspend fun mediaUploadInitiated(@Body request: MediaUploadInitiatedRequest): Response<ApiResponse<MediaUploadInitiatedResponse>>
+
     @Multipart
-    @POST("api/upload")
+    @PUT("")
     suspend fun uploadImage(
         @Part image: MultipartBody.Part
     ): Response<UploadResponse>
+
+    @POST("profile/media/{mediaId}/complete")
+    suspend fun mediaUploadCompleted(
+        @Path("mediaId") mediaId: String
+    ): Response<ApiResponse<MediaUploadCompleteResponse>>
 
     @GET("matches")
     suspend fun getMatches(): Response<ApiResponse<List<Match>>>

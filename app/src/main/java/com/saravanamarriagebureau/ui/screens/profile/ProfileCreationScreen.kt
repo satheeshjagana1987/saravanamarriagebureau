@@ -71,12 +71,18 @@ import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfilePhoto
+import com.saravanamarriagebureau.ui.screens.media.MediaUploadCompleteViewModel
+import com.saravanamarriagebureau.ui.screens.media.MediaUploadInitiatedUIState
+import com.saravanamarriagebureau.ui.screens.media.MediaUploadInitiatedViewModel
+import com.saravanamarriagebureau.ui.screens.media.getFileInfo
 import com.saravanamarriagebureau.ui.screens.registration.RegisterUIState
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.White
+import com.saravanamarriagebureau.util.Constants.NA
+import com.saravanamarriagebureau.util.Constants.PRIMARY_PHOTO
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,9 +91,10 @@ fun ProfileCreationScreen(
     onSubmit: () -> Unit,
     onBack: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
-    imageViewModel: ImageViewModel = hiltViewModel()
+    imageViewModel: ImageViewModel = hiltViewModel(),
+    mediaInitiatedUploadViewModel: MediaUploadInitiatedViewModel = hiltViewModel(),
+    mediaUploadCompleteViewModel: MediaUploadCompleteViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var dob by remember { mutableStateOf("") }
@@ -102,6 +109,9 @@ fun ProfileCreationScreen(
     val options = listOf("Amaravathi, Guntur, Vizag")
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
+
+    var imageFileSize: Long = 0
+    var imageFileName = ""
 
     var selectedTab by remember {
         mutableStateOf(ProfileTab.PERSONAL)
@@ -124,7 +134,10 @@ fun ProfileCreationScreen(
         mutableStateOf("")
     }
 
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val state by imageViewModel.uiState.collectAsState()
+    val mediaInitiatedUploadUiState by mediaInitiatedUploadViewModel.uiState.collectAsState()
+    val mediaUploadCompleteUiState by mediaUploadCompleteViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
     var pendingCameraUri by remember {
@@ -163,7 +176,12 @@ fun ProfileCreationScreen(
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
-        uri?.let { imageViewModel.setImage(it) }
+        uri?.let {
+            val info = it.getFileInfo(context)
+            imageFileName = info.name ?: NA
+            imageFileSize = info.size ?: 0
+            imageViewModel.setImage(it)
+        }
     }
 
     // Capture a full-size photo
@@ -773,7 +791,13 @@ fun ProfileCreationScreen(
                                 }
 
                                 Button(
-                                    onClick = { imageViewModel.uploadImage() },
+                                    onClick = {
+                                        mediaInitiatedUploadViewModel.mediaUploadInitiated(
+                                            mediaType = PRIMARY_PHOTO,
+                                            fileSize = imageFileSize,
+                                            originalFileName = imageFileName
+                                        )
+                                    },
                                     enabled = state.imageUri != null &&
                                             !state.isLoading,
                                     modifier = Modifier.fillMaxWidth()
@@ -788,12 +812,41 @@ fun ProfileCreationScreen(
                                     LoadingView()
                                 }
 
+                                if(state.success) {
+                                    mediaUploadCompleteViewModel.mediaUploadComplete()
+                                }
+
                                 state.message?.let {
                                     Text(it, color = MaterialTheme.colorScheme.primary)
                                 }
 
                                 state.error?.let {
                                     Text(it, color = MaterialTheme.colorScheme.error)
+                                }
+
+                                when (val state = mediaInitiatedUploadUiState) {
+
+                                    MediaUploadInitiatedUIState.Idle -> {
+                                        // Nothing
+                                    }
+
+                                    MediaUploadInitiatedUIState.Loading -> {
+                                        LoadingView()
+                                    }
+
+                                    is MediaUploadInitiatedUIState.Success -> {
+                                        imageViewModel.uploadImage()
+                                        Text(
+                                            text = state.message ?: "Media initiated"
+                                        )
+                                    }
+
+                                    is MediaUploadInitiatedUIState.Error -> {
+                                        Text(
+                                            text = state.message,
+                                            color = Color.Red
+                                        )
+                                    }
                                 }
                             }
                         }

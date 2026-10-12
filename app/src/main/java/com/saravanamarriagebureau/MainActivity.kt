@@ -10,16 +10,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.saravanamarriagebureau.ui.SmbNavigationApp
 import com.saravanamarriagebureau.ui.theme.SaravanaMarriageBureauTheme
+import com.saravanamarriagebureau.util.AppPreferences
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SaravanaMarriageBureauTheme {
-                SmbNavigationApp()
+                SmbNavigationApp(
+                    appPreferences = appPreferences
+                )
             }
         }
     }

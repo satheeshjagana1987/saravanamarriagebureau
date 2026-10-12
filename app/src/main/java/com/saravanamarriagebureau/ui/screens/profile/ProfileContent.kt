@@ -48,6 +48,7 @@ import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.Warning
+import com.saravanamarriagebureau.util.Constants.NA
 import timber.log.Timber
 
 @Composable
@@ -261,28 +262,28 @@ fun ProfileContent(
 
                         ProfileInfoRow(
                             label = stringResource(id = R.string.education),
-                            value = profile.education
+                            value = profile.education ?: NA
                         )
 
                         DividerLine()
 
                         ProfileInfoRow(
                             label =stringResource(id = R.string.profession),
-                            value = profile.profession
+                            value = profile.profession ?: NA
                         )
 
                         DividerLine()
                         if(profile.isAdminVerified) {
                             ProfileInfoRow(
                                 label = stringResource(id = R.string.location),
-                                value = profile.fullAddress
+                                value = profile.fullAddress ?: NA
                             )
 
                             DividerLine()
 
                             ProfileInfoRow(
                                 label = stringResource(id = R.string.mobile_number),
-                                value = profile.profession
+                                value = profile.profession ?: NA
                             )
 
                             DividerLine()

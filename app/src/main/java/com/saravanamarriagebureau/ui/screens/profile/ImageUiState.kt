@@ -5,6 +5,7 @@ import android.net.Uri
 data class ImageUiState(
     val imageUri: Uri? = null,
     val isLoading: Boolean = false,
+    val success: Boolean = false,
     val message: String? = null,
     val error: String? = null
 )

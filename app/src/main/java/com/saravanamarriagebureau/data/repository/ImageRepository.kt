@@ -3,6 +3,8 @@ package com.saravanamarriagebureau.data.repository
 import android.content.Context
 import android.net.Uri
 import com.saravanamarriagebureau.data.api.SmbApi
+import com.saravanamarriagebureau.util.AppPreferences
+import com.saravanamarriagebureau.util.Constants.NA
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -16,6 +18,7 @@ import javax.inject.Inject
 
 class ImageRepository @Inject constructor(
     private val api: SmbApi,
+    private val appPreferences: AppPreferences,
     @ApplicationContext private val context: Context
 ) {
 
@@ -52,11 +55,12 @@ class ImageRepository @Inject constructor(
                 val response = api.uploadImage(imagePart)
 
                 if (response.isSuccessful) {
-                    response.body()?.message
-                        ?: "Image uploaded successfully"
+                    response.body()?.message ?: "Image uploaded successfully"
+                    appPreferences.saveMediaId(response.body()?.data?.mediaId ?: NA).toString()
                 } else {
                     throw HttpException(response)
                 }
+
             } finally {
                 tempFile.delete()
             }

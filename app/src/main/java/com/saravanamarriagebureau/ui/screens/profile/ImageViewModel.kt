@@ -38,7 +38,8 @@ class ImageViewModel @Inject constructor(
                 it.copy(
                     isLoading = true,
                     message = null,
-                    error = null
+                    error = null,
+                    success = false
                 )
             }
 
@@ -48,13 +49,15 @@ class ImageViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        message = result
+                        message = result,
+                        success = true
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        success = false,
                         error = e.message ?: "Upload failed"
                     )
                 }

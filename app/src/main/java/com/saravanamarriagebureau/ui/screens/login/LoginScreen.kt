@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
@@ -42,8 +43,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -57,6 +60,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.AppLogo
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.SecondaryButton
@@ -68,6 +72,8 @@ import com.saravanamarriagebureau.ui.theme.Gray
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.AppPreferences
+import com.saravanamarriagebureau.util.ToastUtils
+import com.saravanamarriagebureau.util.ValidationUtils
 import timber.log.Timber
 
 @Composable
@@ -79,6 +85,11 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     forgetPasswordViewModel: ForgetPasswordViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
     var mobileNumber by rememberSaveable {
         mutableStateOf("")
     }
@@ -86,6 +97,10 @@ fun LoginScreen(
     var password by rememberSaveable {
         mutableStateOf("")
     }
+
+    var mobileError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+
     var passwordVisible by remember { mutableStateOf(false) }
     var isCheckedRememberMe by remember { mutableStateOf(false) }
 
@@ -150,6 +165,9 @@ fun LoginScreen(
                             modifier = Modifier.size(19.dp)
                         )
                     },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
 
                     placeholder = {
                         Text(
@@ -193,6 +211,9 @@ fun LoginScreen(
                             modifier = Modifier.size(19.dp)
                         )
                     },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text
+                    ),
                     trailingIcon = {
                         IconButton(
                             onClick = {
@@ -248,6 +269,12 @@ fun LoginScreen(
                         color = Maroon,
                         modifier = Modifier
                             .clickable {
+                                mobileError = ValidationUtils.validateMobile(mobileNumber.trim())
+                                if(mobileError != null) {
+                                    ToastUtils.error(context = context, message = mobileError.toString())
+                                    return@clickable
+                                }
+                                isLoading = true
                                forgetPasswordViewModel.forgetPassword(
                                    mobile = mobileNumber
                                )
@@ -259,6 +286,19 @@ fun LoginScreen(
         Spacer(Modifier.height(30.dp))
         PrimaryButton(stringResource(id = R.string.login),
             onClick = {
+                mobileError = ValidationUtils.validateMobile(mobileNumber.trim())
+                passwordError = ValidationUtils.validatePassword(password.trim())
+
+                if(mobileError != null) {
+                    ToastUtils.error(context = context, message = mobileError.toString())
+                    return@PrimaryButton
+                }
+
+                if(passwordError != null) {
+                    ToastUtils.error(context = context, message = passwordError.toString())
+                    return@PrimaryButton
+                }
+                isLoading = true
                 viewModel.login(
                     mobile = mobileNumber,
                     password = password
@@ -273,21 +313,26 @@ fun LoginScreen(
             }
 
             LoginUIState.Loading -> {
-                LoadingView()
+                LoadingDialog(
+                    isLoading = isLoading,
+                    message = "Logging In...")
             }
 
             is LoginUIState.Success -> {
-                Text(
-                    text = state.message ?: "Login successful"
-                )
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Sending OTP...")
+                ToastUtils.success(context = context, message = "Login successful")
                onLogin()
             }
 
             is LoginUIState.Error -> {
-                Text(
-                    text = state.message,
-                    color = Color.Red
-                )
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Sending OTP...")
+                ToastUtils.error(context = context, message = state.message)
             }
         }
 
@@ -298,21 +343,27 @@ fun LoginScreen(
             }
 
             ForgetPasswordUIState.Loading -> {
-                LoadingView()
+                LoadingDialog(
+                    isLoading = isLoading,
+                    message = "Sending OTP...")
+
             }
 
             is ForgetPasswordUIState.Success -> {
-                Text(
-                    text = state.message ?: "OTP sent successfully"
-                )
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Sending OTP...")
+                ToastUtils.success(context = context, message = "OTP sent successfully")
                 onForgot(mobileNumber)
             }
 
             is ForgetPasswordUIState.Error -> {
-                Text(
-                    text = state.message,
-                    color = Color.Red
-                )
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Sending OTP...")
+                ToastUtils.error(context = context, message = state.message)
             }
 
         }

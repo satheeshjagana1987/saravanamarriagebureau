@@ -1,5 +1,6 @@
 package com.saravanamarriagebureau.ui
 
+import androidx.compose.foundation.MutatePriority
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -16,9 +17,14 @@ import com.saravanamarriagebureau.ui.screens.registration.RegisterScreen
 import com.saravanamarriagebureau.ui.screens.splash.SplashScreen
 import com.saravanamarriagebureau.ui.screens.splash.WelcomeScreen
 import com.saravanamarriagebureau.ui.screens.admin.AdminLandingScreen
+import com.saravanamarriagebureau.util.AppPreferences
+import com.saravanamarriagebureau.util.Constants.KEY_USER_TYPE
 
 @Composable
-fun SmbNavigationApp(modifier: Modifier = Modifier) {
+fun SmbNavigationApp(
+    modifier: Modifier = Modifier,
+    appPreferences: AppPreferences
+) {
     val navController = rememberNavController()
 
     NavHost(
@@ -29,14 +35,24 @@ fun SmbNavigationApp(modifier: Modifier = Modifier) {
         composable(Routes.Splash) {
             SplashScreen(
                 onFinished = {
+                    if (appPreferences.isLoggedIn() && appPreferences.getUserType() == KEY_USER_TYPE) {
+                        navController.navigate(Routes.Main) {
 
-                    navController.navigate(Routes.Welcome) {
+                            popUpTo(Routes.Splash) {
+                                inclusive = true
+                            }
 
-                        popUpTo(Routes.Splash) {
-                            inclusive = true
+                            launchSingleTop = true
                         }
+                    } else {
+                        navController.navigate(Routes.Welcome) {
 
-                        launchSingleTop = true
+                            popUpTo(Routes.Splash) {
+                                inclusive = true
+                            }
+
+                            launchSingleTop = true
+                        }
                     }
                 }
             )

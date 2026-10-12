@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -57,6 +58,8 @@ import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.SuccessSoft
 import com.saravanamarriagebureau.ui.theme.White
+import com.saravanamarriagebureau.util.ToastUtils
+import com.saravanamarriagebureau.util.ValidationUtils
 
 @Composable
 fun ForgotPasswordScreen(
@@ -66,11 +69,16 @@ fun ForgotPasswordScreen(
     viewModel: VerifyResetOTPViewModel = hiltViewModel(),
     resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     var otp by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+
+    var otpError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val resetPasswordUiState by resetPasswordViewModel.uiState.collectAsStateWithLifecycle()
@@ -101,7 +109,7 @@ fun ForgotPasswordScreen(
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
-                    "OTP sent to 9999900000",
+                    "OTP sent to $mobile",
                     Modifier.padding(start = 10.dp),
                     color = Success,
                     fontSize = 15.sp,
@@ -378,6 +386,22 @@ fun ForgotPasswordScreen(
             text = stringResource(id = R.string.reset_password),
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
             onClick = {
+                otpError = ValidationUtils.validateField(field = otp.trim())
+                passwordError = ValidationUtils.validatePassword(password = password.trim())
+                confirmPasswordError = ValidationUtils.validateConfirmPassword(password = password.trim(), confirmPassword = confirmPassword.trim())
+
+                if(otpError != null) {
+                    ToastUtils.error(context = context, message = otpError.toString())
+                    return@PrimaryButton
+                }
+                if(passwordError != null) {
+                    ToastUtils.error(context = context, message = passwordError.toString())
+                    return@PrimaryButton
+                }
+                if(confirmPasswordError != null) {
+                    ToastUtils.error(context = context, message = confirmPasswordError.toString())
+                    return@PrimaryButton
+                }
                 resetPasswordViewModel.resetPassword(
                     newPassword = password,
                     confirmPassword = confirmPassword

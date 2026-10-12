@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.LoginRepository
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.AppPreferences
+import com.saravanamarriagebureau.util.Constants.KEY_USER_TYPE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,6 +48,14 @@ class LoginViewModel @Inject constructor(
                         )
                     appPreferences.saveAccessToken(
                         result.data.accessToken
+                    )
+
+                    appPreferences.saveLoginStatus(
+                        isLoggedIn = true
+                    )
+
+                    appPreferences.saveUserType(
+                        result.data.userType ?: KEY_USER_TYPE
                     )
 
                 }
