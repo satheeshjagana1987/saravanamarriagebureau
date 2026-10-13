@@ -85,6 +85,7 @@
     <string name="mutual_interests">Mutual Interests</string>
     <string name="approve">Approve</string>
     <string name="single">Single</string>
+    <string name="never_married">Never Married</string>
     <string name="others">Others</string>
     <string name="password_min_chars">Password should be min 8 chars</string>
 </resources>

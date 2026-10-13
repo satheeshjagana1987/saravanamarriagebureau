@@ -9,9 +9,5 @@ import javax.inject.Inject
 class InterestsRepository @Inject constructor(
     private val api: SmbApi
 ) {
-    suspend fun getInterests(): ApiResult<List<Interest>> {
-        return safeApiCall {
-            api.getInterests()
-        }
-    }
+
 }

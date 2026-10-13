@@ -10,56 +10,77 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.data.enums.InterestTab
-import com.saravanamarriagebureau.data.model.Interest
-import com.saravanamarriagebureau.data.model.demoInterests
+import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.InterestCard
+import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
+import com.saravanamarriagebureau.util.ToastUtils
 
 @Composable
 fun InterestsScreen(
-    onInterestItemClick: (Interest) -> Unit,
+    onInterestItemClick: (UserInterestsData) -> Unit,
     onAcceptRejectButton: () -> Unit,
+    viewModel: UserInterestsViewModel = hiltViewModel()
 ) {
 
+    val context = LocalContext.current
     var selectedTab by remember {
         mutableStateOf(InterestTab.RECEIVED)
     }
 
-    // Change list based on selected tab
-    val filteredInterests = when (selectedTab) {
-        InterestTab.RECEIVED -> {
-            demoInterests.filter { interest ->
-                interest.type == InterestTab.RECEIVED
-            }
-        }
+    var filteredInterests: List<UserInterestsData> = emptyList()
 
-        InterestTab.SENT -> {
-            demoInterests.filter { interest ->
-                interest.type == InterestTab.SENT
-            }
-        }
-
-        InterestTab.MATCH_FIXED -> {
-            demoInterests.filter { interest ->
-                interest.isMatched
-            }
-        }
+    var isLoading by remember {
+        mutableStateOf(false)
     }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getReceivedInterests()
+    }
+
+    LoadingDialog(isLoading = isLoading)
+
+//    // Change list based on selected tab
+//    val filteredInterests = when (selectedTab) {
+//        InterestTab.RECEIVED -> {
+//            demoInterests.filter { interest ->
+//                interest.type == InterestTab.RECEIVED
+//            }
+//        }
+//
+//        InterestTab.SENT -> {
+//            demoInterests.filter { interest ->
+//                interest.type == InterestTab.SENT
+//            }
+//        }
+//
+//        InterestTab.MATCH_FIXED -> {
+//            demoInterests.filter { interest ->
+//                interest.isMatched
+//            }
+//        }
+//    }
 
     Column(
         Modifier
@@ -77,6 +98,7 @@ fun InterestsScreen(
                     selected = selectedTab == InterestTab.RECEIVED,
                     onClick = {
                         selectedTab = InterestTab.RECEIVED
+                        viewModel.getReceivedInterests()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -109,10 +131,37 @@ fun InterestsScreen(
                     key = { it.id }
                 ) { interest ->
                     InterestCard(
-                        interest,
+                        interest = interest,
+                        selectedTab = selectedTab,
                         onOpen = {onInterestItemClick(interest)},
                         onAcceptRejectButton = { onAcceptRejectButton() }
                     )
+                }
+            }
+        }
+        LaunchedEffect(uiState) {
+            when (val state = uiState) {
+
+                is UserInterestsUIState.Loading -> {
+                    isLoading = true
+                }
+
+                is UserInterestsUIState.Success -> {
+                    isLoading = false
+                    filteredInterests = state.data
+                    ToastUtils.success(
+                        context = context,
+                        message = "Received Interests fetched successfully"
+                    )
+                }
+
+                is UserInterestsUIState.Error -> {
+                    isLoading = false
+                    ToastUtils.error(context, state.message)
+                }
+
+                else -> {
+                    isLoading = false
                 }
             }
         }

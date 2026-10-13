@@ -79,13 +79,9 @@ data class ProfileRequest(
     val religion: String,
     val email: String,
     val fullAddress: String,
-)
-
-data class ProfileResponse(
-    val success: Boolean,
-    val data: ProfileData,
-    val requestId: String,
-    val timestamp: String
+    val city: String,
+    val district: String,
+    val maritalStatus: String,
 )
 
 data class ProfileData(
@@ -105,9 +101,11 @@ data class ProfileData(
     val profession: String?,
     val income: String?,
     val city: String?,
+    val district: String?,
     val fullAddress: String?,
     val maritalStatus: String?,
     val religion: String?,
+    val gender: String?,
     val community: String?,
     val family: FamilyData,
     val horoscope: String?,
@@ -170,6 +168,35 @@ data class Interest(
     val status: InterestStatus,
     val isPaymentDone: Boolean = false,
 )
+
+data class UserInterestsResponse(
+    val success: Boolean,
+    val data: List<UserInterestsData>,
+    val pagination: Pagination,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class UserInterestsData(
+    val id: String,
+    val name: String,
+    val dob: String,
+    val isAdminVerified: Boolean,
+    val education: String,
+    val senderProfileId: String,
+    val receiverProfileId: String,
+    val status: String,
+    val createdAt: String,
+    val updatedAt: String
+)
+
+data class Pagination(
+    val total: Int,
+    val limit: Int,
+    val offset: Int,
+    val hasMore: Boolean
+)
+
 
 data class ForgetPasswordRequest(
     val mobile: String,

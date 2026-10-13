@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
@@ -29,10 +30,7 @@ import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -40,6 +38,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,13 +51,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
@@ -68,6 +67,7 @@ import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.ProfileTab
 import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfilePhoto
@@ -75,7 +75,6 @@ import com.saravanamarriagebureau.ui.screens.media.MediaUploadCompleteViewModel
 import com.saravanamarriagebureau.ui.screens.media.MediaUploadInitiatedUIState
 import com.saravanamarriagebureau.ui.screens.media.MediaUploadInitiatedViewModel
 import com.saravanamarriagebureau.ui.screens.media.getFileInfo
-import com.saravanamarriagebureau.ui.screens.registration.RegisterUIState
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
@@ -83,6 +82,8 @@ import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.Constants.PRIMARY_PHOTO
+import com.saravanamarriagebureau.util.ToastUtils
+import com.saravanamarriagebureau.util.ValidationUtils
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,15 +103,31 @@ fun ProfileCreationScreen(
     var district by remember { mutableStateOf("") }
     var fullAddress by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
-    var maritalStatus by remember { mutableStateOf("") }
     var education by remember { mutableStateOf("") }
     var profession by remember { mutableStateOf("") }
     var religion by remember { mutableStateOf("") }
     var mobileNumber by remember { mutableStateOf("") }
+    var gender by remember { mutableStateOf("") }
     // Location dropdown
     val options = listOf("Amaravathi, Guntur, Vizag")
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
+
+    val maritalStatusOptions = listOf(
+        "Never Married",
+        "Others"
+    )
+
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var cityError by remember { mutableStateOf<String?>(null) }
+    var districtError by remember { mutableStateOf<String?>(null) }
+    var heightError by remember { mutableStateOf<String?>(null) }
+    var educationError by remember { mutableStateOf<String?>(null) }
+    var professionError by remember { mutableStateOf<String?>(null) }
+    var religionError by remember { mutableStateOf<String?>(null) }
 
     var imageFileSize: Long = 0
     var imageFileName = ""
@@ -137,6 +154,12 @@ fun ProfileCreationScreen(
     }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiStateProfileUpdate by viewModel.uiStateProfileUpdate.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadProfile()
+    }
+
     val state by imageViewModel.uiState.collectAsState()
     val mediaInitiatedUploadUiState by mediaInitiatedUploadViewModel.uiState.collectAsState()
     val mediaUploadCompleteUiState by mediaUploadCompleteViewModel.uiState.collectAsState()
@@ -144,6 +167,48 @@ fun ProfileCreationScreen(
 
     var pendingCameraUri by remember {
         mutableStateOf<Uri?>(null)
+    }
+
+    LaunchedEffect(uiState) {
+
+        when (val state = uiState) {
+
+            is ProfileUIState.Loading -> {
+                isLoading = true
+            }
+
+            is ProfileUIState.Success -> {
+                isLoading = false
+
+                val profile = state.data
+
+                name = profile.fullName
+                email = profile.email
+                mobileNumber = profile.mobile
+                dob = profile.dateOfBirth
+                city = profile.city.orEmpty()
+                district = profile.district.orEmpty()
+                fullAddress = profile.fullAddress.orEmpty()
+
+                height = profile.height.orEmpty()
+                education = profile.education.orEmpty()
+                profession = profile.profession.orEmpty()
+                religion = profile.religion.orEmpty()
+                gender = profile.gender.orEmpty()
+                selectedMaritalStatus = profile.maritalStatus.orEmpty()
+
+                ToastUtils.success(context = context, message = "Profile data fetched successfully")
+            }
+
+            is ProfileUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> {
+                isLoading = false
+            }
+        }
     }
 
     // 1. Crop launcher must be declared first
@@ -197,6 +262,9 @@ fun ProfileCreationScreen(
         }
     }
 
+    // Modal loading dialog shown while the profile is being fetched.
+    // It overlays the whole screen and blocks interaction until load completes.
+    LoadingDialog(isLoading = isLoading)
 
     Column(
         Modifier
@@ -279,6 +347,7 @@ fun ProfileCreationScreen(
                             onValueChange = {
                                 name = it
                             },
+                            readOnly = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(52.dp),
@@ -325,6 +394,7 @@ fun ProfileCreationScreen(
                                     mobileNumber = it
                                 }
                             },
+                            readOnly = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(52.dp),
@@ -411,6 +481,7 @@ fun ProfileCreationScreen(
                             onValueChange = {
                                 dob = it
                             },
+                            readOnly = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(52.dp),
@@ -524,48 +595,6 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-
-                        Spacer(Modifier.height(10.dp))
-                        LabelName(
-                            labelName = stringResource(id = R.string.full_address),
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(Modifier.height(5.dp))
-                        OutlinedTextField(
-                            value = fullAddress,
-                            onValueChange = {
-                                fullAddress = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.LocationOn,
-                                    contentDescription = null,
-                                    tint = Color(0xFF9A9AA5),
-                                    modifier = Modifier.size(19.dp)
-                                )
-                            },
-                            placeholder = {
-                                Text(
-                                    text = "Enter Location",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        )
                     }
                 }
                 if (isProfessionalVisible) {
@@ -643,7 +672,9 @@ fun ProfileCreationScreen(
                                     modifier = Modifier.size(19.dp)
                                 )
                             },
-
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Decimal
+                            ),
                             placeholder = {
                                 Text(
                                     text = "Enter Height",
@@ -687,7 +718,7 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-                        Spacer(Modifier.height(5.dp))
+                        Spacer(Modifier.height(10.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             LabelName(
                                 labelName = stringResource(id = R.string.gender),
@@ -695,36 +726,36 @@ fun ProfileCreationScreen(
                                 color = Maroon,
                                 fontWeight = FontWeight.Normal
                             )
-                            RadioButton(
-                                selected = selectedGender == stringResource(R.string.male).uppercase(),
-                                onClick = {
-                                    selectedGender = "MALE"
-                                }
-                            )
-
-                            LabelName(
-                                labelName = stringResource(id = R.string.male),
-                                fontSize = 14.sp,
-                                color = Black,
-                                fontWeight = FontWeight.Normal
-                            )
+//                            RadioButton(
+//                                selected = selectedGender == stringResource(R.string.male).uppercase(),
+//                                onClick = {
+//                                    selectedGender = "MALE"
+//                                }
+//                            )
                             Spacer(Modifier.width(10.dp))
-                            RadioButton(
-                                selected = selectedGender == stringResource(R.string.female).uppercase(),
-                                onClick = {
-                                    selectedGender = "FEMALE"
-                                }
-                            )
-
                             LabelName(
-                                labelName = stringResource(id = R.string.female),
+                                labelName = gender,
                                 fontSize = 14.sp,
                                 color = Black,
                                 fontWeight = FontWeight.Normal
                             )
+//                            Spacer(Modifier.width(10.dp))
+//                            RadioButton(
+//                                selected = selectedGender == stringResource(R.string.female).uppercase(),
+//                                onClick = {
+//                                    selectedGender = "FEMALE"
+//                                }
+//                            )
+//
+//                            LabelName(
+//                                labelName = stringResource(id = R.string.female),
+//                                fontSize = 14.sp,
+//                                color = Black,
+//                                fontWeight = FontWeight.Normal
+//                            )
                         }
 
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(5.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             LabelName(
                                 labelName = stringResource(id = R.string.marital_status),
@@ -733,33 +764,24 @@ fun ProfileCreationScreen(
                                 fontWeight = FontWeight.Normal
                             )
                             Spacer(Modifier.height(5.dp))
-                            RadioButton(
-                                selected = selectedMaritalStatus == stringResource(R.string.single),
-                                onClick = {
-                                    selectedMaritalStatus = "Single"
-                                }
-                            )
+                            maritalStatusOptions.forEach { status ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = selectedMaritalStatus == status,
+                                        onClick = {
+                                            selectedMaritalStatus = status
+                                        }
+                                    )
 
-                            LabelName(
-                                labelName = stringResource(id = R.string.single),
-                                fontSize = 14.sp,
-                                color = Black,
-                                fontWeight = FontWeight.Normal
-                            )
-                            Spacer(Modifier.width(10.dp))
-                            RadioButton(
-                                selected = selectedMaritalStatus == stringResource(R.string.others),
-                                onClick = {
-                                    selectedMaritalStatus = "Others"
+                                    Text(
+                                        text = status,
+                                        fontSize = 14.sp,
+                                        color = Black
+                                    )
                                 }
-                            )
-
-                            LabelName(
-                                labelName = stringResource(id = R.string.others),
-                                fontSize = 14.sp,
-                                color = Black,
-                                fontWeight = FontWeight.Normal
-                            )
+                            }
                         }
 
                         Spacer(Modifier.height(15.dp))
@@ -1008,35 +1030,54 @@ fun ProfileCreationScreen(
             PrimaryButton(
                 text = stringResource(id = R.string.submit),
                 onClick = {
+
+                    emailError = ValidationUtils.validateEmail(email = email.trim())
+                    heightError = ValidationUtils.validateField(field = height.trim())
+                    educationError = ValidationUtils.validateField(field = education.trim())
+                    cityError = ValidationUtils.validateField(field = city.trim())
+                    districtError = ValidationUtils.validateField(field = district.trim())
+                    professionError = ValidationUtils.validateField(field = profession.trim())
+                    religionError = ValidationUtils.validateField(field = religion.trim())
+
+                    if(emailError != null) {
+                        ToastUtils.error(context = context, message = emailError.toString())
+                        return@PrimaryButton
+                    }
+
                     viewModel.updateProfile(
                         height = height.trim(),
                         education = education.trim(),
                         profession = profession.trim(),
                         religion = religion.trim(),
-                        fullAddress = fullAddress.trim(),
+                        fullAddress = "",
                         email = email.trim(),
+                        city = city.trim(),
+                        district = district.trim(),
+                        maritalStatus = selectedMaritalStatus
                     )
                 }
             )
 
-            when (val state = uiState) {
+            when (val state = uiStateProfileUpdate) {
 
-                ProfileUIState.Idle -> {
+                ProfileUpdateUIState.Idle -> {
                     // Nothing
                 }
 
-                ProfileUIState.Loading -> {
-                    LoadingView()
+                ProfileUpdateUIState.Loading -> {
+                    isLoading = true
                 }
 
-                is ProfileUIState.Success -> {
+                is ProfileUpdateUIState.Success -> {
+                    isLoading = false
                     Text(
                         text = state.message ?: "Profile updated"
                     )
                     onSubmit()
                 }
 
-                is ProfileUIState.Error -> {
+                is ProfileUpdateUIState.Error -> {
+                    isLoading = false
                     Text(
                         text = state.message,
                         color = Color.Red

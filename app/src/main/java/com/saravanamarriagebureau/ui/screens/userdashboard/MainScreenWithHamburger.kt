@@ -374,9 +374,8 @@ fun MainScreenWithHamburger() {
 
                     InterestsScreen(
                         onInterestItemClick = { interest ->
-                            Timber.e("profile  InterestsScreen ==>  ${interest.type}")
                             navController.navigate(
-                                profileRoute(profileId = interest.id, type = interest.type.name)
+                                profileRoute(profileId = interest.id, type = "")
                             )
                         },
                         onAcceptRejectButton = {
@@ -400,7 +399,7 @@ fun MainScreenWithHamburger() {
                         },
 
                         onBack = {
-                            navController.popBackStack()
+//                            navController.popBackStack()
                         }
                     )
                 }

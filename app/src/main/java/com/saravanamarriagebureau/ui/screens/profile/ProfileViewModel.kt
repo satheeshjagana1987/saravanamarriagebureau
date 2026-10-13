@@ -3,8 +3,6 @@ package com.saravanamarriagebureau.ui.screens.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.ProfileRepository
-import com.saravanamarriagebureau.data.repository.RegisterRepository
-import com.saravanamarriagebureau.ui.screens.registration.RegisterUIState
 import com.saravanamarriagebureau.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,26 +20,23 @@ class ProfileViewModel @Inject constructor(
 
     val uiState = _uiState.asStateFlow()
 
+    private val _uiStateProfileUpdate =
+        MutableStateFlow<ProfileUpdateUIState>(ProfileUpdateUIState.Idle)
 
-    fun loadProfile(profileId: String) {
+    val uiStateProfileUpdate = _uiStateProfileUpdate.asStateFlow()
+
+
+    fun loadProfile() {
         viewModelScope.launch {
             _uiState.value = ProfileUIState.Loading
 
             when (val result = profileRepository.getProfile()) {
                 is ApiResult.Success -> {
-                    val response = result.data
-
-                    if (response.success) {
-                        _uiState.value =
-                            ProfileUIState.Success(
-                                data = response
-                            )
-                    } else {
-                        _uiState.value =
-                            ProfileUIState.Error(
-                                "Unable to load profile"
-                            )
-                    }
+                    _uiState.value =
+                        ProfileUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
                 }
 
                 is ApiResult.Error -> {
@@ -63,11 +58,14 @@ class ProfileViewModel @Inject constructor(
         religion: String,
         email: String,
         fullAddress: String,
+        city: String,
+        district: String,
+        maritalStatus: String
     ) {
 
         viewModelScope.launch {
 
-            _uiState.value = ProfileUIState.Loading
+            _uiStateProfileUpdate.value = ProfileUpdateUIState.Loading
 
             when (
                 val result = profileRepository.updateProfile(
@@ -77,22 +75,25 @@ class ProfileViewModel @Inject constructor(
                     religion = religion,
                     fullAddress = fullAddress,
                     email = email,
+                    city = city,
+                    district = district,
+                    maritalStatus = maritalStatus
+
                 )
             ) {
 
                 is ApiResult.Success -> {
 
-                    _uiState.value =
-                        ProfileUIState.Success(
-                            data = result.data,
+                    _uiStateProfileUpdate.value =
+                        ProfileUpdateUIState.Success(
                             message = result.message
                         )
                 }
 
                 is ApiResult.Error -> {
 
-                    _uiState.value =
-                        ProfileUIState.Error(
+                    _uiStateProfileUpdate.value =
+                        ProfileUpdateUIState.Error(
                             message = result.message
                         )
                 }

@@ -1,27 +1,12 @@
 package com.saravanamarriagebureau.ui.screens.profile
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.visible
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -29,33 +14,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.saravanamarriagebureau.R
-import com.saravanamarriagebureau.data.enums.InterestTab
-import com.saravanamarriagebureau.data.model.demoInterests
-import com.saravanamarriagebureau.ui.components.DividerLine
-import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
-import com.saravanamarriagebureau.ui.components.ProfileInfoRow
-import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
-import com.saravanamarriagebureau.ui.theme.Maroon
-import com.saravanamarriagebureau.ui.theme.Red
-import com.saravanamarriagebureau.ui.theme.Success
-import com.saravanamarriagebureau.ui.theme.Warning
-import timber.log.Timber
 
 @Composable
 fun ProfileViewScreen(
@@ -69,8 +34,8 @@ fun ProfileViewScreen(
     val uiState by viewModel.uiState
         .collectAsStateWithLifecycle()
 
-    LaunchedEffect(profileId) {
-        viewModel.loadProfile(profileId)
+    LaunchedEffect(Unit) {
+        viewModel.loadProfile()
     }
 
     when (val state = uiState) {
@@ -88,7 +53,7 @@ fun ProfileViewScreen(
 
         is ProfileUIState.Success -> {
             ProfileContent(
-                profile = state.data.data,
+                profile = state.data,
                 onBack = onBack,
                 onInterest = onInterest,
                 profileType = profileType,
@@ -113,7 +78,7 @@ fun ProfileViewScreen(
                 PrimaryButton(
                     text = "Retry",
                     onClick = {
-                        viewModel.loadProfile(profileId)
+                        viewModel.loadProfile()
                     }
                 )
 

@@ -52,7 +52,6 @@ import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
-import com.saravanamarriagebureau.ui.screens.login.LoginUIState
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red

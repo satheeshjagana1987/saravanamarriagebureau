@@ -1,32 +1,51 @@
 package com.saravanamarriagebureau.ui.components
 
 import android.content.Context
-import android.widget.GridLayout
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Verified
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -39,7 +58,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -52,7 +70,18 @@ import com.saravanamarriagebureau.data.enums.InterestStatus
 import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.Profile
-import com.saravanamarriagebureau.ui.theme.*
+import com.saravanamarriagebureau.data.model.UserInterestsData
+import com.saravanamarriagebureau.ui.theme.Black
+import com.saravanamarriagebureau.ui.theme.Gray
+import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.Red
+import com.saravanamarriagebureau.ui.theme.SoftRose
+import com.saravanamarriagebureau.ui.theme.Success
+import com.saravanamarriagebureau.ui.theme.SuccessSoft
+import com.saravanamarriagebureau.ui.theme.TextPrimary
+import com.saravanamarriagebureau.ui.theme.TextSecondary
+import com.saravanamarriagebureau.ui.theme.Warning
+import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
 fun AppLogo(compact: Boolean = false) {
@@ -255,7 +284,8 @@ fun ProfileCard(
                 if (profile.isAdminVerified == 1) {
                     onOpen()
                 } else {
-                    Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT)
+                        .show()
                 }
             },
         shape = RoundedCornerShape(5.dp),
@@ -339,7 +369,8 @@ fun AdminUserCard(
                 if (profile.isAdminVerified == 1) {
                     onOpen()
                 } else {
-                    Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT)
+                        .show()
                 }
             },
         shape = RoundedCornerShape(5.dp),
@@ -415,7 +446,8 @@ fun AdminUserStatusContent(
 
 @Composable
 fun InterestCard(
-    interest: Interest,
+    interest: UserInterestsData,
+    selectedTab: InterestTab,
     onOpen: () -> Unit,
     onAcceptRejectButton: () -> Unit
 ) {
@@ -439,7 +471,7 @@ fun InterestCard(
                     modifier = Modifier.padding(0.dp)
                 )
                 LabelName(
-                    labelName = "${interest.age} yrs",
+                    labelName = "${interest.dob} yrs",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = TextSecondary,
@@ -473,6 +505,7 @@ fun InterestCard(
             }
             Spacer(modifier = Modifier.size(20.dp))
             InterestStatusContent(
+                selectedTab,
                 interest = interest,
                 onAcceptRejectButton = onAcceptRejectButton
             )
@@ -482,12 +515,13 @@ fun InterestCard(
 
 @Composable
 fun InterestStatusContent(
-    interest: Interest,
+    selectedTab: InterestTab,
+    interest: UserInterestsData,
     onAcceptRejectButton: () -> Unit
 ) {
     when (interest.status) {
-        InterestStatus.PENDING -> {
-            if (interest.type == InterestTab.RECEIVED) {
+        "PENDING" -> {
+            if (selectedTab == InterestTab.RECEIVED) {
                 Column {
                     CustomButton(
                         text = stringResource(R.string.accept),
@@ -521,7 +555,7 @@ fun InterestStatusContent(
                 }
 
             } else {
-                if(interest.type == InterestTab.MATCH_FIXED) {
+                if (selectedTab == InterestTab.MATCH_FIXED) {
                     StatusText(
                         text = stringResource(id = R.string.payment_pending),
                         color = Warning
@@ -536,7 +570,7 @@ fun InterestStatusContent(
             }
         }
 
-        InterestStatus.ACCEPTED -> {
+        "ACCEPTED" -> {
 
             StatusText(
                 text = stringResource(R.string.accepted),
@@ -544,7 +578,7 @@ fun InterestStatusContent(
             )
         }
 
-        InterestStatus.REJECTED -> {
+        "REJECTED" -> {
 
             StatusText(
                 text = stringResource(R.string.rejected),
@@ -552,7 +586,7 @@ fun InterestStatusContent(
             )
         }
 
-        InterestStatus.DONE -> {
+        "DONE" -> {
 
             StatusText(
                 text = stringResource(R.string.payment_completed),
@@ -640,7 +674,7 @@ fun AdminInterestStatusContent(
                 )
 
             } else {
-                if(interest.type == InterestTab.MATCH_FIXED) {
+                if (interest.type == InterestTab.MATCH_FIXED) {
                     AdminStatusText(
                         text = stringResource(id = R.string.payment_pending),
                         color = Warning
@@ -873,7 +907,7 @@ fun ShowToast(
     context: Context,
     message: String,
     duration: Int = Toast.LENGTH_SHORT
-){
+) {
     Toast.makeText(context, message, duration).show()
 }
 

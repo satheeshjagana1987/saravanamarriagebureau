@@ -12,13 +12,14 @@ import com.saravanamarriagebureau.data.model.Match
 import com.saravanamarriagebureau.data.model.MediaUploadCompleteResponse
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedRequest
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedResponse
+import com.saravanamarriagebureau.data.model.ProfileData
 import com.saravanamarriagebureau.data.model.ProfileRequest
-import com.saravanamarriagebureau.data.model.ProfileResponse
 import com.saravanamarriagebureau.data.model.RegisterRequest
 import com.saravanamarriagebureau.data.model.RegisterResponse
 import com.saravanamarriagebureau.data.model.ResetPasswordRequest
 import com.saravanamarriagebureau.data.model.ResetPasswordResponse
 import com.saravanamarriagebureau.data.model.UploadResponse
+import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.data.model.VerifyResetOTP
 import com.saravanamarriagebureau.data.model.VerifyResetOTPRequest
 import okhttp3.MultipartBody
@@ -45,12 +46,12 @@ interface SmbApi {
     ): Response<ApiResponse<RegisterResponse>>
 
     @GET("profile/me")
-    suspend fun getProfile(): Response<ApiResponse<ProfileResponse>>
+    suspend fun getProfile(): Response<ApiResponse<ProfileData>>
 
     @PATCH("profile/me")
     suspend fun updateProfile(
         @Body request: ProfileRequest
-    ): Response<ApiResponse<ProfileResponse>>
+    ): Response<ApiResponse<ProfileData>>
 
     @POST("auth/forgot-password")
     suspend fun forgetPassword(@Body request: ForgetPasswordRequest): Response<ApiResponse<ForgetPasswordResponse>>
@@ -81,8 +82,11 @@ interface SmbApi {
     @GET("matches")
     suspend fun getMatches(): Response<ApiResponse<List<Match>>>
 
-    @GET("interests")
-    suspend fun getInterests(): Response<ApiResponse<List<Interest>>>
+    @GET("interests/sent")
+    suspend fun getSentInterests(): Response<ApiResponse<List<UserInterestsData>>>
+
+    @GET("interests/received")
+    suspend fun getReceivedInterests(): Response<ApiResponse<List<UserInterestsData>>>
 
     @GET("matches/{id}")
     suspend fun getMatch(@Path("id") id: String)

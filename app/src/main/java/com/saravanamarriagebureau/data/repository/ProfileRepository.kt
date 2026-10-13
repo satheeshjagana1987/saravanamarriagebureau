@@ -2,11 +2,8 @@ package com.saravanamarriagebureau.data.repository
 
 import com.saravanamarriagebureau.data.api.SmbApi
 import com.saravanamarriagebureau.data.enums.Gender
-import com.saravanamarriagebureau.data.model.Profile
+import com.saravanamarriagebureau.data.model.ProfileData
 import com.saravanamarriagebureau.data.model.ProfileRequest
-import com.saravanamarriagebureau.data.model.ProfileResponse
-import com.saravanamarriagebureau.data.model.RegisterRequest
-import com.saravanamarriagebureau.data.model.RegisterResponse
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.safeApiCall
 import javax.inject.Inject
@@ -15,7 +12,7 @@ class ProfileRepository @Inject constructor(
     private val api: SmbApi
 ) {
     suspend fun getProfile(
-    ): ApiResult<ProfileResponse> {
+    ): ApiResult<ProfileData> {
         return safeApiCall {
             api.getProfile()
         }
@@ -28,7 +25,10 @@ class ProfileRepository @Inject constructor(
          religion: String,
          email: String,
          fullAddress: String,
-    ): ApiResult<ProfileResponse> {
+         city: String,
+         district: String,
+         maritalStatus: String
+    ): ApiResult<ProfileData> {
         return safeApiCall {
             api.updateProfile(
                 ProfileRequest(
@@ -36,8 +36,11 @@ class ProfileRepository @Inject constructor(
                     education = education,
                     profession = profession,
                     religion = religion,
-                    fullAddress = fullAddress,
+                    fullAddress = "",
                     email = email,
+                    city = city,
+                    district = district,
+                    maritalStatus = maritalStatus
                 )
             )
         }
