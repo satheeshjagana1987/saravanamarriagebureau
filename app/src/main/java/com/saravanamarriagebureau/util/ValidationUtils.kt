@@ -5,13 +5,13 @@ object ValidationUtils {
     fun validateName(name: String): String? {
         return when {
             name.isBlank() ->
-                "$name is required"
+                "Name is required"
 
             name.trim().length < 2 ->
-                "$name must be at least 2 characters"
+                "Name must be at least 2 characters"
 
             !name.trim().matches(Regex("^[\\p{L}]+(?:[ '\\-][\\p{L}]+)*$")) ->
-                "Enter a valid $name"
+                "Enter a valid Name"
 
             else -> null
         }

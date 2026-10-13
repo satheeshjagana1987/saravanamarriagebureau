@@ -48,6 +48,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
@@ -76,6 +77,9 @@ fun ForgotPasswordScreen(
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
 
+   var isLoading by remember {
+       mutableStateOf(false)
+   }
     var otpError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var confirmPasswordError by remember { mutableStateOf<String?>(null) }
@@ -402,6 +406,7 @@ fun ForgotPasswordScreen(
                     ToastUtils.error(context = context, message = confirmPasswordError.toString())
                     return@PrimaryButton
                 }
+                isLoading = true
                 resetPasswordViewModel.resetPassword(
                     newPassword = password,
                     confirmPassword = confirmPassword
@@ -416,24 +421,31 @@ fun ForgotPasswordScreen(
             }
 
             ResetPasswordUiState.Loading -> {
-                LoadingView()
+                LoadingDialog(
+                    isLoading = isLoading,
+                    message = "Loading, please wait..."
+                )
             }
 
             is ResetPasswordUiState.Success -> {
-                Text(
-                    text = state.message ?: "Password reset successfully"
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Loading, please wait..."
                 )
+                ToastUtils.success(context = context, message = "Password reset successfully")
                 onReset()
             }
 
             is ResetPasswordUiState.Error -> {
-                Text(
-                    text = state.message,
-                    color = Color.Red
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Loading, please wait..."
                 )
+                ToastUtils.success(context = context, message = state.message)
             }
 
-            else -> {}
         }
     }
 

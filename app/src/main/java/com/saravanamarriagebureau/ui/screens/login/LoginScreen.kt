@@ -136,7 +136,12 @@ fun LoginScreen(
             ) {
 
                 // Mobile Number
-                LabelName(labelName = stringResource(id = R.string.mobile_number), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                LabelName(
+                    labelName = stringResource(id = R.string.mobile_number),
+                    fontSize = 14.sp,
+                    color = Maroon,
+                    fontWeight = FontWeight.Normal
+                )
                 Spacer(Modifier.height(5.dp))
                 OutlinedTextField(
                     value = mobileNumber,
@@ -166,7 +171,7 @@ fun LoginScreen(
                         )
                     },
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
+                        keyboardType = KeyboardType.Phone
                     ),
 
                     placeholder = {
@@ -179,7 +184,12 @@ fun LoginScreen(
                 )
 
                 Spacer(Modifier.height(15.dp))
-                LabelName(labelName = stringResource(id = R.string.password), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
+                LabelName(
+                    labelName = stringResource(id = R.string.password),
+                    fontSize = 14.sp,
+                    color = Maroon,
+                    fontWeight = FontWeight.Normal
+                )
                 Spacer(Modifier.height(5.dp))
                 OutlinedTextField(
                     value = password,
@@ -259,7 +269,10 @@ fun LoginScreen(
                             onCheckedChange = null // Handled by the parent Row's toggleable modifier
                         )
                         Spacer(Modifier.width(5.dp))
-                        LabelName(labelName = stringResource(id = R.string.remember_me), textAlign = TextAlign.Center)
+                        LabelName(
+                            labelName = stringResource(id = R.string.remember_me),
+                            textAlign = TextAlign.Center
+                        )
                     }
 
                     LabelName(
@@ -270,31 +283,35 @@ fun LoginScreen(
                         modifier = Modifier
                             .clickable {
                                 mobileError = ValidationUtils.validateMobile(mobileNumber.trim())
-                                if(mobileError != null) {
-                                    ToastUtils.error(context = context, message = mobileError.toString())
+                                if (mobileError != null) {
+                                    ToastUtils.error(
+                                        context = context,
+                                        message = mobileError.toString()
+                                    )
                                     return@clickable
                                 }
                                 isLoading = true
-                               forgetPasswordViewModel.forgetPassword(
-                                   mobile = mobileNumber
-                               )
+                                forgetPasswordViewModel.forgetPassword(
+                                    mobile = mobileNumber
+                                )
                             }
                     )
                 }
             }
         }
         Spacer(Modifier.height(30.dp))
-        PrimaryButton(stringResource(id = R.string.login),
+        PrimaryButton(
+            stringResource(id = R.string.login),
             onClick = {
                 mobileError = ValidationUtils.validateMobile(mobileNumber.trim())
                 passwordError = ValidationUtils.validatePassword(password.trim())
 
-                if(mobileError != null) {
+                if (mobileError != null) {
                     ToastUtils.error(context = context, message = mobileError.toString())
                     return@PrimaryButton
                 }
 
-                if(passwordError != null) {
+                if (passwordError != null) {
                     ToastUtils.error(context = context, message = passwordError.toString())
                     return@PrimaryButton
                 }
@@ -315,23 +332,26 @@ fun LoginScreen(
             LoginUIState.Loading -> {
                 LoadingDialog(
                     isLoading = isLoading,
-                    message = "Logging In...")
+                    message = "Logging In..."
+                )
             }
 
             is LoginUIState.Success -> {
                 isLoading = false
                 LoadingDialog(
                     isLoading = false,
-                    message = "Sending OTP...")
+                    message = "Sending OTP..."
+                )
                 ToastUtils.success(context = context, message = "Login successful")
-               onLogin()
+                onLogin()
             }
 
             is LoginUIState.Error -> {
                 isLoading = false
                 LoadingDialog(
                     isLoading = false,
-                    message = "Sending OTP...")
+                    message = "Sending OTP..."
+                )
                 ToastUtils.error(context = context, message = state.message)
             }
         }
@@ -345,7 +365,8 @@ fun LoginScreen(
             ForgetPasswordUIState.Loading -> {
                 LoadingDialog(
                     isLoading = isLoading,
-                    message = "Sending OTP...")
+                    message = "Sending OTP..."
+                )
 
             }
 
@@ -353,7 +374,8 @@ fun LoginScreen(
                 isLoading = false
                 LoadingDialog(
                     isLoading = false,
-                    message = "Sending OTP...")
+                    message = "Sending OTP..."
+                )
                 ToastUtils.success(context = context, message = "OTP sent successfully")
                 onForgot(mobileNumber)
             }
@@ -362,7 +384,8 @@ fun LoginScreen(
                 isLoading = false
                 LoadingDialog(
                     isLoading = false,
-                    message = "Sending OTP...")
+                    message = "Sending OTP..."
+                )
                 ToastUtils.error(context = context, message = state.message)
             }
 

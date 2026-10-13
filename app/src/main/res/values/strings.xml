@@ -59,7 +59,9 @@
     <string name="parent_voice_record">Parent Voice Record</string>
     <string name="video_voice_limit">Video and Voice Record Max 20sec</string>
     <string name="profession">Profession</string>
-    <string name="location">Location</string>
+    <string name="city">City</string>
+    <string name="district">District</string>
+    <string name="full_address">Full Address</string>
     <string name="voice_record">Voice Record</string>
     <string name="download">Download</string>
     <string name="remember_me">Remember Me</string>
@@ -84,5 +86,5 @@
     <string name="approve">Approve</string>
     <string name="single">Single</string>
     <string name="others">Others</string>
-    <string name="password_min_chars">Password should be min 8 chars </string>
+    <string name="password_min_chars">Password should be min 8 chars</string>
 </resources>

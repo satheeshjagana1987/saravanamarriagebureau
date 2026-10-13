@@ -98,7 +98,9 @@ fun ProfileCreationScreen(
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var dob by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
+    var city by remember { mutableStateOf("") }
+    var district by remember { mutableStateOf("") }
+    var fullAddress by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
     var maritalStatus by remember { mutableStateOf("") }
     var education by remember { mutableStateOf("") }
@@ -437,20 +439,104 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-
                         Spacer(Modifier.height(10.dp))
-                        // Password
+
                         LabelName(
-                            labelName = stringResource(id = R.string.location),
+                            labelName = stringResource(id = R.string.city),
                             fontSize = 14.sp,
                             color = Maroon,
                             fontWeight = FontWeight.Normal
                         )
                         Spacer(Modifier.height(5.dp))
                         OutlinedTextField(
-                            value = location,
+                            value = city,
                             onValueChange = {
-                                location = it
+                                city = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.LocationOn,
+                                    contentDescription = null,
+                                    tint = Color(0xFF9A9AA5),
+                                    modifier = Modifier.size(19.dp)
+                                )
+                            },
+                            placeholder = {
+                                Text(
+                                    text = "Enter City",
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        )
+
+                        Spacer(Modifier.height(10.dp))
+
+                        LabelName(
+                            labelName = stringResource(id = R.string.district),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = district,
+                            onValueChange = {
+                                district = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.LocationOn,
+                                    contentDescription = null,
+                                    tint = Color(0xFF9A9AA5),
+                                    modifier = Modifier.size(19.dp)
+                                )
+                            },
+                            placeholder = {
+                                Text(
+                                    text = "Enter District",
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        )
+
+                        Spacer(Modifier.height(10.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.full_address),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = fullAddress,
+                            onValueChange = {
+                                fullAddress = it
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -923,12 +1009,12 @@ fun ProfileCreationScreen(
                 text = stringResource(id = R.string.submit),
                 onClick = {
                     viewModel.updateProfile(
-                        height = height,
-                        education = education,
-                        profession = profession,
-                        religion = religion,
-                        fullAddress = location,
-                        email = email,
+                        height = height.trim(),
+                        education = education.trim(),
+                        profession = profession.trim(),
+                        religion = religion.trim(),
+                        fullAddress = fullAddress.trim(),
+                        email = email.trim(),
                     )
                 }
             )

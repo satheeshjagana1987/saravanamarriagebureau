@@ -1,5 +1,7 @@
 package com.saravanamarriagebureau.ui.screens.registration
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
@@ -27,12 +30,17 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,8 +49,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,6 +62,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
@@ -59,18 +70,41 @@ import com.saravanamarriagebureau.ui.screens.login.LoginUIState
 import com.saravanamarriagebureau.ui.screens.login.LoginViewModel
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.White
+import com.saravanamarriagebureau.util.ToastUtils
+import com.saravanamarriagebureau.util.ValidationUtils
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.util.Date
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RegisterScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     var profileFor by remember { mutableStateOf("Bride") }
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var dob by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
+    var showDatePicker by remember { mutableStateOf(false) }
+    val todayMillis = LocalDate.now()
+        .atStartOfDay(ZoneOffset.UTC)
+        .toInstant()
+        .toEpochMilli()
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = null,
+        initialDisplayedMonthMillis = null,
+        yearRange = 1900..2026,
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis <= todayMillis
+            }
+        }
+    )
     var mobileNumber by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -82,6 +116,17 @@ fun RegisterScreen(
     var selectedLookingForOption by remember { mutableStateOf(lookingForRadioOptions[0]) }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+    var fullNameError by remember { mutableStateOf<String?>(null) }
+    var mobileNumberError by remember { mutableStateOf<String?>(null) }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var dobError by remember { mutableStateOf<String?>(null) }
+    var genderError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
 
     Column(
         Modifier
@@ -136,6 +181,9 @@ fun RegisterScreen(
                                 modifier = Modifier.size(19.dp)
                             )
                         },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.PersonName
+                        ),
 
                         placeholder = {
                             Text(
@@ -177,6 +225,9 @@ fun RegisterScreen(
                                 modifier = Modifier.size(19.dp)
                             )
                         },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Phone
+                        ),
                         placeholder = {
                             Text(
                                 text = "Enter Mobile Number",
@@ -215,6 +266,9 @@ fun RegisterScreen(
                                 modifier = Modifier.size(19.dp)
                             )
                         },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email
+                        ),
                         placeholder = {
                             Text(
                                 text = "Enter Email",
@@ -246,21 +300,74 @@ fun RegisterScreen(
                             unfocusedTextColor = Color(0xFF333333)
                         ),
                         trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.CalendarMonth,
-                                contentDescription = null,
-                                tint = Color(0xFF9A9AA5),
-                                modifier = Modifier.size(19.dp)
-                            )
+                            IconButton(
+                                onClick = {
+                                    showDatePicker = true
+                                }
+                            ){
+                                Icon(
+                                    imageVector = Icons.Outlined.CalendarMonth,
+                                    contentDescription = null,
+                                    tint = Color(0xFF9A9AA5),
+                                    modifier = Modifier.size(19.dp)
+                                )
+                            }
+
                         },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Date
+                        ),
                         placeholder = {
                             Text(
-                                text = "DD / MM / YYYY",
+                                text = "YYYY-MM-DD",
                                 color = Color(0xFFB5B5BD),
                                 fontSize = 14.sp
                             )
                         }
                     )
+
+                    if (showDatePicker) {
+                        DatePickerDialog(
+                            onDismissRequest = {
+                                showDatePicker = false
+                            },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = {
+                                        datePickerState.selectedDateMillis?.let { millis ->
+                                            val formatter = SimpleDateFormat(
+                                                "yyyy-MM-dd",
+                                                Locale.US
+                                            ).apply {
+                                                timeZone = java.util.TimeZone.getTimeZone("UTC")
+                                            }
+
+                                            dob = formatter.format(Date(millis))
+                                        }
+
+                                        showDatePicker = false
+                                    }
+                                ) {
+                                    Text("OK")
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(
+                                    onClick = {
+                                        showDatePicker = false
+                                    }
+                                ) {
+                                    Text("Cancel")
+                                }
+                            }
+                        ) {
+                            DatePicker(
+                                state = datePickerState,
+                                title = { Text("Select Date of Birth") },
+                                showModeToggle = false
+                            )
+                        }
+                    }
 
                     Spacer(Modifier.height(10.dp))
                     // Password
@@ -464,14 +571,52 @@ fun RegisterScreen(
             text = stringResource(id = R.string.submit),
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 40.dp),
             onClick = {
+
+                fullNameError = ValidationUtils.validateName(name = name.trim())
+                emailError = ValidationUtils.validateEmail(email = email.trim())
+                mobileNumberError = ValidationUtils.validateMobile(mobile = mobileNumber.trim())
+                dobError = ValidationUtils.validateField(field = dob.trim())
+                passwordError = ValidationUtils.validatePassword(password = password.trim())
+                confirmPasswordError = ValidationUtils.validateConfirmPassword(password = password.trim(), confirmPassword = confirmPassword.trim())
+
+                if(fullNameError != null) {
+                    ToastUtils.error(context = context, message = fullNameError.toString())
+                    return@PrimaryButton
+                }
+
+                if(emailError != null) {
+                    ToastUtils.error(context = context, message = emailError.toString())
+                    return@PrimaryButton
+                }
+
+                if(mobileNumberError != null) {
+                    ToastUtils.error(context = context, message = mobileNumberError.toString())
+                    return@PrimaryButton
+                }
+
+                if(dobError != null) {
+                    ToastUtils.error(context = context, message = dobError.toString())
+                    return@PrimaryButton
+                }
+
+                if(passwordError != null) {
+                    ToastUtils.error(context = context, message = passwordError.toString())
+                    return@PrimaryButton
+                }
+
+                if(confirmPasswordError != null) {
+                    ToastUtils.error(context = context, message = confirmPasswordError.toString())
+                    return@PrimaryButton
+                }
+                isLoading = true
                 viewModel.register(
-                    name = name,
-                    mobile = mobileNumber,
-                    email = email,
-                    dob = dob,
-                    password = password,
-                    confirmPassword = confirmPassword,
-                    gender = selectedGenderOption
+                    name = name.trim(),
+                    mobile = mobileNumber.trim(),
+                    email = email.trim(),
+                    dob = dob.trim(),
+                    password = password.trim(),
+                    confirmPassword = confirmPassword.trim(),
+                    gender = selectedGenderOption.trim()
                 )
             }
         )
@@ -483,26 +628,35 @@ fun RegisterScreen(
             }
 
             RegisterUIState.Loading -> {
-                LoadingView()
+                LoadingDialog(
+                    isLoading = isLoading,
+                    message = "Loading, please wait..."
+                )
             }
 
             is RegisterUIState.Success -> {
-                Text(
-                    text = state.message ?: "Registration successful"
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Loading, please wait..."
                 )
+                ToastUtils.success(context = context, message = "Registration successful")
                 onNext()
             }
 
             is RegisterUIState.Error -> {
-                Text(
-                    text = state.message,
-                    color = Color.Red
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Loading, please wait..."
                 )
+                ToastUtils.success(context = context, message = state.message)
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun RegisterScreenPreview() {

@@ -275,7 +275,7 @@ fun ProfileContent(
                         DividerLine()
                         if(profile.isAdminVerified) {
                             ProfileInfoRow(
-                                label = stringResource(id = R.string.location),
+                                label = stringResource(id = R.string.full_address),
                                 value = profile.fullAddress ?: NA
                             )
 

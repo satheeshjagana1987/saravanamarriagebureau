@@ -271,7 +271,7 @@ fun AdminUserDetailsScreen(
                         DividerLine()
                         if(profile.isPaymentDone) {
                             ProfileInfoRow(
-                                label = stringResource(id = R.string.location),
+                                label = stringResource(id = R.string.full_address),
                                 value = profile.location
                             )
 
