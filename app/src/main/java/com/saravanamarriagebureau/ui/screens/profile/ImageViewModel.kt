@@ -4,6 +4,9 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.ImageRepository
+import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgetPasswordUIState
+import com.saravanamarriagebureau.ui.screens.registration.RegisterUIState
+import com.saravanamarriagebureau.util.ApiResult
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +23,11 @@ class ImageViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ImageUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val _uiStateDeleteImage =
+        MutableStateFlow<DeleteMediaUIState>(DeleteMediaUIState.Idle)
+
+    val uiStateDeleteImage = _uiStateDeleteImage.asStateFlow()
+
     fun setImage(uri: Uri) {
         _uiState.update {
             it.copy(
@@ -31,6 +39,8 @@ class ImageViewModel @Inject constructor(
     }
 
     fun uploadImage() {
+        // Prevent duplicate uploads
+        if (_uiState.value.isLoading) return
         val uri = _uiState.value.imageUri ?: return
 
         viewModelScope.launch {
@@ -61,6 +71,39 @@ class ImageViewModel @Inject constructor(
                         error = e.message ?: "Upload failed"
                     )
                 }
+            }
+        }
+    }
+
+    fun deleteImage(
+        mediaId: String,
+    ) {
+        viewModelScope.launch {
+            _uiStateDeleteImage.value = DeleteMediaUIState.Loading
+            when (
+                val result = repository.deleteImage(
+                    mediaId = mediaId,
+                )
+            ) {
+
+                is ApiResult.Success -> {
+
+                    _uiStateDeleteImage.value =
+                        DeleteMediaUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+
+                    _uiStateDeleteImage.value =
+                        DeleteMediaUIState.Error(
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Loading -> Unit
             }
         }
     }

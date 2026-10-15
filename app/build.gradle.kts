@@ -48,6 +48,12 @@ android {
 //    androidResources {
 //        generateLocaleConfig = true
 //    }
+
+//    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_1_8
+//        targetCompatibility = JavaVersion.VERSION_1_8
+//        isCoreLibraryDesugaringEnabled = true
+//    }
 }
 
 dependencies {
@@ -58,6 +64,7 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
+//    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

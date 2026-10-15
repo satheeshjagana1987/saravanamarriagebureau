@@ -2,12 +2,11 @@ package com.saravanamarriagebureau.ui.screens.matches
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.saravanamarriagebureau.data.model.Match
 import com.saravanamarriagebureau.data.repository.MatchesRepository
+import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
 import com.saravanamarriagebureau.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,40 +17,132 @@ class MatchesViewModel @Inject constructor(
     private val matchesRepository: MatchesRepository
 ) : ViewModel() {
 
-    private val _matches = MutableStateFlow<List<Match>>(emptyList())
-    val matches: StateFlow<List<Match>> = _matches.asStateFlow()
+    private val _uiStateToday =
+        MutableStateFlow<MatchesUiState>(MatchesUiState.Idle)
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    val uiStateToday = _uiStateToday.asStateFlow()
 
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error.asStateFlow()
+    private val _uiStatePast =
+        MutableStateFlow<MatchesUiState>(MatchesUiState.Idle)
 
-    init {
-        fetchMatches()
+    val uiStatePast = _uiStatePast.asStateFlow()
+
+    private val _uiStateSendInterest =
+        MutableStateFlow<SendInterestsUIState>(SendInterestsUIState.Idle)
+
+    val uiStateSendInterest = _uiStateSendInterest.asStateFlow()
+
+    private val _uiStateDeleteInterest =
+        MutableStateFlow<DeleteInterestsUIState>(DeleteInterestsUIState.Idle)
+
+    val uiStateDeleteInterest = _uiStateDeleteInterest.asStateFlow()
+
+    fun getTodayMatches() {
+
+        viewModelScope.launch {
+
+            _uiStateToday.value = MatchesUiState.Loading
+
+            when (
+                val result = matchesRepository.getTodayMatches()
+            ) {
+
+                is ApiResult.Success -> {
+                    _uiStateToday.value =
+                        MatchesUiState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateToday.value =
+                        MatchesUiState.Error(
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Loading -> Unit
+            }
+        }
     }
 
-    fun fetchMatches() {
+    fun getPastMatches() {
+
         viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
 
-            try {
-                when (val result = matchesRepository.getMatches()) {
-                    is ApiResult.Success -> {
-                        _matches.value = result.data
-                    }
+            _uiStatePast.value = MatchesUiState.Loading
 
-                    is ApiResult.Error -> {
-                        _error.value = result.message
-                    }
+            when (
+                val result = matchesRepository.getPastMatches()
+            ) {
 
-                    else -> {}
+                is ApiResult.Success -> {
+                    _uiStatePast.value =
+                        MatchesUiState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
                 }
-            } catch (e: Exception) {
-                _error.value = e.message ?: "Something went wrong"
-            } finally {
-                _isLoading.value = false
+
+                is ApiResult.Error -> {
+                    _uiStatePast.value =
+                        MatchesUiState.Error(
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Loading -> Unit
+            }
+        }
+    }
+
+    fun sendInterest(profileId: String) {
+        viewModelScope.launch {
+            _uiStateSendInterest.value = SendInterestsUIState.Loading
+
+            when (val result = matchesRepository.sendInterest(profileId = profileId)) {
+                is ApiResult.Success -> {
+                    _uiStateSendInterest.value =
+                        SendInterestsUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateSendInterest.value =
+                        SendInterestsUIState.Error(
+                            result.message
+                        )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun deleteInterest(interestId: String) {
+        viewModelScope.launch {
+            _uiStateDeleteInterest.value = DeleteInterestsUIState.Loading
+
+            when (val result = matchesRepository.deleteInterest(interestId = interestId)) {
+                is ApiResult.Success -> {
+                    _uiStateDeleteInterest.value =
+                        DeleteInterestsUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateDeleteInterest.value =
+                        DeleteInterestsUIState.Error(
+                            result.message
+                        )
+                }
+
+                else -> {}
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.saravanamarriagebureau.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +22,7 @@ import com.saravanamarriagebureau.ui.screens.admin.AdminLandingScreen
 import com.saravanamarriagebureau.util.AppPreferences
 import com.saravanamarriagebureau.util.Constants.KEY_USER_TYPE
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SmbNavigationApp(
     modifier: Modifier = Modifier,
@@ -101,7 +104,17 @@ fun SmbNavigationApp(
         }
 
         composable(Routes.Main) {
-            MainScreenWithHamburger()
+            MainScreenWithHamburger(
+                onLogout = {
+                    navController.navigate(Routes.Login) {
+                        appPreferences.saveLoginStatus(isLoggedIn = false)
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
 
         composable(Routes.Admin) {

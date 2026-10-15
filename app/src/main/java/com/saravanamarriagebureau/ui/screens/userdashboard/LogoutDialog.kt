@@ -21,13 +21,14 @@ import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
 fun LogoutDialog(
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onDismiss: () -> Unit
 ) {
-    val showDialog = remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(true) }
 
     if (showDialog.value) {
         AlertDialog(
-            onDismissRequest = { showDialog.value = false },
+            onDismissRequest = { },
             title = {
                 Text(text = stringResource(id = R.string.logout))
             },
@@ -39,7 +40,7 @@ fun LogoutDialog(
                     text = stringResource(id = R.string.yes), onClick = {
                         // 2. Navigate after dialog is removed
                         showDialog.value = false
-//                        onLogout()
+                        onLogout()
                     },
                     modifier = Modifier.padding(
                         start = 16.dp,
@@ -56,6 +57,7 @@ fun LogoutDialog(
                     text = stringResource(id = R.string.no),
                     onClick = {
                         showDialog.value = false
+                        onDismiss()
                     },
                     modifier = Modifier.padding(
                         start = 16.dp,
@@ -77,5 +79,6 @@ fun LogoutDialog(
 fun LogoutDialogPreview() {
     LogoutDialog(
         onLogout = {},
+        onDismiss = {}
     )
 }

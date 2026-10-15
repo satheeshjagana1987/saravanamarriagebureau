@@ -20,13 +20,18 @@ class UserInterestsViewModel @Inject constructor(
 
     val uiState = _uiState.asStateFlow()
 
+    private val _uiStateSentInterest =
+        MutableStateFlow<UserInterestsUIState>(UserInterestsUIState.Idle)
+
+    val uiStateSentInterest = _uiStateSentInterest.asStateFlow()
+
     fun getSentInterests() {
         viewModelScope.launch {
-            _uiState.value = UserInterestsUIState.Loading
+            _uiStateSentInterest.value = UserInterestsUIState.Loading
 
             when (val result = userInterestsRepository.getSentInterests()) {
                 is ApiResult.Success -> {
-                    _uiState.value =
+                    _uiStateSentInterest.value =
                         UserInterestsUIState.Success(
                             data = result.data,
                             message = result.message
@@ -34,7 +39,7 @@ class UserInterestsViewModel @Inject constructor(
                 }
 
                 is ApiResult.Error -> {
-                    _uiState.value =
+                    _uiStateSentInterest.value =
                         UserInterestsUIState.Error(
                             result.message
                         )

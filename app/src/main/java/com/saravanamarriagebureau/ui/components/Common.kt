@@ -1,13 +1,19 @@
 package com.saravanamarriagebureau.ui.components
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.Uri
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -43,6 +49,10 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -64,13 +74,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.Gender
 import com.saravanamarriagebureau.data.enums.InterestStatus
 import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.Interest
+import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.data.model.UserInterestsData
+import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
+import com.saravanamarriagebureau.ui.screens.matches.MatchesViewModel
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Gray
 import com.saravanamarriagebureau.ui.theme.Maroon
@@ -82,6 +98,10 @@ import com.saravanamarriagebureau.ui.theme.TextPrimary
 import com.saravanamarriagebureau.ui.theme.TextSecondary
 import com.saravanamarriagebureau.ui.theme.Warning
 import com.saravanamarriagebureau.ui.theme.White
+import com.saravanamarriagebureau.util.Constants.NA
+import com.saravanamarriagebureau.util.ToastUtils
+import java.time.LocalDate
+import java.time.Period
 
 @Composable
 fun AppLogo(compact: Boolean = false) {
@@ -246,42 +266,105 @@ fun VerifiedBadge() {
 }
 
 @Composable
-fun ProfilePhoto(profilePic: String, modifier: Modifier = Modifier) {
+fun ProfilePhoto(
+    defaultImage: Int,
+    modifier: Modifier = Modifier
+) {
+    ProfilePhotoContent(
+        modifier = modifier,
+        imageContent = {
+            Image(
+                painter = rememberAsyncImagePainter(defaultImage),
+                contentDescription = "Profile picture",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
+    )
+}
+
+@Composable
+fun ProfilePhoto(
+    uri: Uri,
+    modifier: Modifier = Modifier
+) {
+    ProfilePhotoContent(
+        modifier = modifier,
+        imageContent = {
+            Image(
+                painter = rememberAsyncImagePainter(uri),
+                contentDescription = "Profile picture",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
+    )
+}
+
+@Composable
+fun ProfilePhoto(
+    imageUrl: String,
+    modifier: Modifier = Modifier
+) {
+    ProfilePhotoContent(
+        modifier = modifier,
+        imageContent = {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = "Profile picture",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
+    )
+}
+
+@Composable
+private fun ProfilePhotoContent(
+    modifier: Modifier = Modifier,
+    imageContent: @Composable BoxScope.() -> Unit
+) {
     Box(
         modifier = modifier
-            // 1. Maintain a 1:1 aspect ratio so it stays a perfect circle
             .aspectRatio(1f)
-            // 2. Change the shape to CircleShape
             .clip(CircleShape)
             .background(
                 Brush.verticalGradient(
-                    listOf(Color(0xFFFFE8DC), Color(0xFFF6C3B0))
+                    listOf(
+                        Color(0xFFFFE8DC),
+                        Color(0xFFF6C3B0)
+                    )
                 )
             ),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(R.drawable.profile_pic),
-            contentDescription = "profile pic",
-            modifier = Modifier.fillMaxSize(),
-            // 3. Use ContentScale.Crop so the profile pic fills the circle cleanly without stretching
-            contentScale = ContentScale.Crop
-        )
+        imageContent()
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileCard(
-    profile: Profile,
+    profile: MatchesData,
     onInterest: () -> Unit,
-    onOpen: () -> Unit
+    onOpen: () -> Unit,
+    viewModel: MatchesViewModel,
 ) {
     val context = LocalContext.current
+    val uiStateSendInterest by viewModel.uiStateSendInterest.collectAsStateWithLifecycle()
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+
+    var notInterested by remember {
+        mutableStateOf(false)
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (profile.isAdminVerified == 1) {
+                if (profile.isAdminVerified) {
                     onOpen()
                 } else {
                     Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT)
@@ -293,39 +376,41 @@ fun ProfileCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-            if (profile.isPaidUser) {
-                ProfilePhoto("", Modifier.size(74.dp))
-            } else {
-                BlurredProfileImage(
-                    R.drawable.profile_pic,
-                    isBlurred = true,
-                    modifier = Modifier.size(74.dp)
-                )
-            }
+//            if (profile.isPaidUser) {
+//                ProfilePhoto("", Modifier.size(74.dp))
+//            } else {
+//                BlurredProfileImage(
+//                    R.drawable.profile_pic,
+//                    isBlurred = true,
+//                    modifier = Modifier.size(74.dp)
+//                )
+//            }
+            ProfilePhoto(defaultImage = R.drawable.profile_pic, Modifier.size(74.dp))
             Spacer(Modifier.width(10.dp))
+            val age = calculateAge(profile.dateOfBirth)
             Column(Modifier.weight(1f)) {
                 LabelName(
-                    labelName = profile.name,
+                    labelName = profile.fullName,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Maroon,
                     modifier = Modifier.padding(0.dp)
                 )
                 LabelName(
-                    labelName = "${profile.age} yrs",
+                    labelName = "$age yrs",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
                 LabelName(
-                    labelName = profile.education,
+                    labelName = profile.education ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
-                if (profile.isAdminVerified == 1) {
+                if (profile.isAdminVerified) {
                     LabelName(
                         labelName = "● " + stringResource(id = R.string.verified),
                         fontSize = 12.sp,
@@ -342,15 +427,53 @@ fun ProfileCard(
                     )
                 }
             }
-            if (profile.isAdminVerified == 1) {
+            if (profile.isAdminVerified) {
                 Icon(
                     Icons.Default.FavoriteBorder,
                     null, tint = Maroon,
                     modifier = Modifier
                         .size(30.dp)
-                        .clickable { onInterest() },
+                        .clickable {
+                            notInterested = true
+                            viewModel.deleteInterest(interestId = profile.id)
+                        },
+                )
+            } else {
+                Icon(
+                    Icons.Default.FavoriteBorder,
+                    null, tint = Gray,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            notInterested = false
+                            viewModel.sendInterest(profileId = profile.id)
+                        },
                 )
             }
+
+            when (val state = uiStateSendInterest) {
+
+                is SendInterestsUIState.Loading -> {
+                    isLoading = true
+                }
+
+                is SendInterestsUIState.Success -> {
+                    isLoading = false
+                    if (!notInterested) {
+                        onInterest()
+                    }
+                }
+
+                is SendInterestsUIState.Error -> {
+                    isLoading = false
+                    ToastUtils.error(context, state.message)
+                }
+
+                else -> {
+                    isLoading = false
+                }
+            }
+            LoadingDialog(isLoading = isLoading)
 
         }
     }
@@ -444,6 +567,7 @@ fun AdminUserStatusContent(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InterestCard(
     interest: UserInterestsData,
@@ -462,29 +586,30 @@ fun InterestCard(
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
             ProfilePhoto("", Modifier.size(74.dp))
             Spacer(Modifier.width(10.dp))
+            val age = calculateAge(interest.receiver.dateOfBirth ?: NA)
             Column(Modifier.weight(1f)) {
                 LabelName(
-                    labelName = interest.name,
+                    labelName = interest.receiver.fullName ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Maroon,
                     modifier = Modifier.padding(0.dp)
                 )
                 LabelName(
-                    labelName = "${interest.dob} yrs",
+                    labelName = "$age yrs",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
                 LabelName(
-                    labelName = interest.education,
+                    labelName = interest.receiver.profession ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
-                if (interest.isAdminVerified) {
+                if (interest.receiver.isAdminVerified) {
                     LabelName(
                         labelName = "● " + stringResource(id = R.string.verified),
                         fontSize = 12.sp,
@@ -1023,6 +1148,34 @@ fun ErrorView(
             )
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun calculateAge(dateOfBirth: String): Int {
+    val dob = LocalDate.parse(dateOfBirth) // yyyy-MM-dd
+    val today = LocalDate.now()
+
+    return Period.between(dob, today).years
+}
+
+fun isInternetAvailable(context: Context): Boolean {
+    val connectivityManager =
+        context.getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+
+    val network = connectivityManager.activeNetwork
+        ?: return false
+
+    val capabilities =
+        connectivityManager.getNetworkCapabilities(network)
+            ?: return false
+
+    return capabilities.hasCapability(
+        NetworkCapabilities.NET_CAPABILITY_INTERNET
+    ) && capabilities.hasCapability(
+        NetworkCapabilities.NET_CAPABILITY_VALIDATED
+    )
 }
 
 @Composable

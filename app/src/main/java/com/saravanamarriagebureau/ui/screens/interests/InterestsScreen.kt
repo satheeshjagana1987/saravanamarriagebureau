@@ -1,5 +1,7 @@
 package com.saravanamarriagebureau.ui.screens.interests
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +38,7 @@ import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.ToastUtils
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InterestsScreen(
     onInterestItemClick: (UserInterestsData) -> Unit,
@@ -47,13 +51,16 @@ fun InterestsScreen(
         mutableStateOf(InterestTab.RECEIVED)
     }
 
-    var filteredInterests: List<UserInterestsData> = emptyList()
+    var filteredInterests by remember {
+        mutableStateOf<List<UserInterestsData>>(emptyList())
+    }
 
     var isLoading by remember {
         mutableStateOf(false)
     }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiStateSentInterest by viewModel.uiStateSentInterest.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.getReceivedInterests()
@@ -108,6 +115,7 @@ fun InterestsScreen(
                     selected = selectedTab == InterestTab.SENT,
                     onClick = {
                         selectedTab = InterestTab.SENT
+                        viewModel.getReceivedInterests()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -126,16 +134,26 @@ fun InterestsScreen(
                 modifier = Modifier.padding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(
-                    items = filteredInterests,
-                    key = { it.id }
-                ) { interest ->
-                    InterestCard(
-                        interest = interest,
-                        selectedTab = selectedTab,
-                        onOpen = {onInterestItemClick(interest)},
-                        onAcceptRejectButton = { onAcceptRejectButton() }
-                    )
+                if (filteredInterests.isEmpty()) {
+                    item {
+                        Text(
+                            text = "No Interests found",
+                            modifier = Modifier.padding(16.dp),
+                            color = Black
+                        )
+                    }
+                } else {
+                    items(
+                        items = filteredInterests,
+                        key = { interest -> interest.id }
+                    ) { interest ->
+                        InterestCard(
+                            interest = interest,
+                            selectedTab = selectedTab,
+                            onOpen = { onInterestItemClick(interest) },
+                            onAcceptRejectButton = { onAcceptRejectButton() }
+                        )
+                    }
                 }
             }
         }
@@ -163,6 +181,31 @@ fun InterestsScreen(
                 else -> {
                     isLoading = false
                 }
+            }
+        }
+
+        when (val state = uiStateSentInterest) {
+
+            is UserInterestsUIState.Loading -> {
+                isLoading = true
+            }
+
+            is UserInterestsUIState.Success -> {
+                isLoading = false
+                filteredInterests = state.data
+                ToastUtils.success(
+                    context = context,
+                    message = "Received Interests fetched successfully"
+                )
+            }
+
+            is UserInterestsUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> {
+                isLoading = false
             }
         }
     }

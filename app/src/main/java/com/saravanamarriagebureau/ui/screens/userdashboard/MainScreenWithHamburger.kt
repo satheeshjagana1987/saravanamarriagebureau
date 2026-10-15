@@ -1,5 +1,7 @@
 package com.saravanamarriagebureau.ui.screens.userdashboard
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -48,9 +50,12 @@ import com.saravanamarriagebureau.ui.screens.profile.ProfileViewScreen
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreenWithHamburger() {
+fun MainScreenWithHamburger(
+    onLogout: () -> Unit
+) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(
         initialValue = DrawerValue.Closed
@@ -85,7 +90,7 @@ fun MainScreenWithHamburger() {
     val drawerItems = listOf(
         DrawerScreen.ChangePassword,
         DrawerScreen.ChangeLanguage,
-//        DrawerScreen.Logout,
+        DrawerScreen.Logout,
         )
 
     // -----------------------------------------
@@ -472,11 +477,12 @@ fun MainScreenWithHamburger() {
                 composable(
                     DrawerScreen.Logout.route
                 ) {
-//                    LogoutDialog(
-//                        onLogout = {
-//                            navController.navigate(Routes.Login)
-//                        },
-//                    )
+                    LogoutDialog(
+                        onLogout = onLogout,
+                        onDismiss = {
+                            navController.navigate(Routes.Home)
+                        }
+                    )
                 }
 
                 // =================================================

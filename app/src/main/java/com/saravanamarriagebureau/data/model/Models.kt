@@ -179,15 +179,34 @@ data class UserInterestsResponse(
 
 data class UserInterestsData(
     val id: String,
-    val name: String,
-    val dob: String,
-    val isAdminVerified: Boolean,
-    val education: String,
     val senderProfileId: String,
     val receiverProfileId: String,
+    val sender: InterestProfile,
+    val receiver: InterestProfile,
     val status: String,
     val createdAt: String,
     val updatedAt: String
+)
+
+data class InterestProfile(
+    val fullName: String?,
+
+    val isAdminVerified: Boolean,
+
+    val dateOfBirth: String?,
+
+    val profession: String?,
+
+    val city: String?,
+    val image: ProfileImage?
+)
+
+data class ProfileImage(
+    val mediaId: String,
+
+    val status: String,
+
+    val downloadEndpoint: String
 )
 
 data class Pagination(
@@ -240,6 +259,19 @@ data class ForgetPasswordResponse(
     val message: String,
 )
 
+data class DeleteMediaResponse(
+    val success: Boolean,
+    val data: DeleteMediaData,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class DeleteMediaData(
+    val mediaId: String,
+    val status: String,
+    val mediaType: String,
+)
+
 data class MediaUploadInitiatedRequest(
     val mediaType: String,
     val contentType: String,
@@ -275,6 +307,78 @@ data class LanguageOption(
 data class Branches(
     val name: String,
     val price: String
+)
+
+data class MatchesResponse(
+    val success: Boolean,
+    val data: List<MatchesData>,
+    val pagination: MatchesPagination,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class MatchesData(
+    val id: String,
+
+    val userId: String,
+
+    val isAdminVerified: Boolean,
+
+    val height: String?,
+
+    val education: String?,
+
+    val profession: String?,
+
+    val income: String?,
+
+    val city: String?,
+
+    val district: String?,
+
+    val maritalStatus: String?,
+
+    val religion: String?,
+
+    val community: String?,
+
+    val family: Family,
+
+    val horoscope: String?,
+
+    val registeringFor: String,
+
+    val createdAt: String,
+
+    val updatedAt: String,
+
+    val fullName: String,
+
+    val gender: String,
+
+    val dateOfBirth: String,
+
+    val status: String,
+
+    val image: String?
+)
+
+data class Family(
+    val fatherName: String?,
+
+    val motherName: String?,
+
+    val siblings: String?
+)
+
+data class MatchesPagination(
+    val total: Int,
+
+    val limit: Int,
+
+    val offset: Int,
+
+    val hasMore: Boolean
 )
 
 // Primary Bottom Bar Destinations

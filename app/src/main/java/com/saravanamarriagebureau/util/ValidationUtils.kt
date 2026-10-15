@@ -70,10 +70,10 @@ object ValidationUtils {
         }
     }
 
-    fun validateField(field: String): String? {
+    fun validateField(field: String, fieldName: String): String? {
         return when {
             field.isBlank() ->
-                "$field is required"
+                "$fieldName is required"
 
             else -> null
         }

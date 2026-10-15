@@ -389,7 +389,7 @@ fun ForgotPasswordScreen(
             text = stringResource(id = R.string.reset_password),
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
             onClick = {
-                otpError = ValidationUtils.validateField(field = otp.trim())
+                otpError = ValidationUtils.validateField(field = otp.trim(), fieldName = "OTP")
                 passwordError = ValidationUtils.validatePassword(password = password.trim())
                 confirmPasswordError = ValidationUtils.validateConfirmPassword(password = password.trim(), confirmPassword = confirmPassword.trim())
 

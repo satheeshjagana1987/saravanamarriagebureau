@@ -1,6 +1,5 @@
 package com.saravanamarriagebureau.ui.screens.interests
 
-import com.saravanamarriagebureau.data.model.ProfileData
 import com.saravanamarriagebureau.data.model.UserInterestsData
 
 sealed class UserInterestsUIState {

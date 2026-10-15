@@ -2,6 +2,7 @@ package com.saravanamarriagebureau.data.api
 
 import com.saravanamarriagebureau.data.model.ApiResponse
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
+import com.saravanamarriagebureau.data.model.DeleteMediaResponse
 import com.saravanamarriagebureau.data.model.ForgetPasswordRequest
 import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
 import com.saravanamarriagebureau.data.model.Interest
@@ -9,6 +10,7 @@ import com.saravanamarriagebureau.data.model.Invoice
 import com.saravanamarriagebureau.data.model.LoginData
 import com.saravanamarriagebureau.data.model.LoginRequest
 import com.saravanamarriagebureau.data.model.Match
+import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.MediaUploadCompleteResponse
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedRequest
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedResponse
@@ -20,11 +22,14 @@ import com.saravanamarriagebureau.data.model.ResetPasswordRequest
 import com.saravanamarriagebureau.data.model.ResetPasswordResponse
 import com.saravanamarriagebureau.data.model.UploadResponse
 import com.saravanamarriagebureau.data.model.UserInterestsData
+import com.saravanamarriagebureau.data.model.UserInterestsResponse
 import com.saravanamarriagebureau.data.model.VerifyResetOTP
 import com.saravanamarriagebureau.data.model.VerifyResetOTPRequest
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
@@ -69,18 +74,27 @@ interface SmbApi {
     suspend fun mediaUploadInitiated(@Body request: MediaUploadInitiatedRequest): Response<ApiResponse<MediaUploadInitiatedResponse>>
 
     @Multipart
-    @PUT("")
+    @POST("profile/media/upload-file")
     suspend fun uploadImage(
-        @Part image: MultipartBody.Part
+        @Part media: MultipartBody.Part,
+        @Part("mediaType") mediaType: RequestBody,
     ): Response<UploadResponse>
+
+    @DELETE("profile/media/{mediaId}")
+    suspend fun deleteImage(
+        @Path("mediaId") mediaId: String
+    ): Response<ApiResponse<DeleteMediaResponse>>
 
     @POST("profile/media/{mediaId}/complete")
     suspend fun mediaUploadCompleted(
         @Path("mediaId") mediaId: String
     ): Response<ApiResponse<MediaUploadCompleteResponse>>
 
-    @GET("matches")
-    suspend fun getMatches(): Response<ApiResponse<List<Match>>>
+    @GET("matches/today")
+    suspend fun getTodayMatches(): Response<ApiResponse<List<MatchesData>>>
+
+    @GET("matches/past")
+    suspend fun getPastMatches(): Response<ApiResponse<List<MatchesData>>>
 
     @GET("interests/sent")
     suspend fun getSentInterests(): Response<ApiResponse<List<UserInterestsData>>>
@@ -88,11 +102,15 @@ interface SmbApi {
     @GET("interests/received")
     suspend fun getReceivedInterests(): Response<ApiResponse<List<UserInterestsData>>>
 
-    @GET("matches/{id}")
-    suspend fun getMatch(@Path("id") id: String)
+    @POST("interests/{profileId}")
+    suspend fun sendInterest(
+        @Path("profileId") profileId: String
+    ): Response<ApiResponse<UserInterestsResponse>>
 
-    @GET("interests/{id}")
-    suspend fun getInterest(@Path("id") id: String)
+    @DELETE("interests/{interestId}")
+    suspend fun deleteInterest(
+        @Path("interestId") interestId: String
+    ): Response<ApiResponse<UserInterestsResponse>>
 
     @GET("invoices/{id}")
     suspend fun getInvoice(@Path("id") id: String): Invoice

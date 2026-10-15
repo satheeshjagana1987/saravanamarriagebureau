@@ -1,6 +1,6 @@
 package com.saravanamarriagebureau.ui.screens.matches
 
-import com.saravanamarriagebureau.data.model.Match
+import com.saravanamarriagebureau.data.model.MatchesData
 
 sealed class MatchesUiState {
 
@@ -9,7 +9,7 @@ sealed class MatchesUiState {
     data object Loading : MatchesUiState()
 
     data class Success(
-        val data: List<Match>,
+        val data: List<MatchesData>,
         val message: String? = null
     ) : MatchesUiState()
 

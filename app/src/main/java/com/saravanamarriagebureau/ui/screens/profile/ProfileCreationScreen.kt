@@ -81,7 +81,6 @@ import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
-import com.saravanamarriagebureau.util.Constants.PRIMARY_PHOTO
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
 import java.io.File
@@ -145,6 +144,10 @@ fun ProfileCreationScreen(
         mutableStateOf(false)
     }
 
+    var isSubmitVisible by rememberSaveable {
+        mutableStateOf(true)
+    }
+
     var selectedGender by remember {
         mutableStateOf("")
     }
@@ -188,7 +191,6 @@ fun ProfileCreationScreen(
                 dob = profile.dateOfBirth
                 city = profile.city.orEmpty()
                 district = profile.district.orEmpty()
-                fullAddress = profile.fullAddress.orEmpty()
 
                 height = profile.height.orEmpty()
                 education = profile.education.orEmpty()
@@ -284,9 +286,10 @@ fun ProfileCreationScreen(
                     selected = selectedTab == ProfileTab.PERSONAL,
                     onClick = {
                         selectedTab = ProfileTab.PERSONAL
-                        isPersonalVisible = !isPersonalVisible
+                        isPersonalVisible = true
                         isProfessionalVisible = false
                         isPhotoVisible = false
+                        isSubmitVisible = true
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -296,9 +299,10 @@ fun ProfileCreationScreen(
                     selected = selectedTab == ProfileTab.PROFESSIONAL,
                     onClick = {
                         selectedTab = ProfileTab.PROFESSIONAL
-                        isProfessionalVisible = !isProfessionalVisible
+                        isProfessionalVisible = true
                         isPersonalVisible = false
                         isPhotoVisible = false
+                        isSubmitVisible = true
 
                     },
                     modifier = Modifier.weight(1f)
@@ -309,9 +313,10 @@ fun ProfileCreationScreen(
                     selected = selectedTab == ProfileTab.PHOTO,
                     onClick = {
                         selectedTab = ProfileTab.PHOTO
-                        isPhotoVisible = !isPhotoVisible
+                        isPhotoVisible = true
                         isPersonalVisible = false
                         isProfessionalVisible = false
+                        isSubmitVisible = false
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -784,7 +789,7 @@ fun ProfileCreationScreen(
                             }
                         }
 
-                        Spacer(Modifier.height(15.dp))
+                        Spacer(Modifier.height(10.dp))
                         LabelName(
                             labelName = stringResource(id = R.string.religion),
                             fontSize = 14.sp,
@@ -833,7 +838,11 @@ fun ProfileCreationScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            ProfilePhoto("", Modifier.size(100.dp))
+                            state.imageUri?.let { uri ->
+                                ProfilePhoto(uri, Modifier.size(100.dp))
+                            } ?: run {
+                                ProfilePhoto(defaultImage = R.drawable.profile_pic, Modifier.size(100.dp))
+                            }
                             Spacer(Modifier.weight(1f))
 //                            CustomButtonForUpload(
 //                                text = stringResource(id = R.string.upload),
@@ -843,15 +852,10 @@ fun ProfileCreationScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(20.dp),
+                                    .padding(10.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                Text(
-                                    text = "Image Upload",
-                                    style = MaterialTheme.typography.headlineMedium
-                                )
-
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                                 ) {
@@ -888,23 +892,15 @@ fun ProfileCreationScreen(
                                     }
                                 }
 
-                                state.imageUri?.let { uri ->
-                                    Image(
-                                        painter = rememberAsyncImagePainter(uri),
-                                        contentDescription = "Selected image",
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(280.dp)
-                                    )
-                                }
-
                                 Button(
                                     onClick = {
-                                        mediaInitiatedUploadViewModel.mediaUploadInitiated(
-                                            mediaType = PRIMARY_PHOTO,
-                                            fileSize = imageFileSize,
-                                            originalFileName = imageFileName
-                                        )
+
+                                        imageViewModel.uploadImage()
+//                                        mediaInitiatedUploadViewModel.mediaUploadInitiated(
+//                                            mediaType = PRIMARY_PHOTO,
+//                                            fileSize = imageFileSize,
+//                                            originalFileName = imageFileName
+//                                        )
                                     },
                                     enabled = state.imageUri != null &&
                                             !state.isLoading,
@@ -943,7 +939,6 @@ fun ProfileCreationScreen(
                                     }
 
                                     is MediaUploadInitiatedUIState.Success -> {
-                                        imageViewModel.uploadImage()
                                         Text(
                                             text = state.message ?: "Media initiated"
                                         )
@@ -1025,22 +1020,87 @@ fun ProfileCreationScreen(
                     }
                 }
             }
-            Spacer(Modifier.height(20.dp))
+
+            when (val state = uiStateProfileUpdate) {
+
+                ProfileUpdateUIState.Idle -> {
+                    // Nothing
+                }
+
+                ProfileUpdateUIState.Loading -> {
+                    isLoading = true
+                }
+
+                is ProfileUpdateUIState.Success -> {
+                    isLoading = false
+                    ToastUtils.success(context = context, message = "Profile updated successfully")
+                    onSubmit()
+                }
+
+                is ProfileUpdateUIState.Error -> {
+                    isLoading = false
+                    Text(
+                        text = state.message,
+                        color = Color.Red
+                    )
+                }
+            }
+        }
+        if(isSubmitVisible) {
             Spacer(Modifier.weight(1f))
             PrimaryButton(
                 text = stringResource(id = R.string.submit),
+                modifier = Modifier.padding(16.dp),
                 onClick = {
 
                     emailError = ValidationUtils.validateEmail(email = email.trim())
-                    heightError = ValidationUtils.validateField(field = height.trim())
-                    educationError = ValidationUtils.validateField(field = education.trim())
-                    cityError = ValidationUtils.validateField(field = city.trim())
-                    districtError = ValidationUtils.validateField(field = district.trim())
-                    professionError = ValidationUtils.validateField(field = profession.trim())
-                    religionError = ValidationUtils.validateField(field = religion.trim())
+                    heightError =
+                        ValidationUtils.validateField(field = height.trim(), fieldName = "Height")
+                    educationError = ValidationUtils.validateField(
+                        field = education.trim(),
+                        fieldName = "Education"
+                    )
+                    cityError =
+                        ValidationUtils.validateField(field = city.trim(), fieldName = "City")
+                    districtError = ValidationUtils.validateField(
+                        field = district.trim(),
+                        fieldName = "District"
+                    )
+                    professionError = ValidationUtils.validateField(
+                        field = profession.trim(),
+                        fieldName = "Profession"
+                    )
+                    religionError = ValidationUtils.validateField(
+                        field = religion.trim(),
+                        fieldName = "Religion"
+                    )
 
-                    if(emailError != null) {
+                    if (emailError != null) {
                         ToastUtils.error(context = context, message = emailError.toString())
+                        return@PrimaryButton
+                    }
+                    if (heightError != null) {
+                        ToastUtils.error(context = context, message = heightError.toString())
+                        return@PrimaryButton
+                    }
+                    if (educationError != null) {
+                        ToastUtils.error(context = context, message = educationError.toString())
+                        return@PrimaryButton
+                    }
+                    if (cityError != null) {
+                        ToastUtils.error(context = context, message = cityError.toString())
+                        return@PrimaryButton
+                    }
+                    if (districtError != null) {
+                        ToastUtils.error(context = context, message = districtError.toString())
+                        return@PrimaryButton
+                    }
+                    if (professionError != null) {
+                        ToastUtils.error(context = context, message = professionError.toString())
+                        return@PrimaryButton
+                    }
+                    if (religionError != null) {
+                        ToastUtils.error(context = context, message = religionError.toString())
                         return@PrimaryButton
                     }
 
@@ -1057,34 +1117,8 @@ fun ProfileCreationScreen(
                     )
                 }
             )
-
-            when (val state = uiStateProfileUpdate) {
-
-                ProfileUpdateUIState.Idle -> {
-                    // Nothing
-                }
-
-                ProfileUpdateUIState.Loading -> {
-                    isLoading = true
-                }
-
-                is ProfileUpdateUIState.Success -> {
-                    isLoading = false
-                    Text(
-                        text = state.message ?: "Profile updated"
-                    )
-                    onSubmit()
-                }
-
-                is ProfileUpdateUIState.Error -> {
-                    isLoading = false
-                    Text(
-                        text = state.message,
-                        color = Color.Red
-                    )
-                }
-            }
         }
+
     }
 }
 

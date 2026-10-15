@@ -575,7 +575,7 @@ fun RegisterScreen(
                 fullNameError = ValidationUtils.validateName(name = name.trim())
                 emailError = ValidationUtils.validateEmail(email = email.trim())
                 mobileNumberError = ValidationUtils.validateMobile(mobile = mobileNumber.trim())
-                dobError = ValidationUtils.validateField(field = dob.trim())
+                dobError = ValidationUtils.validateField(field = dob.trim(), fieldName = "DOB")
                 passwordError = ValidationUtils.validatePassword(password = password.trim())
                 confirmPasswordError = ValidationUtils.validateConfirmPassword(password = password.trim(), confirmPassword = confirmPassword.trim())
 

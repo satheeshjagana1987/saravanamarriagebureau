@@ -35,6 +35,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +65,7 @@ import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.SecondaryButton
+import com.saravanamarriagebureau.ui.components.isInternetAvailable
 import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgetPasswordUIState
 import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgetPasswordViewModel
 import com.saravanamarriagebureau.ui.theme.Black
@@ -86,6 +88,14 @@ fun LoginScreen(
     forgetPasswordViewModel: ForgetPasswordViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+
+    var isConnected by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit) {
+        isConnected = isInternetAvailable(context)
+    }
 
     var isLoading by remember {
         mutableStateOf(false)
@@ -266,7 +276,9 @@ fun LoginScreen(
                     ) {
                         Checkbox(
                             checked = isCheckedRememberMe,
-                            onCheckedChange = null // Handled by the parent Row's toggleable modifier
+                            onCheckedChange = { checked ->
+                                isCheckedRememberMe = checked
+                            }
                         )
                         Spacer(Modifier.width(5.dp))
                         LabelName(
@@ -282,6 +294,10 @@ fun LoginScreen(
                         color = Maroon,
                         modifier = Modifier
                             .clickable {
+                                if(!isConnected) {
+                                    ToastUtils.error(context = context, message = "Please enable network connection")
+                                    return@clickable
+                                }
                                 mobileError = ValidationUtils.validateMobile(mobileNumber.trim())
                                 if (mobileError != null) {
                                     ToastUtils.error(
@@ -303,18 +319,22 @@ fun LoginScreen(
         PrimaryButton(
             stringResource(id = R.string.login),
             onClick = {
+                if(!isConnected) {
+                    ToastUtils.error(context = context, message = "Please enable network connection")
+                    return@PrimaryButton
+                }
                 mobileError = ValidationUtils.validateMobile(mobileNumber.trim())
                 passwordError = ValidationUtils.validatePassword(password.trim())
 
-                if (mobileError != null) {
-                    ToastUtils.error(context = context, message = mobileError.toString())
-                    return@PrimaryButton
-                }
-
-                if (passwordError != null) {
-                    ToastUtils.error(context = context, message = passwordError.toString())
-                    return@PrimaryButton
-                }
+//                if (mobileError != null) {
+//                    ToastUtils.error(context = context, message = mobileError.toString())
+//                    return@PrimaryButton
+//                }
+//
+//                if (passwordError != null) {
+//                    ToastUtils.error(context = context, message = passwordError.toString())
+//                    return@PrimaryButton
+//                }
                 isLoading = true
                 viewModel.login(
                     mobile = mobileNumber,

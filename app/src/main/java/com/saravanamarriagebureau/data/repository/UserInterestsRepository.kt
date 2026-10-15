@@ -2,6 +2,7 @@ package com.saravanamarriagebureau.data.repository
 
 import com.saravanamarriagebureau.data.api.SmbApi
 import com.saravanamarriagebureau.data.model.UserInterestsData
+import com.saravanamarriagebureau.data.model.UserInterestsResponse
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.safeApiCall
 import javax.inject.Inject
