@@ -134,15 +134,6 @@ fun ProfileCreationScreen(
     var selectedTab by remember {
         mutableStateOf(ProfileTab.PERSONAL)
     }
-    var isPersonalVisible by rememberSaveable {
-        mutableStateOf(true)
-    }
-    var isProfessionalVisible by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isPhotoVisible by rememberSaveable {
-        mutableStateOf(false)
-    }
 
     var isSubmitVisible by rememberSaveable {
         mutableStateOf(true)
@@ -286,9 +277,6 @@ fun ProfileCreationScreen(
                     selected = selectedTab == ProfileTab.PERSONAL,
                     onClick = {
                         selectedTab = ProfileTab.PERSONAL
-                        isPersonalVisible = true
-                        isProfessionalVisible = false
-                        isPhotoVisible = false
                         isSubmitVisible = true
                     },
                     modifier = Modifier.weight(1f)
@@ -299,9 +287,6 @@ fun ProfileCreationScreen(
                     selected = selectedTab == ProfileTab.PROFESSIONAL,
                     onClick = {
                         selectedTab = ProfileTab.PROFESSIONAL
-                        isProfessionalVisible = true
-                        isPersonalVisible = false
-                        isPhotoVisible = false
                         isSubmitVisible = true
 
                     },
@@ -313,9 +298,6 @@ fun ProfileCreationScreen(
                     selected = selectedTab == ProfileTab.PHOTO,
                     onClick = {
                         selectedTab = ProfileTab.PHOTO
-                        isPhotoVisible = true
-                        isPersonalVisible = false
-                        isProfessionalVisible = false
                         isSubmitVisible = false
                     },
                     modifier = Modifier.weight(1f)
@@ -331,7 +313,7 @@ fun ProfileCreationScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
-                if (isPersonalVisible) {
+                if (selectedTab == ProfileTab.PERSONAL) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -602,7 +584,7 @@ fun ProfileCreationScreen(
                         )
                     }
                 }
-                if (isProfessionalVisible) {
+                if (selectedTab == ProfileTab.PROFESSIONAL) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -827,7 +809,7 @@ fun ProfileCreationScreen(
 
                     }
                 }
-                if (isPhotoVisible) {
+                if (selectedTab == ProfileTab.PHOTO) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
