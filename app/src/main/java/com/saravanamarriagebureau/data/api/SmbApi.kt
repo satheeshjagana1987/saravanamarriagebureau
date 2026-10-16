@@ -5,17 +5,16 @@ import com.saravanamarriagebureau.data.model.ChangePasswordRequest
 import com.saravanamarriagebureau.data.model.DeleteMediaResponse
 import com.saravanamarriagebureau.data.model.ForgetPasswordRequest
 import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
-import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.Invoice
 import com.saravanamarriagebureau.data.model.LoginData
 import com.saravanamarriagebureau.data.model.LoginRequest
-import com.saravanamarriagebureau.data.model.Match
 import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.MediaUploadCompleteResponse
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedRequest
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedResponse
 import com.saravanamarriagebureau.data.model.ProfileData
 import com.saravanamarriagebureau.data.model.ProfileRequest
+import com.saravanamarriagebureau.data.model.RefreshTokenRequest
 import com.saravanamarriagebureau.data.model.RegisterRequest
 import com.saravanamarriagebureau.data.model.RegisterResponse
 import com.saravanamarriagebureau.data.model.ResetPasswordRequest
@@ -34,7 +33,6 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -43,6 +41,11 @@ interface SmbApi {
     @POST("auth/login")
     suspend fun login(
         @Body request: LoginRequest
+    ): Response<ApiResponse<LoginData>>
+
+    @POST("auth/refresh")
+    suspend fun refreshToken(
+        @Body request: RefreshTokenRequest
     ): Response<ApiResponse<LoginData>>
 
     @POST("registration/submit")
@@ -67,8 +70,8 @@ interface SmbApi {
     @POST("auth/reset-password")
     suspend fun resetPassword(@Body request: ResetPasswordRequest): Response<ApiResponse<ResetPasswordResponse>>
 
-    @POST("auth/changePassword")
-    suspend fun changePassword(@Body request: ChangePasswordRequest): Response<ApiResponse<ForgetPasswordResponse>>
+    @POST("auth/reset-password")
+    suspend fun changePassword(@Body request: ChangePasswordRequest): Response<ApiResponse<ResetPasswordResponse>>
 
     @POST("profile/media/upload")
     suspend fun mediaUploadInitiated(@Body request: MediaUploadInitiatedRequest): Response<ApiResponse<MediaUploadInitiatedResponse>>

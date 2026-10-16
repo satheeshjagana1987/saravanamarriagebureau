@@ -6,6 +6,7 @@ import com.saravanamarriagebureau.util.Constants.KEY_ACCESS_TOKEN
 import com.saravanamarriagebureau.util.Constants.KEY_IS_LOGGED_IN
 import com.saravanamarriagebureau.util.Constants.KEY_MEDIA_ID
 import com.saravanamarriagebureau.util.Constants.KEY_MEDIA_URL
+import com.saravanamarriagebureau.util.Constants.KEY_REFRESH_TOKEN
 import com.saravanamarriagebureau.util.Constants.KEY_REMEMBER_ME
 import com.saravanamarriagebureau.util.Constants.KEY_RESET_TOKEN
 import com.saravanamarriagebureau.util.Constants.KEY_USER_ID
@@ -34,6 +35,16 @@ class AppPreferences @Inject constructor(
 
     fun getUserId(): String? {
         return preferences.getString(KEY_USER_ID, null)
+    }
+
+    fun saveRefreshToken(refreshToken: String) {
+        preferences.edit()
+            .putString(KEY_REFRESH_TOKEN, refreshToken)
+            .apply()
+    }
+
+    fun getRefreshToken(): String? {
+        return preferences.getString(KEY_REFRESH_TOKEN, null)
     }
 
     fun saveLoginStatus(isLoggedIn: Boolean) {

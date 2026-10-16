@@ -326,15 +326,16 @@ fun LoginScreen(
                 mobileError = ValidationUtils.validateMobile(mobileNumber.trim())
                 passwordError = ValidationUtils.validatePassword(password.trim())
 
-//                if (mobileError != null) {
-//                    ToastUtils.error(context = context, message = mobileError.toString())
-//                    return@PrimaryButton
-//                }
-//
-//                if (passwordError != null) {
-//                    ToastUtils.error(context = context, message = passwordError.toString())
-//                    return@PrimaryButton
-//                }
+                if (mobileError != null) {
+                    ToastUtils.error(context = context, message = mobileError.toString())
+                    return@PrimaryButton
+                }
+
+                if (passwordError != null) {
+                    ToastUtils.error(context = context, message = passwordError.toString())
+                    return@PrimaryButton
+                }
+
                 isLoading = true
                 viewModel.login(
                     mobile = mobileNumber,

@@ -24,6 +24,11 @@ class LoginViewModel @Inject constructor(
 
     val uiState = _uiState.asStateFlow()
 
+    private val _uiStateRefreshToken =
+        MutableStateFlow<RefreshTokenUIState>(RefreshTokenUIState.Idle)
+
+    val uiStateRefreshToken = _uiStateRefreshToken.asStateFlow()
+
     fun login(
         mobile: String,
         password: String
@@ -50,6 +55,10 @@ class LoginViewModel @Inject constructor(
                         result.data.accessToken
                     )
 
+                    appPreferences.saveRefreshToken(
+                        result.data.refreshToken
+                    )
+
                     appPreferences.saveLoginStatus(
                         isLoggedIn = true
                     )
@@ -63,6 +72,56 @@ class LoginViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     _uiState.value =
                         LoginUIState.Error(
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Loading -> Unit
+            }
+        }
+    }
+
+    fun getRefreshToken(
+        refreshToken: String,
+    ) {
+
+        viewModelScope.launch {
+
+            _uiStateRefreshToken.value = RefreshTokenUIState.Loading
+
+            when (
+                val result = loginRepository.refreshToken(
+                    refreshToken = refreshToken,
+                )
+            ) {
+
+                is ApiResult.Success -> {
+                    _uiStateRefreshToken.value =
+                        RefreshTokenUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                    appPreferences.saveAccessToken(
+                        result.data.accessToken
+                    )
+
+                    appPreferences.saveRefreshToken(
+                        result.data.refreshToken
+                    )
+
+                    appPreferences.saveLoginStatus(
+                        isLoggedIn = true
+                    )
+
+                    appPreferences.saveUserType(
+                        result.data.userType ?: KEY_USER_TYPE
+                    )
+
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateRefreshToken.value =
+                        RefreshTokenUIState.Error(
                             message = result.message
                         )
                 }

@@ -22,6 +22,7 @@ data class LoginRequest(
 data class LoginData(
     val accessToken: String,
     val tokenType: String,
+    val refreshToken: String,
     val expiresIn: String,
     val userType: String?,
     val user: User,
@@ -31,6 +32,20 @@ data class LoginData(
 data class User(
     val id: String,
     val fullName: String,
+    val mobile: String,
+    val email: String,
+    val status: String,
+    val gender: String,
+)
+
+data class RefreshTokenRequest(
+    val refreshToken: String,
+)
+
+data class UserData(
+    val id: String,
+    val fullName: String,
+    val gender: String,
     val mobile: String,
     val email: String,
     val status: String
@@ -249,9 +264,9 @@ data class ResetPasswordData(
 )
 
 data class ChangePasswordRequest(
-    val currentPassword: String,
+    val oldPassword: String,
     val newPassword: String,
-    val confirmNewPassword: String
+    val confirmPassword: String
 )
 
 data class ForgetPasswordResponse(
