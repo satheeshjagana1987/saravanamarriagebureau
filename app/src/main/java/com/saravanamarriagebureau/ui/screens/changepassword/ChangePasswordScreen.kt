@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,22 +40,40 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.screens.forgetpassword.ResetPasswordUiState
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.util.ToastUtils
+import com.saravanamarriagebureau.util.ValidationUtils
 
 @Composable
 fun ChangePasswordScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: ChangePasswordViewModel = hiltViewModel()
 ) {
-    var mobileNumber by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    var currentPassword by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+    var currentPasswordError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         Modifier
@@ -86,11 +105,9 @@ fun ChangePasswordScreen(
                     LabelName(labelName = stringResource(id = R.string.current_password), fontSize = 14.sp, color = Maroon, fontWeight = FontWeight.Normal)
                     Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
-                        value = mobileNumber,
+                        value = currentPassword,
                         onValueChange = {
-                            if (it.length <= 10 && it.all(Char::isDigit)) {
-                                mobileNumber = it
-                            }
+                            currentPassword = it
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -261,8 +278,65 @@ fun ChangePasswordScreen(
         PrimaryButton(
             text = "Change Password",
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
-            onClick = {}
+            onClick = {
+                currentPasswordError = ValidationUtils.validateField(field = currentPassword.trim(), fieldName = "Current Password")
+                passwordError = ValidationUtils.validatePassword(password = password.trim())
+                confirmPasswordError = ValidationUtils.validateConfirmPassword(password = password.trim(), confirmPassword = confirmPassword.trim())
+
+                if(currentPasswordError != null) {
+                    ToastUtils.error(context = context, message = currentPasswordError.toString())
+                    return@PrimaryButton
+                }
+                if(passwordError != null) {
+                    ToastUtils.error(context = context, message = passwordError.toString())
+                    return@PrimaryButton
+                }
+                if(confirmPasswordError != null) {
+                    ToastUtils.error(context = context, message = confirmPasswordError.toString())
+                    return@PrimaryButton
+                }
+                isLoading = true
+                viewModel.changePassword(
+                    oldPassword = currentPassword,
+                    newPassword = password,
+                    confirmPassword = confirmPassword
+                )
+            }
         )
+
+        when (val state = uiState) {
+
+            ChangePasswordUIState.Idle -> {
+                // Nothing
+            }
+
+            ChangePasswordUIState.Loading -> {
+                LoadingDialog(
+                    isLoading = isLoading,
+                    message = "Loading, please wait..."
+                )
+            }
+
+            is ChangePasswordUIState.Success -> {
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Loading, please wait..."
+                )
+                ToastUtils.success(context = context, message = "Password changed successfully")
+                onBack()
+            }
+
+            is ChangePasswordUIState.Error -> {
+                isLoading = false
+                LoadingDialog(
+                    isLoading = false,
+                    message = "Loading, please wait..."
+                )
+                ToastUtils.success(context = context, message = state.message)
+            }
+
+        }
     }
 }
 

@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -33,15 +34,60 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
+    // ---------------------------------------------------------------------
+    // Refresh pipeline: a bare client + API used ONLY to call auth/refresh.
+    // It has NO auth interceptor and NO authenticator, so a 401 on the refresh
+    // endpoint cannot loop back into the TokenAuthenticator.
+    // ---------------------------------------------------------------------
+
+    @Provides
+    @Singleton
+    @RefreshApi
+    fun provideRefreshOkHttp(
+        logging: HttpLoggingInterceptor
+    ): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+
+    @Provides
+    @Singleton
+    @RefreshApi
+    fun provideRefreshApi(
+        @RefreshApi client: OkHttpClient
+    ): SmbApi =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SmbApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTokenAuthenticator(
+        appPreferences: AppPreferences,
+        @RefreshApi refreshApi: Provider<SmbApi>,
+        sessionExpiredHandler: SessionExpiredHandler
+    ): TokenAuthenticator =
+        TokenAuthenticator(appPreferences, refreshApi, sessionExpiredHandler)
+
+    // ---------------------------------------------------------------------
+    // Main pipeline: auth interceptor adds the token, authenticator refreshes
+    // it on 401.
+    // ---------------------------------------------------------------------
+
     @Provides
     @Singleton
     fun provideOkHttp(
         logging: HttpLoggingInterceptor,
-        authInterceptor: AuthInterceptor
+        authInterceptor: AuthInterceptor,
+        tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor(authInterceptor)
+            .authenticator(tokenAuthenticator)
             .build()
 
     @Provides
