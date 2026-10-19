@@ -117,6 +117,32 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiStateForgetPassword by forgetPasswordViewModel.uiState.collectAsStateWithLifecycle()
 
+    Timber.e("uiState  ==> $uiStateForgetPassword")
+
+    LaunchedEffect(uiStateForgetPassword) {
+        when (val state = uiStateForgetPassword) {
+            is ForgetPasswordUIState.Success -> {
+                forgetPasswordViewModel.resetState()
+                isLoading = false
+                ToastUtils.success(
+                    context = context,
+                    message = "OTP sent successfully"
+                )
+                onForgot(mobileNumber)
+            }
+
+            is ForgetPasswordUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(
+                    context = context,
+                    message = state.message
+                )
+            }
+
+            else -> Unit
+        }
+    }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -294,8 +320,11 @@ fun LoginScreen(
                         color = Maroon,
                         modifier = Modifier
                             .clickable {
-                                if(!isConnected) {
-                                    ToastUtils.error(context = context, message = "Please enable network connection")
+                                if (!isConnected) {
+                                    ToastUtils.error(
+                                        context = context,
+                                        message = "Please enable network connection"
+                                    )
                                     return@clickable
                                 }
                                 mobileError = ValidationUtils.validateMobile(mobileNumber.trim())
@@ -319,8 +348,11 @@ fun LoginScreen(
         PrimaryButton(
             stringResource(id = R.string.login),
             onClick = {
-                if(!isConnected) {
-                    ToastUtils.error(context = context, message = "Please enable network connection")
+                if (!isConnected) {
+                    ToastUtils.error(
+                        context = context,
+                        message = "Please enable network connection"
+                    )
                     return@PrimaryButton
                 }
                 mobileError = ValidationUtils.validateMobile(mobileNumber.trim())
@@ -375,41 +407,6 @@ fun LoginScreen(
                 )
                 ToastUtils.error(context = context, message = state.message)
             }
-        }
-
-        when (val state = uiStateForgetPassword) {
-
-            ForgetPasswordUIState.Idle -> {
-                // Nothing
-            }
-
-            ForgetPasswordUIState.Loading -> {
-                LoadingDialog(
-                    isLoading = isLoading,
-                    message = "Sending OTP..."
-                )
-
-            }
-
-            is ForgetPasswordUIState.Success -> {
-                isLoading = false
-                LoadingDialog(
-                    isLoading = false,
-                    message = "Sending OTP..."
-                )
-                ToastUtils.success(context = context, message = "OTP sent successfully")
-                onForgot(mobileNumber)
-            }
-
-            is ForgetPasswordUIState.Error -> {
-                isLoading = false
-                LoadingDialog(
-                    isLoading = false,
-                    message = "Sending OTP..."
-                )
-                ToastUtils.error(context = context, message = state.message)
-            }
-
         }
 
         Row(

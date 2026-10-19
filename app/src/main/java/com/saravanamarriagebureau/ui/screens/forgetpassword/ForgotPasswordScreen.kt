@@ -209,16 +209,11 @@ fun ForgotPasswordScreen(
                         }
 
                         is VerifyResetOTPPasswordUIState.Success -> {
-                            Text(
-                                text = state.message ?: "OTP verified successfully"
-                            )
+                            ToastUtils.success(context = context, message = "OTP verified successfully")
                         }
 
                         is VerifyResetOTPPasswordUIState.Error -> {
-                            Text(
-                                text = state.message,
-                                color = Color.Red
-                            )
+                            ToastUtils.error(context = context, message = state.message)
                         }
 
                         else -> {}

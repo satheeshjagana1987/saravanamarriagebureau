@@ -21,6 +21,7 @@ import com.saravanamarriagebureau.ui.screens.splash.WelcomeScreen
 import com.saravanamarriagebureau.ui.screens.admin.AdminLandingScreen
 import com.saravanamarriagebureau.util.AppPreferences
 import com.saravanamarriagebureau.util.Constants.KEY_USER_TYPE
+import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -75,14 +76,14 @@ fun SmbNavigationApp(
                 onPrivacy = { },
                 onForgot = { mobile ->
                     navController.navigate(
-                        forgotPassword(mobile)
+                        forgotPassword(mobile = mobile)
                     )
                 }
             )
         }
 
         composable(
-            route = "${Routes.ForgotPassword}/{mobile}",
+            route = Routes.ForgotPassword,
             arguments = listOf(
                 navArgument("mobile") {
                     type = NavType.StringType
@@ -90,10 +91,9 @@ fun SmbNavigationApp(
             )
         ) { backStackEntry ->
 
-            val mobile = backStackEntry.arguments
-                ?.getString("mobile")
-                .orEmpty()
-
+            val mobile =
+                backStackEntry.arguments?.getString("mobile") ?: ""
+            Timber.e("mobile  ==> $mobile")
             ForgotPasswordScreen(
                 mobile = mobile,
                 onReset = {

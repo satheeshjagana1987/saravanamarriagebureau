@@ -53,5 +53,5 @@ fun paymentRoute(selectedPlan: String): String {
 
 
 fun forgotPassword(mobile: String): String {
-    return "${Routes.ForgotPassword}/${Uri.encode(mobile)}"
+    return "forgot_password/${Uri.encode(mobile)}"
 }
