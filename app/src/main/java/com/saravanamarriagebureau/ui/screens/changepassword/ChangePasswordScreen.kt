@@ -51,12 +51,14 @@ import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.screens.forgetpassword.ResetPasswordUiState
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
 
 @Composable
 fun ChangePasswordScreen(
     onBack: () -> Unit,
+    onLogin: () -> Unit,
     viewModel: ChangePasswordViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -87,16 +89,16 @@ fun ChangePasswordScreen(
 
         Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)                     // 1. Outside Padding (Margin)
-                .clip(RoundedCornerShape(16.dp))    // 2. CLIP FIRST (Crucial Step!)
-                .background(Color.White),            // 3. Apply background to the clipped shape
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(10.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth().padding(16.dp),
+                    .fillMaxWidth()
+                    .background(White)
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
 
@@ -324,7 +326,7 @@ fun ChangePasswordScreen(
                     message = "Loading, please wait..."
                 )
                 ToastUtils.success(context = context, message = "Password changed successfully")
-                onBack()
+                onLogin()
             }
 
             is ChangePasswordUIState.Error -> {
@@ -343,5 +345,5 @@ fun ChangePasswordScreen(
 @Preview
 @Composable
 fun ChangePasswordScreenPreview(){
-    ChangePasswordScreen(onBack = {})
+    ChangePasswordScreen(onBack = {}, onLogin = {})
 }

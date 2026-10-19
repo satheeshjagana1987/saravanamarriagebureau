@@ -18,6 +18,8 @@ import javax.inject.Singleton
 object NetworkModule {
 
     private const val BASE_URL = "https://sixties-dumping-tactile.ngrok-free.dev/api/v1/"
+//    private const val BASE_URL = "https://lesser-staining-racoon.ngrok-free.dev/api/v1/"
+    private const val IMAGE_BASE_URL = "https://sixties-dumping-tactile.ngrok-free.dev/"
 
     @Provides
     @Singleton

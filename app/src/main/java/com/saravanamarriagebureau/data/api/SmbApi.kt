@@ -8,6 +8,7 @@ import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
 import com.saravanamarriagebureau.data.model.Invoice
 import com.saravanamarriagebureau.data.model.LoginData
 import com.saravanamarriagebureau.data.model.LoginRequest
+import com.saravanamarriagebureau.data.model.LoginResponse
 import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.MediaUploadCompleteResponse
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedRequest
@@ -55,6 +56,9 @@ interface SmbApi {
 
     @GET("profile/me")
     suspend fun getProfile(): Response<ApiResponse<ProfileData>>
+
+    @GET("profile/{profileId}")
+    suspend fun getProfileById(@Path("profileId") profileId: String): Response<ApiResponse<ProfileData>>
 
     @PATCH("profile/me")
     suspend fun updateProfile(

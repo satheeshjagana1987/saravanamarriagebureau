@@ -82,16 +82,38 @@ fun SmbNavigationApp(
         }
 
         composable(
-            route = "${Routes.ForgotPassword}/{mobile}"
+            route = "${Routes.ForgotPassword}/{mobile}",
+            arguments = listOf(
+                navArgument("mobile") {
+                    type = NavType.StringType
+                }
+            )
         ) { backStackEntry ->
 
             val mobile = backStackEntry.arguments
                 ?.getString("mobile")
-                ?: return@composable
+                .orEmpty()
+
             ForgotPasswordScreen(
                 mobile = mobile,
-                onReset = { navController.navigate(Routes.Login) },
-                onBack = { navController.popBackStack() }
+                onReset = {
+                    navController.navigate(Routes.Login) {
+                        popUpTo(Routes.Login) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                },
+
+                onBack = {
+                    val returned = navController.popBackStack()
+
+                    if (!returned) {
+                        navController.navigate(Routes.Login) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
             )
 
         }

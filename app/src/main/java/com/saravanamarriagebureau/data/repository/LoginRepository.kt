@@ -3,7 +3,6 @@ package com.saravanamarriagebureau.data.repository
 import com.saravanamarriagebureau.data.api.SmbApi
 import com.saravanamarriagebureau.data.model.LoginData
 import com.saravanamarriagebureau.data.model.LoginRequest
-import com.saravanamarriagebureau.data.model.RefreshTokenRequest
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.safeApiCall
 import javax.inject.Inject
@@ -25,15 +24,4 @@ class LoginRepository @Inject constructor(
         }
     }
 
-    suspend fun refreshToken(
-        refreshToken: String
-    ): ApiResult<LoginData> {
-        return safeApiCall {
-            api.refreshToken(
-                RefreshTokenRequest(
-                    refreshToken = refreshToken,
-                )
-            )
-        }
-    }
 }

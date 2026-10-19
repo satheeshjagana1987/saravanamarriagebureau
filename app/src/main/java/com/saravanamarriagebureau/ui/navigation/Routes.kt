@@ -1,11 +1,13 @@
 package com.saravanamarriagebureau.ui.navigation
 
+import android.net.Uri
+
 object Routes {
     const val Splash = "splash"
     const val Welcome = "welcome"
     const val Login = "login"
     const val Register = "register"
-    const val ForgotPassword = "forgot_password"
+    const val ForgotPassword = "forgot_password/{mobile}"
     const val Offer = "offer"
     const val Membership = "membership"
     const val ProfileCreation = "profile_creation"
@@ -19,7 +21,7 @@ object Routes {
     const val Search = "search"
     const val InterestSent = "interest_sent"
     const val MatchFixed = "match_fixed"
-    const val Invoice = "invoice"
+    const val Invoice = "invoice/{selectedPlan}"
     const val ContactsLocked = "contacts_locked"
     const val AdminPanel = "admin_panel"
     const val Interests = "interests"
@@ -45,10 +47,11 @@ fun profileRoute(profileId: String, type: String): String {
     return "${Routes.Profile}/$profileId/$type"
 }
 
-fun interestRoute(interestId: String): String {
-    return "${Routes.Interests}/$interestId"
+fun paymentRoute(selectedPlan: String): String {
+    return "invoice/${Uri.encode(selectedPlan)}"
 }
 
+
 fun forgotPassword(mobile: String): String {
-    return "${Routes.ForgotPassword}/$mobile"
+    return "${Routes.ForgotPassword}/${Uri.encode(mobile)}"
 }

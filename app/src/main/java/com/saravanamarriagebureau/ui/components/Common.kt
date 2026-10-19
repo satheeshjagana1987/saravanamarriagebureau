@@ -376,18 +376,21 @@ fun ProfileCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-//            if (profile.isPaidUser) {
-//                ProfilePhoto("", Modifier.size(74.dp))
-//            } else {
-//                BlurredProfileImage(
-//                    R.drawable.profile_pic,
-//                    isBlurred = true,
-//                    modifier = Modifier.size(74.dp)
-//                )
-//            }
-            ProfilePhoto(defaultImage = R.drawable.profile_pic, Modifier.size(74.dp))
+            if (profile.isAdminVerified) {
+                ProfilePhoto(defaultImage = R.drawable.profile_pic, Modifier.size(74.dp))
+            } else {
+                BlurredProfileImage(
+                    R.drawable.profile_pic,
+                    isBlurred = true,
+                    modifier = Modifier.size(74.dp)
+                )
+            }
             Spacer(Modifier.width(10.dp))
-            val age = calculateAge(profile.dateOfBirth)
+            val age =  if(profile.dateOfBirth.isNullOrEmpty()) {
+                "NA"
+            } else {
+                 calculateAge(profile.dateOfBirth).toString()
+            }
             Column(Modifier.weight(1f)) {
                 LabelName(
                     labelName = profile.fullName,
@@ -428,27 +431,29 @@ fun ProfileCard(
                 }
             }
             if (profile.isAdminVerified) {
-                Icon(
-                    Icons.Default.FavoriteBorder,
-                    null, tint = Maroon,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable {
-                            notInterested = true
-                            viewModel.deleteInterest(interestId = profile.id)
-                        },
-                )
-            } else {
-                Icon(
-                    Icons.Default.FavoriteBorder,
-                    null, tint = Gray,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable {
-                            notInterested = false
-                            viewModel.sendInterest(profileId = profile.id)
-                        },
-                )
+                if(profile.isInterested) {
+                    Icon(
+                        Icons.Default.FavoriteBorder,
+                        null, tint = Maroon,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable {
+                                notInterested = true
+                                viewModel.deleteInterest(interestId = profile.id)
+                            },
+                    )
+                } else {
+                    Icon(
+                        Icons.Default.FavoriteBorder,
+                        null, tint = TextSecondary,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable {
+                                notInterested = false
+                                viewModel.sendInterest(profileId = profile.id)
+                            },
+                    )
+                }
             }
 
             when (val state = uiStateSendInterest) {
@@ -586,7 +591,11 @@ fun InterestCard(
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
             ProfilePhoto("", Modifier.size(74.dp))
             Spacer(Modifier.width(10.dp))
-            val age = calculateAge(interest.receiver.dateOfBirth ?: NA)
+            val age =  if(interest.receiver.dateOfBirth.isNullOrEmpty()) {
+                "NA"
+            } else {
+                calculateAge(interest.receiver.dateOfBirth).toString()
+            }
             Column(Modifier.weight(1f)) {
                 LabelName(
                     labelName = interest.receiver.fullName ?: NA,

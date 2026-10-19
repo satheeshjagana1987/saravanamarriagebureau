@@ -1,6 +1,8 @@
 package com.saravanamarriagebureau.ui.screens.userdashboard
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,10 +14,15 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +44,7 @@ import com.saravanamarriagebureau.ui.theme.Success
 @Composable
 fun ChooseYourPlanScreen(
     onBack: () -> Unit,
-    onContinue: () -> Unit,
+    onContinue: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -53,33 +60,75 @@ fun ChooseYourPlanScreen(
                 .padding(16.dp)
                 .selectableGroup() // Crucial for screen-reader accessibility
         ) {
-            MembershipScreen(onContinue)
+            var selectedPlan by remember { mutableStateOf("299") }
+
+            Column(Modifier.fillMaxSize()) {
+
+                PlanCard(
+                    title = "Dasara Offer",
+                    subtitle = "Free Registration",
+                    price = "₹0",
+                    selected = selectedPlan == "0",
+                    onClick = { selectedPlan = "0" }
+                )
+
+                PlanCard(
+                    title = stringResource(R.string.yearly_membership),
+                    subtitle = "For profile viewing only",
+                    price = "₹299 / Year",
+                    selected = selectedPlan == "299",
+                    onClick = {
+                        selectedPlan = "299"
+                    }
+                )
+
+                Spacer(Modifier.weight(1f))
+
+                PrimaryButton(
+                    "Continue",
+                    onClick = {
+                        onContinue(selectedPlan)
+                        // You can also use selectedPlan here
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 50.dp
+                        )
+                )
+            }
         }
     }
 }
 
 @Composable
-fun MembershipScreen(onContinue: () -> Unit) {
-    Column(Modifier.fillMaxSize()) {
-        PlanCard("Dasara Offer", "Free Registration", "₹0", selected = true)
-        PlanCard(stringResource(id = R.string.yearly_membership), "For profile viewing only", "₹299 / Year", selected = false)
-        Spacer(Modifier.weight(1f))
-        PrimaryButton(
-            "Continue",
-            onClick = {onContinue},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, end = 16.dp, bottom = 50.dp)
-        )
-    }
-}
-
-@Composable
-private fun PlanCard(title: String, subtitle: String, price: String, selected: Boolean) {
+private fun PlanCard(
+    title: String,
+    subtitle: String,
+    price: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
     Card(
-        Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(5.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(
+            containerColor = if (selected) {
+                Color(0xFFFFF5F5)
+            } else {
+                Color.White
+            }
+        ),
+        border = if (selected) {
+            BorderStroke(1.dp, Maroon)
+        } else {
+            BorderStroke(1.dp, CardBorder)
+        },
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -110,8 +159,16 @@ private fun PlanCard(title: String, subtitle: String, price: String, selected: B
                 )
             }
             Icon(
-                Icons.Default.CheckCircle,
-                null,
+                imageVector = if (selected) {
+                    Icons.Default.CheckCircle
+                } else {
+                    Icons.Default.RadioButtonUnchecked
+                },
+                contentDescription = if (selected) {
+                    "Selected plan"
+                } else {
+                    "Select plan"
+                },
                 tint = if (selected) Success else CardBorder
             )
         }

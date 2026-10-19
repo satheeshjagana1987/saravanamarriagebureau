@@ -1,5 +1,7 @@
 package com.saravanamarriagebureau.ui.screens.profile
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -43,6 +45,7 @@ import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.components.calculateAge
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
@@ -51,6 +54,7 @@ import com.saravanamarriagebureau.ui.theme.Warning
 import com.saravanamarriagebureau.util.Constants.NA
 import timber.log.Timber
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileContent(
     profile: ProfileData,
@@ -215,7 +219,7 @@ fun ProfileContent(
                         ) {
 
                             Text(
-                                text = profile.userId,
+                                text = profile.fullName,
                                 color = Maroon,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold
@@ -248,10 +252,14 @@ fun ProfileContent(
                         }
 
                         Spacer(modifier = Modifier.height(10.dp))
-
+                        val age =  if(profile.dateOfBirth.isNullOrEmpty()) {
+                            "NA"
+                        } else {
+                            calculateAge(profile.dateOfBirth).toString()
+                        }
                         ProfileInfoRow(
                             label = stringResource(id = R.string.age),
-                            value = profile.height.toString(),
+                            value = "$age yrs",
                             secondLabel = stringResource(id = R.string.height),
                             secondValue = profile.height,
                             thirdLabel = stringResource(id = R.string.religion),

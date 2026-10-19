@@ -25,6 +25,11 @@ class ProfileViewModel @Inject constructor(
 
     val uiStateProfileUpdate = _uiStateProfileUpdate.asStateFlow()
 
+    private val _uiStateById =
+        MutableStateFlow<ProfileUIState>(ProfileUIState.Idle)
+
+    val uiStateById = _uiStateById.asStateFlow()
+
 
     fun loadProfile() {
         viewModelScope.launch {
@@ -41,6 +46,35 @@ class ProfileViewModel @Inject constructor(
 
                 is ApiResult.Error -> {
                     _uiState.value =
+                        ProfileUIState.Error(
+                            result.message
+                        )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun loadProfileById(
+        profileId: String
+    ) {
+        viewModelScope.launch {
+            _uiStateById.value = ProfileUIState.Loading
+
+            when (val result = profileRepository.getProfileById(
+                profileId = profileId
+            )) {
+                is ApiResult.Success -> {
+                    _uiStateById.value =
+                        ProfileUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateById.value =
                         ProfileUIState.Error(
                             result.message
                         )

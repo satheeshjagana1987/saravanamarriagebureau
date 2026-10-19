@@ -1,5 +1,7 @@
 package com.saravanamarriagebureau.ui.screens.profile
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +23,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.theme.Cream
+import timber.log.Timber
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileViewScreen(
     onBack: () -> Unit,
@@ -31,11 +35,14 @@ fun ProfileViewScreen(
     onMatchFixed: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    Timber.e("profileId  => $profileId")
     val uiState by viewModel.uiState
         .collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.loadProfile()
+        viewModel.loadProfileById(
+            profileId = profileId
+        )
     }
 
     when (val state = uiState) {
@@ -96,6 +103,7 @@ fun ProfileViewScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun ProfileViewScreenPreview() {

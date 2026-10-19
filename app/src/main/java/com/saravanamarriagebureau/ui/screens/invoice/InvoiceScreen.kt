@@ -41,7 +41,14 @@ import com.saravanamarriagebureau.ui.theme.Warning
 import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
-fun InvoiceScreen(onPay: () -> Unit, onBack: () -> Unit) {
+fun InvoiceScreen(
+    onPay: () -> Unit,
+    onBack: () -> Unit,
+    selectedPlan: String
+) {
+
+
+
     Column(Modifier
         .fillMaxSize()
         .padding(16.dp)
@@ -265,5 +272,5 @@ fun InvoiceScreen(onPay: () -> Unit, onBack: () -> Unit) {
 @Preview
 @Composable
 fun InvoiceScreenPreview() {
-    InvoiceScreen(onPay = {}, onBack = {})
+    InvoiceScreen(onPay = {}, onBack = {}, selectedPlan = "")
 }

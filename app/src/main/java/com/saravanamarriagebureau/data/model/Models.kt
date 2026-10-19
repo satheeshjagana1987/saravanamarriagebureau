@@ -19,6 +19,14 @@ data class LoginRequest(
     val password: String
 )
 
+data class LoginResponse(
+    val success: Boolean,
+    val data: LoginData,
+    val pagination: Pagination,
+    val requestId: String,
+    val timestamp: String
+)
+
 data class LoginData(
     val accessToken: String,
     val tokenType: String,
@@ -208,20 +216,12 @@ data class InterestProfile(
 
     val isAdminVerified: Boolean,
 
-    val dateOfBirth: String?,
+    val dateOfBirth: String,
 
     val profession: String?,
 
     val city: String?,
-    val image: ProfileImage?
-)
-
-data class ProfileImage(
-    val mediaId: String,
-
-    val status: String,
-
-    val downloadEndpoint: String
+    val image: String?
 )
 
 data class Pagination(
@@ -338,6 +338,7 @@ data class MatchesData(
     val userId: String,
 
     val isAdminVerified: Boolean,
+    val isInterested: Boolean,
 
     val height: String?,
 

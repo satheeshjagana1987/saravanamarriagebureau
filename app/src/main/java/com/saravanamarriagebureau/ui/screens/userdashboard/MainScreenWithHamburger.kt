@@ -28,13 +28,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.saravanamarriagebureau.data.model.BottomBarScreen
 import com.saravanamarriagebureau.data.model.DrawerScreen
 import com.saravanamarriagebureau.ui.navigation.Routes
+import com.saravanamarriagebureau.ui.navigation.paymentRoute
 import com.saravanamarriagebureau.ui.navigation.profileRoute
 import com.saravanamarriagebureau.ui.screens.AdminVoiceScreen
 import com.saravanamarriagebureau.ui.screens.ContactsLockedScreen
@@ -470,7 +473,8 @@ fun MainScreenWithHamburger(
 
                         onBack = {
                             navController.popBackStack()
-                        }
+                        },
+                        onLogin = onLogout
                     )
                 }
 
@@ -522,8 +526,11 @@ fun MainScreenWithHamburger(
                         onBack = {
                             navController.popBackStack()
                         },
-                        onContinue = {
-                            navController.navigate(Routes.Invoice)
+                        onContinue = { selectedPlan ->
+                            Timber.e("selectedPlan ==> $selectedPlan")
+                            navController.navigate(
+                                paymentRoute(selectedPlan = selectedPlan)
+                            )
                         }
                     )
                 }
@@ -535,7 +542,9 @@ fun MainScreenWithHamburger(
                             navController.popBackStack()
                         },
                         onInvoice = {
-                            navController.navigate(Routes.Invoice)
+                            navController.navigate(
+                                paymentRoute(selectedPlan = "")
+                            )
                         }
                     )
                 }
@@ -570,10 +579,19 @@ fun MainScreenWithHamburger(
                 // INVOICE
                 // =================================================
 
-                composable(Routes.Invoice) {
+                composable(
+                    route = Routes.Invoice,
+                    arguments = listOf(
+                        navArgument("selectedPlan") {
+                            type = NavType.StringType
+                        }
+                    )
+                ) { backStackEntry ->
+
+                    val selectedPlan =
+                        backStackEntry.arguments?.getString("selectedPlan") ?: ""
 
                     InvoiceScreen(
-
                         onPay = {
                             navController.navigate(
                                 Routes.ContactsLocked
@@ -582,7 +600,8 @@ fun MainScreenWithHamburger(
 
                         onBack = {
                             navController.popBackStack()
-                        }
+                        },
+                        selectedPlan = selectedPlan
                     )
                 }
 

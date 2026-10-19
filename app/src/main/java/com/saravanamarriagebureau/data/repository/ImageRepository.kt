@@ -4,8 +4,6 @@ import android.content.Context
 import android.net.Uri
 import com.saravanamarriagebureau.data.api.SmbApi
 import com.saravanamarriagebureau.data.model.DeleteMediaResponse
-import com.saravanamarriagebureau.data.model.ForgetPasswordRequest
-import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.AppPreferences
 import com.saravanamarriagebureau.util.safeApiCall
@@ -94,4 +92,99 @@ class ImageRepository @Inject constructor(
             )
         }
     }
+
+    suspend fun uploadVideo(
+        context: Context,
+        uri: Uri
+    ) = withContext(Dispatchers.IO) {
+        val part = uriToMultipart(context, uri)
+        val response =
+            api.uploadImage(media = part, mediaType = createTextPart("FAMILY_VIDEO"))
+
+        if (response.isSuccessful) {
+            val body = response.body()
+                ?: throw IOException("Empty upload response")
+
+            body.message ?: "Video uploaded successfully"
+        } else {
+            throw HttpException(response)
+        }
+    }
+
+    fun uriToMultipart(
+        context: Context,
+        uri: Uri,
+        partName: String = "media"
+    ): MultipartBody.Part {
+        val resolver = context.contentResolver
+
+        val mimeType = resolver.getType(uri)
+            ?: "application/octet-stream"
+
+        val extension = when {
+            mimeType == "video/mp4" -> ".mp4"
+            mimeType == "audio/mp4" -> ".m4a"
+            mimeType == "audio/3gpp" -> ".3gp"
+            mimeType == "audio/mpeg" -> ".mp3"
+            mimeType == "audio/aac" -> ".aac"
+            mimeType == "audio/ogg" -> ".ogg"
+            mimeType == "audio/wav" -> ".wav"
+            else -> ".bin"
+        }
+
+        val tempFile = File.createTempFile(
+            "upload_",
+            extension,
+            context.cacheDir
+        )
+
+        try {
+            val input = resolver.openInputStream(uri)
+                ?: throw IOException("Cannot open selected media")
+
+            input.use { source ->
+                tempFile.outputStream().use { destination ->
+                    source.copyTo(destination)
+                }
+            }
+
+            val requestBody = tempFile.asRequestBody(
+                mimeType.toMediaType()
+            )
+
+            return MultipartBody.Part.createFormData(
+                partName,
+                tempFile.name,
+                requestBody
+            )
+        } catch (e: Exception) {
+            tempFile.delete()
+            throw e
+        }
+    }
+
+    suspend fun uploadVoiceNote(file: File) =
+        withContext(Dispatchers.IO) {
+            val requestBody = file.asRequestBody(
+                "audio/mp3".toMediaType()
+            )
+
+            val part = MultipartBody.Part.createFormData(
+                "media",
+                file.name,
+                requestBody
+            )
+
+            val response =
+                api.uploadImage(media = part, mediaType = createTextPart("BRIDE_GROOM_VOICE_NOTE"))
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                    ?: throw IOException("Empty upload response")
+
+                body.message ?: "Voice uploaded successfully"
+            } else {
+                throw HttpException(response)
+            }
+        }
 }

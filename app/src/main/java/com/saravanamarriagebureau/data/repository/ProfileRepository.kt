@@ -18,6 +18,16 @@ class ProfileRepository @Inject constructor(
         }
     }
 
+    suspend fun getProfileById(
+        profileId: String
+    ): ApiResult<ProfileData> {
+        return safeApiCall {
+            api.getProfileById(
+                profileId = profileId
+            )
+        }
+    }
+
     suspend fun updateProfile(
          height: String,
          education: String,

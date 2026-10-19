@@ -1,6 +1,7 @@
 package com.saravanamarriagebureau.util
 
 import com.saravanamarriagebureau.data.model.ApiResponse
+import org.json.JSONObject
 import retrofit2.Response
 import java.io.IOException
 
@@ -33,8 +34,22 @@ suspend fun <T> safeApiCall(
 
         } else {
 
+            // Read the error response returned by the server
+            val errorJson = response.errorBody()?.string()
+            val errorMessage = try {
+                val jsonObject = JSONObject(errorJson ?: "")
+                jsonObject.optJSONObject("error")
+                    ?.optString("message")
+                    ?.takeIf { it.isNotBlank() }
+                    ?: jsonObject.optString("message")
+                        .takeIf { it.isNotBlank() }
+                    ?: "Something went wrong"
+            } catch (e: Exception) {
+                "Something went wrong"
+            }
+
             ApiResult.Error(
-                message = "HTTP ${response.code()} error",
+                message = errorMessage,
                 code = response.code()
             )
         }

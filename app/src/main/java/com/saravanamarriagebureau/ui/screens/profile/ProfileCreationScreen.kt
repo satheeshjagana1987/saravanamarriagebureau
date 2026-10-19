@@ -1,8 +1,11 @@
 package com.saravanamarriagebureau.ui.screens.profile
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,12 +40,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -55,6 +60,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -83,6 +89,8 @@ import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
+import com.saravanamarriagebureau.util.VoiceRecorder
+import kotlinx.coroutines.launch
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -128,9 +136,6 @@ fun ProfileCreationScreen(
     var professionError by remember { mutableStateOf<String?>(null) }
     var religionError by remember { mutableStateOf<String?>(null) }
 
-    var imageFileSize: Long = 0
-    var imageFileName = ""
-
     var selectedTab by remember {
         mutableStateOf(ProfileTab.PERSONAL)
     }
@@ -154,7 +159,15 @@ fun ProfileCreationScreen(
         viewModel.loadProfile()
     }
 
+    var imageFileSize: Long = 0
+    var imageFileName = ""
+
+    // Video
+    var videoUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Image
     val state by imageViewModel.uiState.collectAsState()
+    val videoState by imageViewModel.uploadVideoState.collectAsState()
     val mediaInitiatedUploadUiState by mediaInitiatedUploadViewModel.uiState.collectAsState()
     val mediaUploadCompleteUiState by mediaUploadCompleteViewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -162,6 +175,36 @@ fun ProfileCreationScreen(
     var pendingCameraUri by remember {
         mutableStateOf<Uri?>(null)
     }
+
+    // Voice Record
+
+    val scope = rememberCoroutineScope()
+
+    var recorder by remember {
+        mutableStateOf<VoiceRecorder?>(null)
+    }
+    var recording by remember { mutableStateOf(false) }
+    var status by remember { mutableStateOf("Ready") }
+
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            if (granted) {
+                try {
+                    val voiceRecorder = VoiceRecorder(context)
+                    voiceRecorder.start()
+                    recorder = voiceRecorder
+                    recording = true
+                    status = "Recording..."
+                } catch (e: Exception) {
+                    status = "Could not start recording"
+                }
+            } else {
+                status = "Microphone permission denied"
+            }
+        }
+
 
     LaunchedEffect(uiState) {
 
@@ -253,6 +296,14 @@ fun ProfileCreationScreen(
                 imageViewModel.setImage(it)
             }
         }
+    }
+
+    // Video result
+    val picker = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        videoUri = uri
+        status = if (uri != null) "Video selected" else "No video selected"
     }
 
     // Modal loading dialog shown while the profile is being fetched.
@@ -823,7 +874,10 @@ fun ProfileCreationScreen(
                             state.imageUri?.let { uri ->
                                 ProfilePhoto(uri, Modifier.size(100.dp))
                             } ?: run {
-                                ProfilePhoto(defaultImage = R.drawable.profile_pic, Modifier.size(100.dp))
+                                ProfilePhoto(
+                                    defaultImage = R.drawable.profile_pic,
+                                    Modifier.size(100.dp)
+                                )
                             }
                             Spacer(Modifier.weight(1f))
 //                            CustomButtonForUpload(
@@ -844,7 +898,7 @@ fun ProfileCreationScreen(
                                     Button(
                                         onClick = {
                                             galleryLauncher.launch(
-                                                androidx.activity.result.PickVisualMediaRequest(
+                                                PickVisualMediaRequest(
                                                     ActivityResultContracts.PickVisualMedia.ImageOnly
                                                 )
                                             )
@@ -885,7 +939,7 @@ fun ProfileCreationScreen(
 //                                        )
                                     },
                                     enabled = state.imageUri != null &&
-                                            !state.isLoading,
+                                            !state.isLoading && !state.success,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text(
@@ -898,16 +952,13 @@ fun ProfileCreationScreen(
                                     LoadingView()
                                 }
 
-                                if(state.success) {
-                                    mediaUploadCompleteViewModel.mediaUploadComplete()
-                                }
-
-                                state.message?.let {
-                                    Text(it, color = MaterialTheme.colorScheme.primary)
+                                if (state.success) {
+                                    ToastUtils.success(context = context, message = state.message.toString())
+//                                    mediaUploadCompleteViewModel.mediaUploadComplete()
                                 }
 
                                 state.error?.let {
-                                    Text(it, color = MaterialTheme.colorScheme.error)
+                                    ToastUtils.error(context = context, message = it)
                                 }
 
                                 when (val state = mediaInitiatedUploadUiState) {
@@ -947,89 +998,203 @@ fun ProfileCreationScreen(
                                 fontWeight = FontWeight.Normal
                             )
                             Spacer(Modifier.weight(1f))
-                            CustomButtonForUpload(
-                                text = stringResource(id = R.string.upload),
-                                onClick = {},
-                                modifier = Modifier.weight(1f),
-                            )
+                            Column {
+                                Button(
+                                    onClick = {
+                                        picker.launch(
+                                            PickVisualMediaRequest(
+                                                ActivityResultContracts.PickVisualMedia.VideoOnly
+                                            )
+                                        )
+                                    }
+                                ) {
+                                    Text("Select Video")
+                                }
+                                Spacer(Modifier.height(10.dp))
+
+                                Text(status)
+
+                                Button(
+                                    enabled = videoUri != null,
+                                    onClick = {
+                                        videoUri?.let { uri ->
+                                            scope.launch {
+                                                status = try {
+                                                    imageViewModel.uploadVideo(
+                                                        uri = uri,
+                                                        context = context
+                                                    )
+                                                    "Upload completed"
+                                                } catch (e: Exception) {
+                                                    "Upload failed: ${e.message}"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    Text("Upload Video")
+                                }
+
+                                if (videoState.isLoading) {
+                                    LoadingView()
+                                }
+
+                                if (videoState.success) {
+                                    ToastUtils.success(context = context, message = state.message.toString())
+//                                    mediaUploadCompleteViewModel.mediaUploadComplete()
+                                }
+
+                                videoState.error?.let {
+                                    ToastUtils.error(context = context, message = it)
+                                }
+                            }
+
                         }
 
                         Spacer(Modifier.height(20.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            LabelName(
-                                labelName = stringResource(id = R.string.bride_groom_voice_record),
-                                fontSize = 14.sp,
-                                color = Maroon,
-                                fontWeight = FontWeight.Normal
-                            )
-                            Spacer(Modifier.weight(1f))
-                            CustomButtonForUpload(
-                                text = stringResource(id = R.string.upload),
-                                onClick = {},
-                                modifier = Modifier.weight(1f),
-                            )
-                        }
+//                        Row(
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            horizontalArrangement = Arrangement.Center
+//                        ) {
+//                            LabelName(
+//                                labelName = stringResource(id = R.string.bride_groom_voice_record),
+//                                fontSize = 14.sp,
+//                                color = Maroon,
+//                                fontWeight = FontWeight.Normal
+//                            )
+//                            Spacer(Modifier.weight(1f))
+//                            CustomButtonForUpload(
+//                                text = stringResource(id = R.string.upload),
+//                                onClick = {},
+//                                modifier = Modifier.weight(1f),
+//                            )
+//                        }
 
-                        Spacer(Modifier.height(20.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            LabelName(
-                                labelName = stringResource(id = R.string.parent_voice_record),
-                                fontSize = 14.sp,
-                                color = Maroon,
-                                fontWeight = FontWeight.Normal
-                            )
-                            Spacer(Modifier.weight(1f))
-                            CustomButtonForUpload(
-                                text = stringResource(id = R.string.upload),
-                                onClick = {},
-                                modifier = Modifier.weight(1f),
-                            )
-                        }
-                        Spacer(Modifier.height(30.dp))
-                        LabelName(
-                            labelName = stringResource(id = R.string.video_voice_limit),
-                            fontSize = 12.sp,
-                            color = Red,
-                            fontWeight = FontWeight.Normal
-                        )
-
+//                        Column {
+//                            Button(
+//                                onClick = {
+//                                    if (!recording) {
+//                                        val granted = ContextCompat.checkSelfPermission(
+//                                            context,
+//                                            Manifest.permission.RECORD_AUDIO
+//                                        ) == PackageManager.PERMISSION_GRANTED
+//
+//                                        if (granted) {
+//                                            try {
+//                                                val voiceRecorder = VoiceRecorder(context)
+//                                                voiceRecorder.start()
+//                                                recorder = voiceRecorder
+//                                                recording = true
+//                                                status = "Recording..."
+//                                            } catch (e: Exception) {
+//                                                status = "Could not start recording"
+//                                            }
+//                                        } else {
+//                                            permissionLauncher.launch(
+//                                                Manifest.permission.RECORD_AUDIO
+//                                            )
+//                                        }
+//                                    } else {
+//                                        try {
+//                                            val file = recorder!!.stop()
+//                                            recorder = null
+//                                            recording = false
+//                                            status = "Voice note ready"
+//
+//                                            scope.launch {
+//                                                status = try {
+//                                                    imageViewModel.uploadVoiceGroomOrBrideRecord(
+//                                                        file = file
+//                                                    )
+//                                                    "Voice note uploaded"
+//                                                } catch (e: Exception) {
+//                                                    "Upload failed: ${e.message}"
+//                                                }
+//                                            }
+//                                        } catch (e: Exception) {
+//                                            recorder?.cancel()
+//                                            recorder = null
+//                                            recording = false
+//                                            status = "Could not finalize recording"
+//                                        }
+//                                    }
+//                                }
+//                            ) {
+//                                Text(if (recording) "Stop & Upload" else "Record Voice Note")
+//                            }
+//
+//                            if (recording) {
+//                                TextButton(onClick = {
+//                                    recorder?.cancel()
+//                                    recorder = null
+//                                    recording = false
+//                                    status = "Recording cancelled"
+//                                }) {
+//                                    Text("Cancel")
+//                                }
+//                            }
+//
+//                            Text(status)
+//                        }
                     }
-                }
-            }
 
-            when (val state = uiStateProfileUpdate) {
+//                    Spacer(Modifier.height(20.dp))
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.Center
+//                    ) {
+//                        LabelName(
+//                            labelName = stringResource(id = R.string.parent_voice_record),
+//                            fontSize = 14.sp,
+//                            color = Maroon,
+//                            fontWeight = FontWeight.Normal
+//                        )
+//                        Spacer(Modifier.weight(1f))
+//                        CustomButtonForUpload(
+//                            text = stringResource(id = R.string.upload),
+//                            onClick = {},
+//                            modifier = Modifier.weight(1f),
+//                        )
+//                    }
+//                    Spacer(Modifier.height(30.dp))
+//                    LabelName(
+//                        labelName = stringResource(id = R.string.video_voice_limit),
+//                        fontSize = 12.sp,
+//                        color = Red,
+//                        fontWeight = FontWeight.Normal
+//                    )
 
-                ProfileUpdateUIState.Idle -> {
-                    // Nothing
-                }
-
-                ProfileUpdateUIState.Loading -> {
-                    isLoading = true
-                }
-
-                is ProfileUpdateUIState.Success -> {
-                    isLoading = false
-                    ToastUtils.success(context = context, message = "Profile updated successfully")
-                    onSubmit()
-                }
-
-                is ProfileUpdateUIState.Error -> {
-                    isLoading = false
-                    Text(
-                        text = state.message,
-                        color = Color.Red
-                    )
                 }
             }
         }
-        if(isSubmitVisible) {
-            Spacer(Modifier.weight(1f))
+
+        when (val state = uiStateProfileUpdate) {
+
+            ProfileUpdateUIState.Idle -> {
+                // Nothing
+            }
+
+            ProfileUpdateUIState.Loading -> {
+                isLoading = true
+            }
+
+            is ProfileUpdateUIState.Success -> {
+                isLoading = false
+                ToastUtils.success(context = context, message = "Profile updated successfully")
+                onSubmit()
+            }
+
+            is ProfileUpdateUIState.Error -> {
+                isLoading = false
+                Text(
+                    text = state.message,
+                    color = Color.Red
+                )
+            }
+        }
+
+        if (isSubmitVisible) {
+            Spacer(Modifier.height(20.dp))
             PrimaryButton(
                 text = stringResource(id = R.string.submit),
                 modifier = Modifier.padding(16.dp),
@@ -1100,9 +1265,9 @@ fun ProfileCreationScreen(
                 }
             )
         }
-
     }
 }
+
 
 @Composable
 fun ProfileTabButton(
