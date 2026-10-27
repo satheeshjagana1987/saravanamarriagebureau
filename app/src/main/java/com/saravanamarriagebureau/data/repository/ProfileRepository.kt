@@ -37,7 +37,15 @@ class ProfileRepository @Inject constructor(
          fullAddress: String,
          city: String,
          district: String,
-         maritalStatus: String
+         maritalStatus: String,
+         placeOfBirth: String,
+         birthTime: String,
+         birthStar: String,
+         rasi: String,
+         workLocation: String,
+         nativePlace: String,
+         familyDetails: String,
+         income: String
     ): ApiResult<ProfileData> {
         return safeApiCall {
             api.updateProfile(
@@ -50,7 +58,15 @@ class ProfileRepository @Inject constructor(
                     email = email,
                     city = city,
                     district = district,
-                    maritalStatus = maritalStatus
+                    maritalStatus = maritalStatus,
+                    placeOfBirth = placeOfBirth,
+                    birthTime = birthTime,
+                    birthStar = birthStar,
+                    rasi = rasi,
+                    workLocation = workLocation,
+                    nativePlace = nativePlace,
+                    familyDetails = familyDetails,
+                    income = income
                 )
             )
         }

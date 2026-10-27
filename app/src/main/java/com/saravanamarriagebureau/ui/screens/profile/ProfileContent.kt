@@ -297,6 +297,64 @@ fun ProfileContent(
                             DividerLine()
                         }
 
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.place_of_birth),
+                            value = profile.placeOfBirth ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.birth_time),
+                            value = profile.birthTime ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.star),
+                            value = profile.birthStar ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.rasi),
+                            value = profile.rasi ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.place_of_profession),
+                            value = profile.workLocation ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.salary),
+                            value = profile.income ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.native_place),
+                            value = profile.nativePlace ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.family_details),
+                            value = profile.familyDetails ?: NA
+                        )
+
+                        DividerLine()
+
                         ProfileInfoRow(
                             label = "Family Video",
                             value = "Download"

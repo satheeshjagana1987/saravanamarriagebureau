@@ -248,6 +248,14 @@ fun ProfileCreationScreen(
                 religion = profile.religion.orEmpty()
                 gender = profile.gender.orEmpty()
                 selectedMaritalStatus = profile.maritalStatus.orEmpty()
+                placeOfBirth = profile.placeOfBirth.orEmpty()
+                birthTime = profile.birthTime.orEmpty()
+                star = profile.birthStar.orEmpty()
+                rasi = profile.rasi.orEmpty()
+                nativePlace = profile.nativePlace.orEmpty()
+                placeOfProfession = profile.workLocation.orEmpty()
+                income = profile.income.orEmpty()
+                familyDetails = profile.familyDetails.orEmpty()
 
                 ToastUtils.success(context = context, message = "Profile data fetched successfully")
             }
@@ -944,6 +952,10 @@ fun ProfileCreationScreen(
                                 unfocusedTextColor = Color(0xFF333333)
                             ),
 
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+
                             placeholder = {
                                 Text(
                                     text = stringResource(id = R.string.salary),
@@ -1527,6 +1539,40 @@ fun ProfileCreationScreen(
                         fieldName = "Religion"
                     )
 
+                    placeOfBirthError = ValidationUtils.validateField(
+                        field = placeOfBirth.trim(),
+                        fieldName = "Place of Birth"
+                    )
+                    birthTimeError = ValidationUtils.validateField(
+                        field = birthTime.trim(),
+                        fieldName = "Birth Time"
+                    )
+
+                    nativePlaceError = ValidationUtils.validateField(
+                        field = nativePlace.trim(),
+                        fieldName = "Native Place"
+                    )
+                    starError = ValidationUtils.validateField(
+                        field = star.trim(),
+                        fieldName = "Star"
+                    )
+                    rasiError = ValidationUtils.validateField(
+                        field = rasi.trim(),
+                        fieldName = "Rasi"
+                    )
+                    incomeError = ValidationUtils.validateField(
+                        field = income.trim(),
+                        fieldName = "Income/Salary"
+                    )
+                    placeOfProfessionError = ValidationUtils.validateField(
+                        field = placeOfProfession.trim(),
+                        fieldName = "Place Of Profession"
+                    )
+                    familyDetailsError = ValidationUtils.validateField(
+                        field = familyDetails.trim(),
+                        fieldName = "Family Details"
+                    )
+
                     if (emailError != null) {
                         ToastUtils.error(context = context, message = emailError.toString())
                         return@PrimaryButton
@@ -1556,6 +1602,39 @@ fun ProfileCreationScreen(
                         return@PrimaryButton
                     }
 
+                    if (placeOfBirthError != null) {
+                        ToastUtils.error(context = context, message = placeOfBirthError.toString())
+                        return@PrimaryButton
+                    }
+                    if (birthTimeError != null) {
+                        ToastUtils.error(context = context, message = birthTimeError.toString())
+                        return@PrimaryButton
+                    }
+                    if (nativePlaceError != null) {
+                        ToastUtils.error(context = context, message = nativePlaceError.toString())
+                        return@PrimaryButton
+                    }
+                    if (starError != null) {
+                        ToastUtils.error(context = context, message = starError.toString())
+                        return@PrimaryButton
+                    }
+                    if (rasiError != null) {
+                        ToastUtils.error(context = context, message = rasiError.toString())
+                        return@PrimaryButton
+                    }
+                    if (incomeError != null) {
+                        ToastUtils.error(context = context, message = incomeError.toString())
+                        return@PrimaryButton
+                    }
+                    if (placeOfProfessionError != null) {
+                        ToastUtils.error(context = context, message = placeOfProfessionError.toString())
+                        return@PrimaryButton
+                    }
+                    if (familyDetailsError != null) {
+                        ToastUtils.error(context = context, message = familyDetailsError.toString())
+                        return@PrimaryButton
+                    }
+
                     viewModel.updateProfile(
                         height = height.trim(),
                         education = education.trim(),
@@ -1565,7 +1644,15 @@ fun ProfileCreationScreen(
                         email = email.trim(),
                         city = city.trim(),
                         district = district.trim(),
-                        maritalStatus = selectedMaritalStatus
+                        maritalStatus = selectedMaritalStatus,
+                        placeOfBirth = placeOfBirth.trim(),
+                        birthTime = birthTime.trim(),
+                        birthStar = star.trim(),
+                        rasi = rasi.trim(),
+                        workLocation = placeOfProfession.trim(),
+                        nativePlace = nativePlace.trim(),
+                        familyDetails = familyDetails.trim(),
+                        income = income.trim()
                     )
                 }
             )

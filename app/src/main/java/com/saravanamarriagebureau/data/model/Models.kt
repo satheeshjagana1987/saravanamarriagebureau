@@ -94,6 +94,7 @@ data class Profile(
     val email: String = "",
     val maritalStatus: String = "",
     val fullAddress: String = "",
+
 )
 
 data class ProfileRequest(
@@ -106,6 +107,14 @@ data class ProfileRequest(
     val city: String,
     val district: String,
     val maritalStatus: String,
+    val placeOfBirth: String,
+    val birthTime: String,
+    val birthStar: String,
+    val rasi: String,
+    val workLocation: String,
+    val nativePlace: String,
+    val familyDetails: String,
+    val income: String,
 )
 
 data class ProfileData(
@@ -123,7 +132,6 @@ data class ProfileData(
     val height: String?,
     val education: String?,
     val profession: String?,
-    val income: String?,
     val city: String?,
     val district: String?,
     val fullAddress: String?,
@@ -137,7 +145,15 @@ data class ProfileData(
     val registeringFor: String,
     val lookingFor: String?,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
+    val placeOfBirth: String?,
+    val birthTime: String?,
+    val birthStar: String?,
+    val rasi: String?,
+    val workLocation: String?,
+    val nativePlace: String?,
+    val familyDetails: String?,
+    val income: String?,
 )
 
 data class ProfileMedia(
