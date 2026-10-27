@@ -80,7 +80,7 @@ import timber.log.Timber
 
 @Composable
 fun LoginScreen(
-    onLogin: () -> Unit,
+    onLogin: (Boolean) -> Unit,
     onRegister: () -> Unit,
     onPrivacy: () -> Unit,
     onForgot: (String) -> Unit,
@@ -396,7 +396,7 @@ fun LoginScreen(
                     message = "Sending OTP..."
                 )
                 ToastUtils.success(context = context, message = "Login successful")
-                onLogin()
+                onLogin(state.data.user.isAdmin)
             }
 
             is LoginUIState.Error -> {
