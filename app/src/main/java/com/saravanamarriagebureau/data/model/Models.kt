@@ -44,7 +44,6 @@ data class User(
     val email: String,
     val status: String,
     val gender: String,
-    val isAdmin: Boolean,
 )
 
 data class RefreshTokenRequest(

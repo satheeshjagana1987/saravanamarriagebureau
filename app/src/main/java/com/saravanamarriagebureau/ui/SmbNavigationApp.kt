@@ -71,13 +71,7 @@ fun SmbNavigationApp(
 
         composable(Routes.Login) {
             LoginScreen(
-                onLogin = { isAdmin ->
-                    if (isAdmin) {
-                        navController.navigate(Routes.Admin)
-                    } else {
-                        navController.navigate(Routes.Main)
-                    }
-                },
+                onLogin = { navController.navigate(Routes.Main) },
                 onRegister = { navController.navigate(Routes.Register) },
                 onPrivacy = { },
                 onForgot = { mobile ->
