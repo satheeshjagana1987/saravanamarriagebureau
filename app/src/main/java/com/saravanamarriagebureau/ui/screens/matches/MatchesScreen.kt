@@ -75,6 +75,7 @@ fun MatchesScreen(
             }
 
             is MatchesUiState.Success -> {
+                viewModel.resetState()
                 isLoading = false
                 todayMatchesData = state.data
                 ToastUtils.success(context = context, message = "Matches data fetched successfully")

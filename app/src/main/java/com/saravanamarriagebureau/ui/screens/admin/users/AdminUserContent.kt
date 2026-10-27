@@ -1,4 +1,4 @@
-package com.saravanamarriagebureau.ui.screens.admin
+package com.saravanamarriagebureau.ui.screens.admin.users
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,30 +31,31 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saravanamarriagebureau.R
-import com.saravanamarriagebureau.data.model.demoInterests
+import com.saravanamarriagebureau.data.enums.InterestTab
+import com.saravanamarriagebureau.data.model.AdminUserDetailsResponse
 import com.saravanamarriagebureau.ui.components.DividerLine
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.components.calculateAge
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.Warning
+import com.saravanamarriagebureau.util.Constants.NA
+import timber.log.Timber
 
 @Composable
-fun AdminUserDetailsScreen(
+fun AdminUserContent(
+    profile: AdminUserDetailsResponse,
     onBack: () -> Unit,
-    profileId: String,
-    profileType: String,
 ) {
-
-    val profile = demoInterests.find {
-        it.id == profileId
-    } ?: return
 
     Column(
         Modifier
@@ -204,108 +205,156 @@ fun AdminUserDetailsScreen(
                                 top = 5.dp
                             )
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
 
-                            Text(
-                                text = profile.name,
-                                color = Maroon,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.Default.Favorite,
-                                contentDescription = "Success",
-                                tint = Maroon,
-                                modifier = Modifier
-                                    .size(30.dp)
-                            )
-                        }
-
-                        if (profile.isAdminVerified) {
-                            LabelName(
-                                labelName = "● "+stringResource(id = R.string.verified),
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Success,
-                                modifier = Modifier.padding(0.dp)
-                            )
-                        } else {
-                            LabelName(
-                                labelName = "● "+stringResource(id = R.string.profile_under_review),
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Warning
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(10.dp))
+                        DividerLine()
 
                         ProfileInfoRow(
-                            label = stringResource(id = R.string.age),
-                            value = profile.age.toString(),
-                            secondLabel = stringResource(id = R.string.height),
-                            secondValue = profile.height,
-                            thirdLabel = stringResource(id = R.string.religion),
-                            thirdValue = profile.religion
+                            label = stringResource(id = R.string.full_name),
+                            value = profile.data.fullName
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.mobile_number),
+                            value = profile.data.mobile
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.email),
+                            value = profile.data.email ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.date_of_birth),
+                            value = profile.data.dateOfBirth ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.native_place),
+                            value = profile.data.profile.nativePlace ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.city),
+                            value = profile.data.profile.city ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.district),
+                            value = profile.data.profile.district ?: NA
                         )
 
                         DividerLine()
 
                         ProfileInfoRow(
                             label = stringResource(id = R.string.education),
-                            value = profile.education
+                            value = profile.data.profile.education ?: NA
                         )
 
                         DividerLine()
 
                         ProfileInfoRow(
-                            label =stringResource(id = R.string.profession),
-                            value = profile.profession
-                        )
-
-                        DividerLine()
-                        if(profile.isPaymentDone) {
-                            ProfileInfoRow(
-                                label = stringResource(id = R.string.full_address),
-                                value = profile.location
-                            )
-
-                            DividerLine()
-
-                            ProfileInfoRow(
-                                label = stringResource(id = R.string.mobile_number),
-                                value = profile.mobileNumber.toString()
-                            )
-
-                            DividerLine()
-                        }
-
-                        ProfileInfoRow(
-                            label = "Family Video",
-                            value = "Download"
+                            label = stringResource(id = R.string.profession),
+                            value = profile.data.profile.profession ?: NA
                         )
 
                         DividerLine()
 
                         ProfileInfoRow(
-                            label = "Voice Record",
-                            value = "Download"
+                            label = stringResource(id = R.string.star),
+                            value = profile.data.profile.birthStar ?: NA
                         )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.rasi),
+                            value = profile.data.profile.rasi ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.place_of_profession),
+                            value = profile.data.profile.workLocation ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.salary),
+                            value = profile.data.profile.income ?: NA
+                        )
+
+                        DividerLine()
+
+                        ProfileInfoRow(
+                            label = stringResource(id = R.string.family_details),
+                            value = profile.data.profile.familyDetails ?: NA
+                        )
+
                     }
 
+
                 }
+
+
+
+                DividerLine()
+
+                ProfileInfoRow(
+                    label = "Family Video",
+                    value = "Download"
+                )
+
+                DividerLine()
+
+                ProfileInfoRow(
+                    label = "Voice Record",
+                    value = "Download"
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            Timber.e("profile ==>  $profile")
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PrimaryButton(
+                    text = stringResource(id = R.string.approve),
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        top = 0.dp,
+                        end = 16.dp,
+                        bottom = 50.dp
+                    ),
+                    onClick = {}
+                )
+
+                PrimaryButton(
+                    text = stringResource(id = R.string.reject),
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        top = 0.dp,
+                        end = 16.dp,
+                        bottom = 50.dp
+                    ),
+                    onClick = {}
+                )
+
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun AdminUserDetailsScreenPreview() {
-    AdminUserDetailsScreen(onBack = {}, profileId = "", profileType = "")
 }

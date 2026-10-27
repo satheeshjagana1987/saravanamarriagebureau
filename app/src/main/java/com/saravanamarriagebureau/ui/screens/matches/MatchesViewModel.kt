@@ -3,6 +3,7 @@ package com.saravanamarriagebureau.ui.screens.matches
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.MatchesRepository
+import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgetPasswordUIState
 import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
 import com.saravanamarriagebureau.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -145,5 +146,9 @@ class MatchesViewModel @Inject constructor(
                 else -> {}
             }
         }
+    }
+
+    fun resetState() {
+        _uiStateToday.value = MatchesUiState.Idle
     }
 }

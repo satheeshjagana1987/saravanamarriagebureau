@@ -414,6 +414,107 @@ data class MatchesPagination(
     val hasMore: Boolean
 )
 
+// Admin
+data class PendingApprovalResponse(
+    val success: Boolean,
+    val data: List<PendingApprovalUser>,
+    val pagination: Pagination,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class PendingApprovalUser(
+    val id: String,
+    val fullName: String,
+    val mobile: String,
+    val gender: String,
+    val city: String?,
+    val status: String,
+    val createdAt: String
+)
+
+data class AdminUserDetailsResponse(
+    val success: Boolean,
+    val data: AdminUserDetails,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class AdminUserDetails(
+    val id: String,
+    val fullName: String,
+    val mobile: String,
+    val alternateMobile: String?,
+    val email: String?,
+    val gender: String,
+    val dateOfBirth: String?,
+    val registeringFor: String?,
+    val status: String,
+    val isAdminVerified: Boolean,
+    val approvedAt: String?,
+    val rejectionReason: String?,
+    val createdAt: String,
+    val profile: AdminUserProfile
+)
+
+data class AdminUserProfile(
+    val height: String?,
+    val education: String?,
+    val profession: String?,
+    val income: String?,
+    val city: String?,
+    val district: String?,
+    val fullAddress: String?,
+    val maritalStatus: String?,
+    val religion: String?,
+    val community: String?,
+    val fatherName: String?,
+    val motherName: String?,
+    val siblings: String?,
+    val placeOfBirth: String?,
+    val birthTime: String?,
+    val birthStar: String?,
+    val rasi: String?,
+    val workLocation: String?,
+    val nativePlace: String?,
+    val familyDetails: String?,
+    val horoscope: String?,
+    val registeringFor: String?
+)
+
+//Admin Interests
+data class AdminInterestsResponse(
+    val success: Boolean,
+    val data: List<AdminInterestsData>,
+    val pagination: Pagination,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class AdminInterestsData(
+    val id: String,
+    val status: String,
+    val createdAt: String,
+    val updatedAt: String,
+    val sender: AdminInterestsDetails,
+    val receiver: AdminInterestsDetails
+)
+
+data class AdminInterestsDetails(
+    val userId: String,
+    val profileId: String,
+    val fullName: String,
+    val gender: String,
+    val dateOfBirth: String?,
+    val profession: String?,
+    val city: String?,
+    val maritalStatus: String?,
+    val education: String?,
+    val isAdminVerified: Boolean,
+    val isPaidUser: Boolean,
+    val profilePhoto: String?
+)
+
 // Primary Bottom Bar Destinations
 sealed class BottomBarScreen(val route: String, val title: String, val icon: ImageVector) {
     object Home : BottomBarScreen(Routes.Home, "Home", Icons.Default.Home)

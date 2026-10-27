@@ -93,6 +93,7 @@
     <string name="pending_payments">Pending Payments</string>
     <string name="mutual_interests">Mutual Interests</string>
     <string name="approve">Approve</string>
+    <string name="approved">Approved</string>
     <string name="single">Single</string>
     <string name="never_married">Never Married</string>
     <string name="others">Others</string>

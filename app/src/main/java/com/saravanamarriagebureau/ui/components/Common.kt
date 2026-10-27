@@ -83,6 +83,7 @@ import com.saravanamarriagebureau.data.enums.InterestStatus
 import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.MatchesData
+import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
@@ -486,7 +487,7 @@ fun ProfileCard(
 
 @Composable
 fun AdminUserCard(
-    profile: Profile,
+    profile: PendingApprovalUser,
     onOpen: () -> Unit
 ) {
     val context = LocalContext.current
@@ -494,12 +495,7 @@ fun AdminUserCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (profile.isAdminVerified == 1) {
-                    onOpen()
-                } else {
-                    Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT)
-                        .show()
-                }
+                onOpen()
             },
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -510,7 +506,7 @@ fun AdminUserCard(
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 LabelName(
-                    labelName = profile.name,
+                    labelName = profile.fullName,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Maroon,
@@ -518,7 +514,7 @@ fun AdminUserCard(
                 )
                 Spacer(Modifier.height(5.dp))
                 LabelName(
-                    labelName = "${profile.age} yrs",
+                    labelName = profile.gender,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = TextSecondary,
@@ -526,7 +522,7 @@ fun AdminUserCard(
                 )
                 Spacer(Modifier.height(5.dp))
                 LabelName(
-                    labelName = profile.education,
+                    labelName = profile.city ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = TextSecondary,
@@ -543,29 +539,21 @@ fun AdminUserCard(
 
 @Composable
 fun AdminUserStatusContent(
-    profile: Profile
+    profile: PendingApprovalUser
 ) {
-    when (profile.isAdminVerified) {
-        0 -> {
+    when (profile.status) {
+        "PENDING_APPROVAL" -> {
             AdminStatusText(
                 text = stringResource(R.string.pending),
                 color = Warning
             )
         }
 
-        1 -> {
+        else -> {
 
             AdminStatusText(
-                text = stringResource(R.string.accepted),
+                text = stringResource(R.string.approved),
                 color = Success
-            )
-        }
-
-        2 -> {
-
-            AdminStatusText(
-                text = stringResource(R.string.rejected),
-                color = Red
             )
         }
 

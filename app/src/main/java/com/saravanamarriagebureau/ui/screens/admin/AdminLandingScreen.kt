@@ -9,6 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.saravanamarriagebureau.ui.navigation.Routes
 import com.saravanamarriagebureau.ui.navigation.profileRoute
+import com.saravanamarriagebureau.ui.screens.admin.interests.AdminInterestsScreen
+import com.saravanamarriagebureau.ui.screens.admin.users.AdminUserDetailsScreen
+import com.saravanamarriagebureau.ui.screens.admin.users.AdminUsersScreen
 import timber.log.Timber
 
 @Composable
@@ -38,11 +41,11 @@ fun AdminLandingScreen() {
         ) {
 
             composable(AdminDestination.Dashboard.route) {
-               AdminDashboardScreen(
-                   onNavigate = { route ->
-                       adminNavController.navigate(route)
-                   }
-               )
+                AdminDashboardScreen(
+                    onNavigate = { route ->
+                        adminNavController.navigate(route)
+                    }
+                )
             }
 
             composable(AdminDestination.Interests.route) {
@@ -57,7 +60,7 @@ fun AdminLandingScreen() {
             }
 
             composable(AdminDestination.Payments.route) {
-               AdminPaymentsScreen()
+                AdminPaymentsScreen()
             }
 
             composable(AdminDestination.Settings.route) {
@@ -82,19 +85,14 @@ fun AdminLandingScreen() {
                     ?.getString("profileId")
                     ?: return@composable
 
-                val profileType = backStackEntry.arguments
-                    ?.getString("type")
-                    ?: return@composable
 
                 AdminUserDetailsScreen(
                     profileId = profileId,
-                    profileType = profileType,
-
                     onBack = {
                         adminNavController.popBackStack()
                     },
 
-                )
+                    )
             }
 
             composable(Routes.PendingPayments) {

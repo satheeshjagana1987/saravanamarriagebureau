@@ -1,5 +1,8 @@
 package com.saravanamarriagebureau.data.api
 
+import com.saravanamarriagebureau.data.model.AdminInterestsData
+import com.saravanamarriagebureau.data.model.AdminInterestsResponse
+import com.saravanamarriagebureau.data.model.AdminUserDetailsResponse
 import com.saravanamarriagebureau.data.model.ApiResponse
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
 import com.saravanamarriagebureau.data.model.DeleteMediaResponse
@@ -13,6 +16,7 @@ import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.MediaUploadCompleteResponse
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedRequest
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedResponse
+import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.data.model.ProfileData
 import com.saravanamarriagebureau.data.model.ProfileRequest
 import com.saravanamarriagebureau.data.model.RefreshTokenRequest
@@ -121,5 +125,21 @@ interface SmbApi {
 
     @GET("invoices/{id}")
     suspend fun getInvoice(@Path("id") id: String): Invoice
+
+    //Admin
+
+    @GET("registration/pending?limit=20&offset=0")
+    suspend fun getAdminUsers(): Response<ApiResponse<List<PendingApprovalUser>>>
+
+    @GET("registration/{userId}")
+    suspend fun getAdminUserById( @Path("userId") userId: String
+    ): Response<ApiResponse<AdminUserDetailsResponse>>
+
+    @GET("admin/interests?limit=20&offset=0&status=PENDING")
+    suspend fun getAdminInterests(): Response<ApiResponse<List<AdminInterestsData>>>
+
+    @GET("/admin/interests/{interestId}")
+    suspend fun getAdminInterestById( @Path("interestId") interestId: String
+    ): Response<ApiResponse<AdminInterestsData>>
 
 }

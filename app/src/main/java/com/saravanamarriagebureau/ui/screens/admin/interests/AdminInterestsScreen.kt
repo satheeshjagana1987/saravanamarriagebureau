@@ -1,4 +1,4 @@
-package com.saravanamarriagebureau.ui.screens.admin
+package com.saravanamarriagebureau.ui.screens.admin.interests
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -72,7 +72,7 @@ fun AdminInterestsScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 InterestTabButton(
-                    text = "Received",
+                    text = "Pending",
                     selected = selectedTab == InterestTab.RECEIVED,
                     onClick = {
                         selectedTab = InterestTab.RECEIVED
@@ -81,7 +81,7 @@ fun AdminInterestsScreen(
                 )
 
                 InterestTabButton(
-                    text = "Sent",
+                    text = "Accepted",
                     selected = selectedTab == InterestTab.SENT,
                     onClick = {
                         selectedTab = InterestTab.SENT
@@ -89,14 +89,6 @@ fun AdminInterestsScreen(
                     modifier = Modifier.weight(1f)
                 )
 
-                InterestTabButton(
-                    text = "Match Fixed",
-                    selected = selectedTab == InterestTab.MATCH_FIXED,
-                    onClick = {
-                        selectedTab = InterestTab.MATCH_FIXED
-                    },
-                    modifier = Modifier.weight(1f)
-                )
 
             }
             LazyColumn(
