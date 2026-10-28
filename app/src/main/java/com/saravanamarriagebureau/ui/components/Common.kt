@@ -88,6 +88,9 @@ import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
+import com.saravanamarriagebureau.ui.screens.interests.UserInterestsUIState
+import com.saravanamarriagebureau.ui.screens.interests.UserInterestsViewModel
+import com.saravanamarriagebureau.ui.screens.matches.DeleteInterestsUIState
 import com.saravanamarriagebureau.ui.screens.matches.MatchesViewModel
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Gray
@@ -349,11 +352,13 @@ private fun ProfilePhotoContent(
 fun ProfileCard(
     profile: MatchesData,
     onInterest: () -> Unit,
+    onInterestRemoved: () -> Unit,
     onOpen: () -> Unit,
     viewModel: MatchesViewModel,
 ) {
     val context = LocalContext.current
     val uiStateSendInterest by viewModel.uiStateSendInterest.collectAsStateWithLifecycle()
+    val uiStateDeleteInterest by viewModel.uiStateDeleteInterest.collectAsStateWithLifecycle()
     var isLoading by remember {
         mutableStateOf(false)
     }
@@ -480,6 +485,30 @@ fun ProfileCard(
                     isLoading = false
                 }
             }
+
+            when (val state = uiStateDeleteInterest) {
+
+                is DeleteInterestsUIState.Loading -> {
+                    isLoading = true
+                }
+
+                is DeleteInterestsUIState.Success -> {
+                    isLoading = false
+                    if (notInterested) {
+                        onInterestRemoved()
+                    }
+                }
+
+                is DeleteInterestsUIState.Error -> {
+                    isLoading = false
+                    ToastUtils.error(context, state.message)
+                }
+
+                else -> {
+                    isLoading = false
+                }
+            }
+
             LoadingDialog(isLoading = isLoading)
 
         }
@@ -567,8 +596,9 @@ fun InterestCard(
     interest: UserInterestsData,
     selectedTab: InterestTab,
     onOpen: () -> Unit,
-    onAcceptRejectButton: () -> Unit
+    viewModel: UserInterestsViewModel
 ) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -578,14 +608,7 @@ fun InterestCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
-            if(selectedTab == InterestTab.SENT) {
-                NetworkImage(interest.receiver.profilePhoto ?: "")
-            } else if(selectedTab == InterestTab.RECEIVED) {
-                NetworkImage(interest.sender.profilePhoto ?: "")
-            } else {
-                NetworkImage("")
-            }
-
+            NetworkImage(interest.receiver.profilePhoto ?: "")
             Spacer(Modifier.width(10.dp))
             val age =  if(interest.receiver.dateOfBirth.isNullOrEmpty()) {
                 "NA"
@@ -637,7 +660,7 @@ fun InterestCard(
             InterestStatusContent(
                 selectedTab,
                 interest = interest,
-                onAcceptRejectButton = onAcceptRejectButton
+                viewModel = viewModel
             )
         }
     }
@@ -647,15 +670,25 @@ fun InterestCard(
 fun InterestStatusContent(
     selectedTab: InterestTab,
     interest: UserInterestsData,
-    onAcceptRejectButton: () -> Unit
+    viewModel: UserInterestsViewModel
 ) {
+
+    val context = LocalContext.current
+    val uiStateAcceptInterest by viewModel.uiStateAcceptInterest.collectAsStateWithLifecycle()
+    val uiStateRejectInterest by viewModel.uiStateRejectInterest.collectAsStateWithLifecycle()
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+
     when (interest.status) {
         "PENDING" -> {
             if (selectedTab == InterestTab.RECEIVED) {
                 Column {
                     CustomButton(
                         text = stringResource(R.string.accept),
-                        onClick = onAcceptRejectButton,
+                        onClick = {
+                            viewModel.acceptReceivedInterest(interest.id)
+                        },
                         modifier = Modifier,
                         height = 40.dp,
                         width = 80.dp,
@@ -672,7 +705,9 @@ fun InterestStatusContent(
 
                     CustomButton(
                         text = stringResource(R.string.reject),
-                        onClick = onAcceptRejectButton,
+                        onClick = {
+                            viewModel.rejectReceivedInterest(interest.id)
+                        },
                         modifier = Modifier,
                         height = 40.dp,
                         width = 85.dp,
@@ -724,6 +759,52 @@ fun InterestStatusContent(
             )
         }
     }
+
+    when (val state = uiStateAcceptInterest) {
+
+        is UserInterestsUIState.Loading -> {
+            isLoading = true
+        }
+
+        is UserInterestsUIState.Success -> {
+            isLoading = false
+            ToastUtils.error(context, "Interest Accepted")
+            viewModel.getReceivedInterests()
+        }
+
+        is UserInterestsUIState.Error -> {
+            isLoading = false
+            ToastUtils.error(context, state.message)
+        }
+
+        else -> {
+            isLoading = false
+        }
+    }
+
+    when (val state = uiStateRejectInterest) {
+
+        is UserInterestsUIState.Loading -> {
+            isLoading = true
+        }
+
+        is UserInterestsUIState.Success -> {
+            isLoading = false
+            ToastUtils.error(context, "Interest Rejected")
+            viewModel.getReceivedInterests()
+        }
+
+        is UserInterestsUIState.Error -> {
+            isLoading = false
+            ToastUtils.error(context, state.message)
+        }
+
+        else -> {
+            isLoading = false
+        }
+    }
+
+    LoadingDialog(isLoading = isLoading)
 }
 
 @Composable

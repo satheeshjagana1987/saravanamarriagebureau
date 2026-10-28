@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.visible
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
@@ -70,14 +72,13 @@ fun ProfileContent(
         Modifier
             .fillMaxSize()
             .background(Cream),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ScreenHeader("Profile", onBack)
         Column(
             Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .background(Cream),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
@@ -275,22 +276,12 @@ fun ProfileContent(
                             value = profile.profession ?: NA
                         )
 
-                        DividerLine()
-                        if(profile.isAdminVerified) {
-                            ProfileInfoRow(
-                                label = stringResource(id = R.string.full_address),
-                                value = profile.fullAddress ?: NA
-                            )
-
-                            DividerLine()
-
-                            ProfileInfoRow(
-                                label = stringResource(id = R.string.mobile_number),
-                                value = profile.profession ?: NA
-                            )
-
-                            DividerLine()
-                        }
+//                        DividerLine()
+//
+//                        ProfileInfoRow(
+//                            label = stringResource(id = R.string.mobile_number),
+//                            value = profile.mobile ?: NA
+//                        )
 
                         DividerLine()
 

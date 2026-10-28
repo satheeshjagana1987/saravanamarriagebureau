@@ -108,7 +108,9 @@ fun MainScreenWithHamburger(
     )
 
     val isProfileScreen =
-        currentRoute?.startsWith("${Routes.Profile}/") == true
+        currentDestination?.hierarchy?.any {
+            it.route == Routes.Profile
+        } == true
 
     val showMainNavigation =
         currentRoute !in setOf(
@@ -119,6 +121,7 @@ fun MainScreenWithHamburger(
             Routes.ChangeLanguage,
             Routes.MatchFixed,
             Routes.Invoice,
+            Routes.Profile,
         ) && !isProfileScreen
 
     // -----------------------------------------
@@ -366,6 +369,19 @@ fun MainScreenWithHamburger(
 
                         onInterestSent = {
                             navController.navigate(Routes.InterestSent)
+                        },
+
+                        onInterestRemoved = {
+                            navController.navigate(
+                                BottomBarScreen.Matches.route
+                            ) {
+
+                                popUpTo(
+                                    BottomBarScreen.Matches.route
+                                ) {
+                                    inclusive = true
+                                }
+                            }
                         }
                     )
                 }
@@ -385,9 +401,6 @@ fun MainScreenWithHamburger(
                             navController.navigate(
                                 profileRoute(profileId = interest.id)
                             )
-                        },
-                        onAcceptRejectButton = {
-
                         }
                     )
                 }
@@ -426,8 +439,8 @@ fun MainScreenWithHamburger(
                 ) { backStackEntry ->
 
                     val profileId =
-                        backStackEntry.arguments?.getString("profileId") ?: ""
-
+                        backStackEntry.arguments?.getString("profileId").orEmpty()
+                    Timber.e("profileId==>$profileId")
 
                     ProfileViewScreen(
                         profileId = profileId,

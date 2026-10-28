@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.data.enums.InterestTab
+import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.InterestCard
@@ -42,7 +43,6 @@ import com.saravanamarriagebureau.util.ToastUtils
 @Composable
 fun InterestsScreen(
     onInterestItemClick: (UserInterestsData) -> Unit,
-    onAcceptRejectButton: () -> Unit,
     viewModel: UserInterestsViewModel = hiltViewModel()
 ) {
 
@@ -51,15 +51,30 @@ fun InterestsScreen(
         mutableStateOf(InterestTab.RECEIVED)
     }
 
-    var filteredInterests by remember {
+    var receivedInterests by remember {
         mutableStateOf<List<UserInterestsData>>(emptyList())
+    }
+
+    var sentInterests by remember {
+        mutableStateOf<List<UserInterestsData>>(emptyList())
+    }
+
+    var mutualInterests by remember {
+        mutableStateOf<List<UserInterestsData>>(emptyList())
+    }
+
+
+    val displayedInterests = when (selectedTab) {
+        InterestTab.RECEIVED -> receivedInterests
+        InterestTab.SENT -> sentInterests
+        InterestTab.MATCH_FIXED -> mutualInterests
     }
 
     var isLoading by remember {
         mutableStateOf(false)
     }
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiStateReceived by viewModel.uiStateReceived.collectAsStateWithLifecycle()
     val uiStateSentInterest by viewModel.uiStateSentInterest.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -67,27 +82,6 @@ fun InterestsScreen(
     }
 
     LoadingDialog(isLoading = isLoading)
-
-//    // Change list based on selected tab
-//    val filteredInterests = when (selectedTab) {
-//        InterestTab.RECEIVED -> {
-//            demoInterests.filter { interest ->
-//                interest.type == InterestTab.RECEIVED
-//            }
-//        }
-//
-//        InterestTab.SENT -> {
-//            demoInterests.filter { interest ->
-//                interest.type == InterestTab.SENT
-//            }
-//        }
-//
-//        InterestTab.MATCH_FIXED -> {
-//            demoInterests.filter { interest ->
-//                interest.isMatched
-//            }
-//        }
-//    }
 
     Column(
         Modifier
@@ -115,7 +109,7 @@ fun InterestsScreen(
                     selected = selectedTab == InterestTab.SENT,
                     onClick = {
                         selectedTab = InterestTab.SENT
-                        viewModel.getReceivedInterests()
+                        viewModel.getSentInterests()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -134,7 +128,7 @@ fun InterestsScreen(
                 modifier = Modifier.padding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                if (filteredInterests.isEmpty()) {
+                if (displayedInterests.isEmpty()) {
                     item {
                         Text(
                             text = "No Interests found",
@@ -144,21 +138,21 @@ fun InterestsScreen(
                     }
                 } else {
                     items(
-                        items = filteredInterests,
+                        items = displayedInterests,
                         key = { interest -> interest.id }
                     ) { interest ->
                         InterestCard(
                             interest = interest,
                             selectedTab = selectedTab,
                             onOpen = { onInterestItemClick(interest) },
-                            onAcceptRejectButton = { onAcceptRejectButton() }
+                            viewModel = viewModel
                         )
                     }
                 }
             }
         }
-        LaunchedEffect(uiState) {
-            when (val state = uiState) {
+        LaunchedEffect(uiStateReceived) {
+            when (val state = uiStateReceived) {
 
                 is UserInterestsUIState.Loading -> {
                     isLoading = true
@@ -166,7 +160,7 @@ fun InterestsScreen(
 
                 is UserInterestsUIState.Success -> {
                     isLoading = false
-                    filteredInterests = state.data
+                    receivedInterests = state.data
                     ToastUtils.success(
                         context = context,
                         message = "Received Interests fetched successfully"
@@ -192,7 +186,7 @@ fun InterestsScreen(
 
             is UserInterestsUIState.Success -> {
                 isLoading = false
-                filteredInterests = state.data
+                sentInterests = state.data
                 ToastUtils.success(
                     context = context,
                     message = "Received Interests fetched successfully"
@@ -243,5 +237,5 @@ fun InterestTabButton(
 @Preview
 @Composable
 fun InterestsScreenPreview() {
-    InterestsScreen(onInterestItemClick = {}, onAcceptRejectButton = {})
+    InterestsScreen(onInterestItemClick = {})
 }

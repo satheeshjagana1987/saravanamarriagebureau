@@ -107,11 +107,24 @@ interface SmbApi {
     @GET("matches/past")
     suspend fun getPastMatches(): Response<ApiResponse<List<MatchesData>>>
 
+    @GET("matches/recommended")
+    suspend fun getRecommendedMatches(): Response<ApiResponse<List<MatchesData>>>
+
     @GET("interests/sent")
     suspend fun getSentInterests(): Response<ApiResponse<List<UserInterestsData>>>
 
     @GET("interests/received")
     suspend fun getReceivedInterests(): Response<ApiResponse<List<UserInterestsData>>>
+
+    @PATCH("interests/{interestId}/accept")
+    suspend fun acceptReceivedInterest(
+        @Path("interestId") interestId: String
+    ): Response<ApiResponse<List<UserInterestsData>>>
+
+    @PATCH("interests/{interestId}/reject")
+    suspend fun rejectReceivedInterest(
+        @Path("interestId") interestId: String
+    ): Response<ApiResponse<List<UserInterestsData>>>
 
     @POST("interests/{profileId}")
     suspend fun sendInterest(

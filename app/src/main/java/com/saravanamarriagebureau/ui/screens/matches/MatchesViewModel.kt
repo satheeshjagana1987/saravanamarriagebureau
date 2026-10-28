@@ -28,6 +28,11 @@ class MatchesViewModel @Inject constructor(
 
     val uiStatePast = _uiStatePast.asStateFlow()
 
+    private val _uiStateRecommended =
+        MutableStateFlow<MatchesUiState>(MatchesUiState.Idle)
+
+    val uiStateRecommended = _uiStateRecommended.asStateFlow()
+
     private val _uiStateSendInterest =
         MutableStateFlow<SendInterestsUIState>(SendInterestsUIState.Idle)
 
@@ -88,6 +93,36 @@ class MatchesViewModel @Inject constructor(
 
                 is ApiResult.Error -> {
                     _uiStatePast.value =
+                        MatchesUiState.Error(
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Loading -> Unit
+            }
+        }
+    }
+
+    fun getRecommendedMatches() {
+
+        viewModelScope.launch {
+
+            _uiStateRecommended.value = MatchesUiState.Loading
+
+            when (
+                val result = matchesRepository.getRecommendedMatches()
+            ) {
+
+                is ApiResult.Success -> {
+                    _uiStateRecommended.value =
+                        MatchesUiState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateRecommended.value =
                         MatchesUiState.Error(
                             message = result.message
                         )

@@ -95,7 +95,7 @@ data class Profile(
     val maritalStatus: String = "",
     val fullAddress: String = "",
 
-)
+    )
 
 data class ProfileRequest(
     val height: String,
@@ -223,7 +223,6 @@ data class UserInterestsData(
     val id: String,
     val senderProfileId: String,
     val receiverProfileId: String,
-    val sender: InterestProfile,
     val receiver: InterestProfile,
     val status: String,
     val createdAt: String,
@@ -232,15 +231,12 @@ data class UserInterestsData(
 
 data class InterestProfile(
     val fullName: String?,
-
     val isAdminVerified: Boolean,
-
-    val dateOfBirth: String,
-
+    val isPaidUser: Boolean,
     val profession: String?,
-
     val city: String?,
     val image: String?,
+    val dateOfBirth: String?,
     val profilePhoto: String?,
 )
 

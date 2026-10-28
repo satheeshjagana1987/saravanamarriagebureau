@@ -23,6 +23,12 @@ class MatchesRepository @Inject constructor(
         }
     }
 
+    suspend fun getRecommendedMatches(): ApiResult<List<MatchesData>> {
+        return safeApiCall {
+            api.getRecommendedMatches()
+        }
+    }
+
     suspend fun sendInterest(
         profileId: String
     ): ApiResult<UserInterestsResponse> {

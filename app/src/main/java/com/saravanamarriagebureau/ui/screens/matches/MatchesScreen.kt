@@ -43,6 +43,7 @@ import com.saravanamarriagebureau.util.ToastUtils
 fun MatchesScreen(
     onProfile: (MatchesData) -> Unit,
     onInterestSent: () -> Unit,
+    onInterestRemoved: () -> Unit,
     viewModel: MatchesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -53,11 +54,27 @@ fun MatchesScreen(
     var todayMatchesData by remember {
         mutableStateOf<List<MatchesData>>(emptyList())
     }
+
+    var pastMatchesData by remember {
+        mutableStateOf<List<MatchesData>>(emptyList())
+    }
+
+    var recommendedMatchesData by remember {
+        mutableStateOf<List<MatchesData>>(emptyList())
+    }
+
     val uiStateToday by viewModel.uiStateToday.collectAsStateWithLifecycle()
     val uiStatePast by viewModel.uiStatePast.collectAsStateWithLifecycle()
+    val uiStateRecommended by viewModel.uiStateRecommended.collectAsStateWithLifecycle()
 
     var selectedTab by remember {
         mutableStateOf(MatchTab.TODAY)
+    }
+
+    val displayedMatches = when (selectedTab) {
+        MatchTab.TODAY -> todayMatchesData
+        MatchTab.PAST -> pastMatchesData
+        MatchTab.RECOMMENDED -> recommendedMatchesData
     }
 
     LaunchedEffect(Unit) {
@@ -75,7 +92,6 @@ fun MatchesScreen(
             }
 
             is MatchesUiState.Success -> {
-                viewModel.resetState()
                 isLoading = false
                 todayMatchesData = state.data
                 ToastUtils.success(context = context, message = "Matches data fetched successfully")
@@ -100,7 +116,29 @@ fun MatchesScreen(
 
         is MatchesUiState.Success -> {
             isLoading = false
-            todayMatchesData = state.data
+            pastMatchesData = state.data
+            ToastUtils.success(context = context, message = "Matches data fetched successfully")
+        }
+
+        is MatchesUiState.Error -> {
+            isLoading = false
+            ToastUtils.error(context, state.message)
+        }
+
+        else -> {
+            isLoading = false
+        }
+    }
+
+    when (val state = uiStateRecommended) {
+
+        is MatchesUiState.Loading -> {
+            isLoading = true
+        }
+
+        is MatchesUiState.Success -> {
+            isLoading = false
+            recommendedMatchesData = state.data
             ToastUtils.success(context = context, message = "Matches data fetched successfully")
         }
 
@@ -151,6 +189,7 @@ fun MatchesScreen(
                     selected = selectedTab == MatchTab.RECOMMENDED,
                     onClick = {
                         selectedTab = MatchTab.RECOMMENDED
+                        viewModel.getRecommendedMatches()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -161,7 +200,7 @@ fun MatchesScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (todayMatchesData.isEmpty()) {
+                if (displayedMatches.isEmpty()) {
                     item {
                         Text(
                             text = "No matches found",
@@ -171,12 +210,13 @@ fun MatchesScreen(
                     }
                 } else {
                     items(
-                        items = todayMatchesData,
+                        items = displayedMatches,
                         key = { profile -> profile.id }
                     ) { profile ->
                         ProfileCard(
                             profile = profile,
                             onInterest = onInterestSent,
+                            onInterestRemoved = onInterestRemoved,
                             onOpen = { onProfile(profile) },
                             viewModel = viewModel
                         )
@@ -226,5 +266,5 @@ fun MatchTabButton(
 @Preview
 @Composable
 fun MatchesScreenPreview() {
-    MatchesScreen(onProfile = {}, onInterestSent = {})
+    MatchesScreen(onProfile = {}, onInterestSent = {}, onInterestRemoved = {})
 }

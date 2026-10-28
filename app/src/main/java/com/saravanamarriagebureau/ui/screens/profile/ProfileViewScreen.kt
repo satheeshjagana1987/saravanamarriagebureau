@@ -36,7 +36,7 @@ fun ProfileViewScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     Timber.e("profileId  => $profileId")
-    val uiState by viewModel.uiState
+    val uiState by viewModel.uiStateById
         .collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -59,6 +59,7 @@ fun ProfileViewScreen(
         }
 
         is ProfileUIState.Success -> {
+
             ProfileContent(
                 profile = state.data,
                 onBack = onBack,

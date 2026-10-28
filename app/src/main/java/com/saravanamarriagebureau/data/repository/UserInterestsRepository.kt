@@ -23,4 +23,24 @@ class UserInterestsRepository @Inject constructor(
             api.getReceivedInterests()
         }
     }
+
+    suspend fun acceptReceivedInterest(
+        interestId: String
+    ): ApiResult<List<UserInterestsData>> {
+        return safeApiCall {
+            api.acceptReceivedInterest(
+                interestId = interestId
+            )
+        }
+    }
+
+    suspend fun rejectReceivedInterest(
+        interestId: String
+    ): ApiResult<List<UserInterestsData>> {
+        return safeApiCall {
+            api.rejectReceivedInterest(
+                interestId = interestId
+            )
+        }
+    }
 }
