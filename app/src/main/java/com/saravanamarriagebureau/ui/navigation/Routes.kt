@@ -14,7 +14,7 @@ object Routes {
     const val VoiceBio = "voice_bio"
     const val ParentsTalk = "parents_talk"
     const val Home = "home"
-    const val Profile = "profile"
+    const val Profile = "profile/{profileId}"
     const val AdminVoice = "admin_voice"
     const val Matches = "matches"
     const val Privacy = "privacy"
@@ -43,8 +43,8 @@ object Routes {
 
 }
 
-fun profileRoute(profileId: String, type: String): String {
-    return "${Routes.Profile}/$profileId/$type"
+fun profileRoute(profileId: String): String {
+    return "profile/${Uri.encode(profileId)}"
 }
 
 fun paymentRoute(selectedPlan: String): String {

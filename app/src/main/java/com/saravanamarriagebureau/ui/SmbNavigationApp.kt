@@ -146,7 +146,17 @@ fun SmbNavigationApp(
         }
 
         composable(Routes.Admin) {
-            AdminLandingScreen()
+            AdminLandingScreen(
+                onLogout = {
+                    navController.navigate(Routes.Login) {
+                        appPreferences.saveLoginStatus(isLoggedIn = false)
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
 
 //        composable(Routes.Offer) {

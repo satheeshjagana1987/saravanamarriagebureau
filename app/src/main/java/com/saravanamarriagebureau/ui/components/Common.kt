@@ -76,6 +76,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.Gender
@@ -378,7 +379,7 @@ fun ProfileCard(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
             if (profile.isAdminVerified) {
-                ProfilePhoto(defaultImage = R.drawable.profile_pic, Modifier.size(74.dp))
+                NetworkImage(profile.profilePhoto ?: "")
             } else {
                 BlurredProfileImage(
                     R.drawable.profile_pic,
@@ -434,7 +435,7 @@ fun ProfileCard(
             if (profile.isAdminVerified) {
                 if(profile.isInterested) {
                     Icon(
-                        Icons.Default.FavoriteBorder,
+                        Icons.Default.Favorite,
                         null, tint = Maroon,
                         modifier = Modifier
                             .size(30.dp)
@@ -577,7 +578,14 @@ fun InterestCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
-            ProfilePhoto("", Modifier.size(74.dp))
+            if(selectedTab == InterestTab.SENT) {
+                NetworkImage(interest.receiver.profilePhoto ?: "")
+            } else if(selectedTab == InterestTab.RECEIVED) {
+                NetworkImage(interest.sender.profilePhoto ?: "")
+            } else {
+                NetworkImage("")
+            }
+
             Spacer(Modifier.width(10.dp))
             val age =  if(interest.receiver.dateOfBirth.isNullOrEmpty()) {
                 "NA"
@@ -1025,12 +1033,22 @@ fun BlurredProfileImage(
 }
 
 @Composable
-fun ShowToast(
-    context: Context,
-    message: String,
-    duration: Int = Toast.LENGTH_SHORT
-) {
-    Toast.makeText(context, message, duration).show()
+fun NetworkImage(url: String) {
+    SubcomposeAsyncImage(
+        model = url,
+        contentDescription = "Network image",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .width(75.dp)
+            .height(75.dp)
+            .clip(CircleShape),
+        loading = {
+            CircularProgressIndicator()
+        },
+        error = {
+            Text("Failed to load image")
+        }
+    )
 }
 
 @Composable

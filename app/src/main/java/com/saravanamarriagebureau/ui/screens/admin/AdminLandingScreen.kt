@@ -3,6 +3,10 @@ package com.saravanamarriagebureau.ui.screens.admin
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,15 +16,22 @@ import com.saravanamarriagebureau.ui.navigation.profileRoute
 import com.saravanamarriagebureau.ui.screens.admin.interests.AdminInterestsScreen
 import com.saravanamarriagebureau.ui.screens.admin.users.AdminUserDetailsScreen
 import com.saravanamarriagebureau.ui.screens.admin.users.AdminUsersScreen
+import com.saravanamarriagebureau.ui.screens.userdashboard.LogoutDialog
 import timber.log.Timber
 
 @Composable
-fun AdminLandingScreen() {
+fun AdminLandingScreen(
+    onLogout: () -> Unit
+) {
 
     val adminNavController = rememberNavController()
 
+    var showLogoutDialog by remember {
+        mutableStateOf(false)
+    }
+
     val destinations = listOf(
-        AdminDestination.Dashboard,
+        AdminDestination.Users,
         AdminDestination.Interests,
         AdminDestination.Payments,
         AdminDestination.Settings
@@ -53,7 +64,7 @@ fun AdminLandingScreen() {
                     onInterestItemClick = { interest ->
                         Timber.e("profile  InterestsScreen ==>  ${interest.type}")
                         adminNavController.navigate(
-                            profileRoute(profileId = interest.id, type = interest.type.name)
+                            profileRoute(profileId = interest.id)
                         )
                     },
                 )
@@ -64,14 +75,21 @@ fun AdminLandingScreen() {
             }
 
             composable(AdminDestination.Settings.route) {
-                AdminSettingsScreen()
+                AdminSettingsScreen(
+                    onBack = {
+                        adminNavController.popBackStack()
+                    },
+                    onLogout = {
+                        showLogoutDialog = true
+                    }
+                )
             }
 
             composable(Routes.Users) {
                 AdminUsersScreen(
                     onProfile = { profile ->
                         adminNavController.navigate(
-                            profileRoute(profile.id, type = "")
+                            profileRoute(profile.id)
                         )
                     }
                 )
@@ -103,7 +121,7 @@ fun AdminLandingScreen() {
                 AdminUsersScreen(
                     onProfile = { profile ->
                         adminNavController.navigate(
-                            profileRoute(profile.id, type = "")
+                            profileRoute(profile.id)
                         )
                     }
                 )
@@ -114,11 +132,23 @@ fun AdminLandingScreen() {
                     onInterestItemClick = { interest ->
                         Timber.e("profile  InterestsScreen ==>  ${interest.type}")
                         adminNavController.navigate(
-                            profileRoute(profileId = interest.id, type = interest.type.name)
+                            profileRoute(profileId = interest.id)
                         )
                     },
                 )
             }
+        }
+
+        if (showLogoutDialog) {
+            LogoutDialog(
+                onLogout = {
+                    showLogoutDialog = false
+                    onLogout()
+                },
+                onDismiss = {
+                    showLogoutDialog = false
+                }
+            )
         }
     }
 }

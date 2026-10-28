@@ -360,7 +360,7 @@ fun MainScreenWithHamburger(
                     MatchesScreen(
                         onProfile = { profile ->
                             navController.navigate(
-                                profileRoute(profile.id, type = "")
+                                profileRoute(profile.id)
                             )
                         },
 
@@ -383,7 +383,7 @@ fun MainScreenWithHamburger(
                     InterestsScreen(
                         onInterestItemClick = { interest ->
                             navController.navigate(
-                                profileRoute(profileId = interest.id, type = "")
+                                profileRoute(profileId = interest.id)
                             )
                         },
                         onAcceptRejectButton = {
@@ -417,20 +417,21 @@ fun MainScreenWithHamburger(
                 // =================================================
 
                 composable(
-                    route = "${Routes.Profile}/{profileId}/{type}"
+                    route = Routes.Profile,
+                    arguments = listOf(
+                        navArgument("profileId") {
+                            type = NavType.StringType
+                        }
+                    )
                 ) { backStackEntry ->
 
-                    val profileId = backStackEntry.arguments
-                        ?.getString("profileId")
-                        ?: return@composable
+                    val profileId =
+                        backStackEntry.arguments?.getString("profileId") ?: ""
 
-                    val profileType = backStackEntry.arguments
-                        ?.getString("type")
-                        ?: return@composable
 
                     ProfileViewScreen(
                         profileId = profileId,
-                        profileType = profileType,
+                        profileType = "",
 
                         onBack = {
                             navController.popBackStack()

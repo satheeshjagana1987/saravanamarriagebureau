@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.SubcomposeAsyncImage
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.ProfileData
@@ -96,14 +98,7 @@ fun ProfileContent(
                             .height(200.dp)
                     ) {
 
-                        Image(
-                            painter = painterResource(id = R.drawable.profile_pic),
-                            contentDescription = "Profile photo",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxSize()
-
-                        )
+                        NetworkImage(profile.profilePhoto ?: "")
 
                         // Dark transparent gradient at bottom
                         Box(
@@ -370,23 +365,41 @@ fun ProfileContent(
                     Spacer(Modifier.weight(1f))
                     Timber.e("profile ==>  $profile")
 //                    Timber.e("profile ==> id ${profile.id} name ${profile.userId} isMatched ${profile.isMatched} isAdminVerified ${profile.isAdminVerified}")
-                    if(profileType == InterestTab.MATCH_FIXED.name && !profile.isAdminVerified) {
-                        LabelName(
-                            labelName = "Contact info will be revealed after successful payment.",
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 14.sp, color = Red,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                        Spacer(Modifier.height(20.dp))
-                        PrimaryButton(
-                            text = stringResource(id = R.string.proceed_payment),
-                            modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
-                            onClick = onMatchFixed
-                        )
-                    }
+//                    if(profileType == InterestTab.MATCH_FIXED.name && !profile.isAdminVerified) {
+//                        LabelName(
+//                            labelName = "Contact info will be revealed after successful payment.",
+//                            textAlign = TextAlign.Center,
+//                            fontWeight = FontWeight.SemiBold,
+//                            fontSize = 14.sp, color = Red,
+//                            modifier = Modifier.fillMaxWidth(),
+//                        )
+//                        Spacer(Modifier.height(20.dp))
+//                        PrimaryButton(
+//                            text = stringResource(id = R.string.proceed_payment),
+//                            modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
+//                            onClick = onMatchFixed
+//                        )
+//                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun NetworkImage(url: String) {
+    SubcomposeAsyncImage(
+        model = url,
+        contentDescription = "Network image",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        loading = {
+            CircularProgressIndicator()
+        },
+        error = {
+            Text("Failed to load image")
+        }
+    )
 }

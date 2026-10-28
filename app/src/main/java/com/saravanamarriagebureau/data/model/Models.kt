@@ -154,6 +154,8 @@ data class ProfileData(
     val nativePlace: String?,
     val familyDetails: String?,
     val income: String?,
+    val profilePhoto: String?,
+    val familyVideo: String?,
 )
 
 data class ProfileMedia(
@@ -238,7 +240,8 @@ data class InterestProfile(
     val profession: String?,
 
     val city: String?,
-    val image: String?
+    val image: String?,
+    val profilePhoto: String?,
 )
 
 data class Pagination(
@@ -393,7 +396,8 @@ data class MatchesData(
 
     val status: String,
 
-    val image: String?
+    val image: String?,
+    val profilePhoto: String?
 )
 
 data class Family(
