@@ -1,5 +1,6 @@
 package com.saravanamarriagebureau.ui.screens.admin.users
 
+import com.saravanamarriagebureau.data.model.AdminUserDetails
 import com.saravanamarriagebureau.data.model.AdminUserDetailsResponse
 import com.saravanamarriagebureau.data.model.ProfileData
 
@@ -10,7 +11,7 @@ sealed class AdminUserByIdUIState {
     data object Loading : AdminUserByIdUIState()
 
     data class Success(
-        val data: AdminUserDetailsResponse,
+        val data: AdminUserDetails,
         val message: String? = null
     ) : AdminUserByIdUIState()
 

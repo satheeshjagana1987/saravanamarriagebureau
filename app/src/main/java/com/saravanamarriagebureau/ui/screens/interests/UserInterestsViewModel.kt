@@ -3,6 +3,7 @@ package com.saravanamarriagebureau.ui.screens.interests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.UserInterestsRepository
+import com.saravanamarriagebureau.ui.screens.matches.DeleteInterestsUIState
 import com.saravanamarriagebureau.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,14 +27,20 @@ class UserInterestsViewModel @Inject constructor(
     val uiStateSentInterest = _uiStateSentInterest.asStateFlow()
 
     private val _uiStateAcceptInterest =
-        MutableStateFlow<UserInterestsUIState>(UserInterestsUIState.Idle)
+        MutableStateFlow<UserInterestsAcceptRejectUIState>(UserInterestsAcceptRejectUIState.Idle)
 
     val uiStateAcceptInterest = _uiStateAcceptInterest.asStateFlow()
 
     private val _uiStateRejectInterest =
-        MutableStateFlow<UserInterestsUIState>(UserInterestsUIState.Idle)
+        MutableStateFlow<UserInterestsAcceptRejectUIState>(UserInterestsAcceptRejectUIState.Idle)
 
     val uiStateRejectInterest = _uiStateRejectInterest.asStateFlow()
+
+    private val _uiStateDeleteInterest =
+        MutableStateFlow<SendInterestsUIState>(SendInterestsUIState.Idle)
+
+    val uiStateDeleteInterest = _uiStateDeleteInterest.asStateFlow()
+
 
     fun getSentInterests() {
         viewModelScope.launch {
@@ -89,14 +96,14 @@ class UserInterestsViewModel @Inject constructor(
         interestId: String
     ) {
         viewModelScope.launch {
-            _uiStateAcceptInterest.value = UserInterestsUIState.Loading
+            _uiStateAcceptInterest.value = UserInterestsAcceptRejectUIState.Loading
 
             when (val result = userInterestsRepository.acceptReceivedInterest(
                 interestId = interestId
             )) {
                 is ApiResult.Success -> {
                     _uiStateAcceptInterest.value =
-                        UserInterestsUIState.Success(
+                        UserInterestsAcceptRejectUIState.Success(
                             data = result.data,
                             message = result.message
                         )
@@ -104,7 +111,7 @@ class UserInterestsViewModel @Inject constructor(
 
                 is ApiResult.Error -> {
                     _uiStateAcceptInterest.value =
-                        UserInterestsUIState.Error(
+                        UserInterestsAcceptRejectUIState.Error(
                             result.message
                         )
                 }
@@ -118,14 +125,14 @@ class UserInterestsViewModel @Inject constructor(
         interestId: String
     ) {
         viewModelScope.launch {
-            _uiStateRejectInterest.value = UserInterestsUIState.Loading
+            _uiStateRejectInterest.value = UserInterestsAcceptRejectUIState.Loading
 
             when (val result = userInterestsRepository.rejectReceivedInterest(
                 interestId = interestId
             )) {
                 is ApiResult.Success -> {
                     _uiStateRejectInterest.value =
-                        UserInterestsUIState.Success(
+                        UserInterestsAcceptRejectUIState.Success(
                             data = result.data,
                             message = result.message
                         )
@@ -133,7 +140,7 @@ class UserInterestsViewModel @Inject constructor(
 
                 is ApiResult.Error -> {
                     _uiStateRejectInterest.value =
-                        UserInterestsUIState.Error(
+                        UserInterestsAcceptRejectUIState.Error(
                             result.message
                         )
                 }
@@ -141,5 +148,34 @@ class UserInterestsViewModel @Inject constructor(
                 else -> {}
             }
         }
+    }
+
+    fun deleteInterest(interestId: String) {
+        viewModelScope.launch {
+            _uiStateDeleteInterest.value = SendInterestsUIState.Loading
+
+            when (val result = userInterestsRepository.deleteInterest(interestId = interestId)) {
+                is ApiResult.Success -> {
+                    _uiStateDeleteInterest.value =
+                        SendInterestsUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateDeleteInterest.value =
+                        SendInterestsUIState.Error(
+                            result.message
+                        )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun resetDeleteInterestState() {
+        _uiStateDeleteInterest.value = SendInterestsUIState.Idle
     }
 }

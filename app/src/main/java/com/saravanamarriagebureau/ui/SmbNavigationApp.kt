@@ -39,14 +39,25 @@ fun SmbNavigationApp(
         composable(Routes.Splash) {
             SplashScreen(
                 onFinished = {
-                    if (appPreferences.isLoggedIn() && appPreferences.getUserType() == KEY_USER_TYPE) {
-                        navController.navigate(Routes.Main) {
+                    if (appPreferences.isLoggedIn()) {
+                        if(appPreferences.isUserStatus()) {
+                            navController.navigate(Routes.Admin) {
 
-                            popUpTo(Routes.Splash) {
-                                inclusive = true
+                                popUpTo(Routes.Splash) {
+                                    inclusive = true
+                                }
+
+                                launchSingleTop = true
                             }
+                        } else {
+                            navController.navigate(Routes.Main) {
 
-                            launchSingleTop = true
+                                popUpTo(Routes.Splash) {
+                                    inclusive = true
+                                }
+
+                                launchSingleTop = true
+                            }
                         }
                     } else {
                         navController.navigate(Routes.Welcome) {
@@ -136,6 +147,7 @@ fun SmbNavigationApp(
                 onLogout = {
                     navController.navigate(Routes.Login) {
                         appPreferences.saveLoginStatus(isLoggedIn = false)
+                        appPreferences.saveUserStaus(isAdmin = false)
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
@@ -150,6 +162,7 @@ fun SmbNavigationApp(
                 onLogout = {
                     navController.navigate(Routes.Login) {
                         appPreferences.saveLoginStatus(isLoggedIn = false)
+                        appPreferences.saveUserStaus(isAdmin = false)
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }

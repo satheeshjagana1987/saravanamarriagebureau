@@ -369,19 +369,6 @@ fun MainScreenWithHamburger(
 
                         onInterestSent = {
                             navController.navigate(Routes.InterestSent)
-                        },
-
-                        onInterestRemoved = {
-                            navController.navigate(
-                                BottomBarScreen.Matches.route
-                            ) {
-
-                                popUpTo(
-                                    BottomBarScreen.Matches.route
-                                ) {
-                                    inclusive = true
-                                }
-                            }
                         }
                     )
                 }
@@ -399,9 +386,9 @@ fun MainScreenWithHamburger(
                     InterestsScreen(
                         onInterestItemClick = { interest ->
                             navController.navigate(
-                                profileRoute(profileId = interest.id)
+                                profileRoute(profileId = interest.receiverProfileId)
                             )
-                        }
+                        },
                     )
                 }
 
@@ -440,7 +427,6 @@ fun MainScreenWithHamburger(
 
                     val profileId =
                         backStackEntry.arguments?.getString("profileId").orEmpty()
-                    Timber.e("profileId==>$profileId")
 
                     ProfileViewScreen(
                         profileId = profileId,
@@ -542,9 +528,9 @@ fun MainScreenWithHamburger(
                         },
                         onContinue = { selectedPlan ->
                             Timber.e("selectedPlan ==> $selectedPlan")
-                            navController.navigate(
-                                paymentRoute(selectedPlan = selectedPlan)
-                            )
+//                            navController.navigate(
+//                                paymentRoute(selectedPlan = selectedPlan)
+//                            )
                         }
                     )
                 }

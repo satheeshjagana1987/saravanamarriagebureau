@@ -220,14 +220,14 @@ fun ProfileContent(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.Default.Favorite,
-                                contentDescription = "Success",
-                                tint = Maroon,
-                                modifier = Modifier
-                                    .size(30.dp)
-                            )
+//                            Spacer(modifier = Modifier.weight(1f))
+//                            Icon(
+//                                imageVector = Icons.Default.Favorite,
+//                                contentDescription = "Success",
+//                                tint = Maroon,
+//                                modifier = Modifier
+//                                    .size(30.dp)
+//                            )
                         }
 
                         if (profile.isAdminVerified) {
@@ -283,12 +283,33 @@ fun ProfileContent(
 //                            value = profile.mobile ?: NA
 //                        )
 
-                        DividerLine()
+//                        DividerLine()
+//
+//                        ProfileInfoRow(
+//                            label = stringResource(id = R.string.place_of_birth),
+//                            value = profile.placeOfBirth ?: NA
+//                        )
 
-                        ProfileInfoRow(
-                            label = stringResource(id = R.string.place_of_birth),
-                            value = profile.placeOfBirth ?: NA
-                        )
+//                        DividerLine()
+//
+//                        ProfileInfoRow(
+//                            label = stringResource(id = R.string.native_place),
+//                            value = profile.nativePlace ?: NA
+//                        )
+
+//                        DividerLine()
+//
+//                        ProfileInfoRow(
+//                            label = stringResource(id = R.string.city),
+//                            value = profile.city ?: NA
+//                        )
+
+//                        DividerLine()
+//
+//                        ProfileInfoRow(
+//                            label = stringResource(id = R.string.district),
+//                            value = profile.district ?: NA
+//                        )
 
                         DividerLine()
 
@@ -328,30 +349,23 @@ fun ProfileContent(
                         DividerLine()
 
                         ProfileInfoRow(
-                            label = stringResource(id = R.string.native_place),
-                            value = profile.nativePlace ?: NA
-                        )
-
-                        DividerLine()
-
-                        ProfileInfoRow(
                             label = stringResource(id = R.string.family_details),
                             value = profile.familyDetails ?: NA
                         )
 
-                        DividerLine()
-
-                        ProfileInfoRow(
-                            label = "Family Video",
-                            value = "Download"
-                        )
-
-                        DividerLine()
-
-                        ProfileInfoRow(
-                            label = "Voice Record",
-                            value = "Download"
-                        )
+//                        DividerLine()
+//
+//                        ProfileInfoRow(
+//                            label = "Family Video",
+//                            value = "Download"
+//                        )
+//
+//                        DividerLine()
+//
+//                        ProfileInfoRow(
+//                            label = "Voice Record",
+//                            value = "Download"
+//                        )
                     }
                     Spacer(Modifier.weight(1f))
                     Timber.e("profile ==>  $profile")

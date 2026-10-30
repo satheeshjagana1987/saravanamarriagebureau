@@ -85,7 +85,7 @@ fun ChooseYourPlanScreen(
                 Spacer(Modifier.weight(1f))
 
                 PrimaryButton(
-                    "Continue",
+                    "Proceed to payment",
                     onClick = {
                         onContinue(selectedPlan)
                         // You can also use selectedPlan here

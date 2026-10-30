@@ -224,9 +224,10 @@ data class UserInterestsData(
     val senderProfileId: String,
     val receiverProfileId: String,
     val receiver: InterestProfile,
+    val sender: InterestProfile,
     val status: String,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
 )
 
 data class InterestProfile(
@@ -482,6 +483,78 @@ data class AdminUserProfile(
     val registeringFor: String?
 )
 
+data class AcceptRequest(
+    val action: String
+)
+
+data class RejectRequest(
+    val action: String,
+    val reason: String
+)
+
+data class RegistrationApprovalResponse(
+
+    val success: Boolean,
+
+
+    val data: RegistrationApprovalData?,
+
+
+    val requestId: String?,
+
+
+    val timestamp: String?
+)
+
+data class RegistrationApprovalData(
+
+    val id: String,
+
+
+    val mobile: String,
+
+
+    val status: String,
+
+
+    val approvedAt: String?,
+
+
+    val message: String
+)
+
+data class RegistrationRejectionResponse(
+
+    val success: Boolean,
+
+
+    val data: RegistrationRejectionData?,
+
+
+    val requestId: String?,
+
+
+    val timestamp: String?
+)
+
+data class RegistrationRejectionData(
+
+    val id: String,
+
+
+    val mobile: String,
+
+
+    val status: String,
+
+
+    val rejectionReason: String?,
+
+
+    val message: String
+)
+
+
 //Admin Interests
 data class AdminInterestsResponse(
     val success: Boolean,
@@ -512,7 +585,9 @@ data class AdminInterestsDetails(
     val education: String?,
     val isAdminVerified: Boolean,
     val isPaidUser: Boolean,
-    val profilePhoto: String?
+    val profilePhoto: String?,
+    val matchRejectRemarks: String?,
+    val isMatchFixed: Boolean
 )
 
 // Primary Bottom Bar Destinations

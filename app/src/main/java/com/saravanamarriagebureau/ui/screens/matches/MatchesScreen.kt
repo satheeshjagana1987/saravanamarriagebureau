@@ -32,6 +32,7 @@ import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.ProfileCard
+import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
@@ -43,7 +44,6 @@ import com.saravanamarriagebureau.util.ToastUtils
 fun MatchesScreen(
     onProfile: (MatchesData) -> Unit,
     onInterestSent: () -> Unit,
-    onInterestRemoved: () -> Unit,
     viewModel: MatchesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -66,6 +66,14 @@ fun MatchesScreen(
     val uiStateToday by viewModel.uiStateToday.collectAsStateWithLifecycle()
     val uiStatePast by viewModel.uiStatePast.collectAsStateWithLifecycle()
     val uiStateRecommended by viewModel.uiStateRecommended.collectAsStateWithLifecycle()
+
+    var sendingProfileId by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    val uiStateSendInterest by
+    viewModel.uiStateSendInterest.collectAsStateWithLifecycle()
+
 
     var selectedTab by remember {
         mutableStateOf(MatchTab.TODAY)
@@ -94,7 +102,6 @@ fun MatchesScreen(
             is MatchesUiState.Success -> {
                 isLoading = false
                 todayMatchesData = state.data
-                ToastUtils.success(context = context, message = "Matches data fetched successfully")
             }
 
             is MatchesUiState.Error -> {
@@ -117,7 +124,6 @@ fun MatchesScreen(
         is MatchesUiState.Success -> {
             isLoading = false
             pastMatchesData = state.data
-            ToastUtils.success(context = context, message = "Matches data fetched successfully")
         }
 
         is MatchesUiState.Error -> {
@@ -139,7 +145,6 @@ fun MatchesScreen(
         is MatchesUiState.Success -> {
             isLoading = false
             recommendedMatchesData = state.data
-            ToastUtils.success(context = context, message = "Matches data fetched successfully")
         }
 
         is MatchesUiState.Error -> {
@@ -152,6 +157,55 @@ fun MatchesScreen(
         }
     }
 
+    LaunchedEffect(uiStateSendInterest) {
+        when (val state = uiStateSendInterest) {
+
+            is SendInterestsUIState.Success -> {
+                val sentId = sendingProfileId
+
+                if (sentId != null) {
+                    // Update the visible list without reloading it.
+                    todayMatchesData = todayMatchesData.map { profile ->
+                        if (profile.id == sentId) {
+                            profile.copy(isInterested = true)
+                        } else {
+                            profile
+                        }
+                    }
+
+                    pastMatchesData = pastMatchesData.map { profile ->
+                        if (profile.id == sentId) {
+                            profile.copy(isInterested = true)
+                        } else {
+                            profile
+                        }
+                    }
+
+                    recommendedMatchesData =
+                        recommendedMatchesData.map { profile ->
+                            if (profile.id == sentId) {
+                                profile.copy(isInterested = true)
+                            } else {
+                                profile
+                            }
+                        }
+                }
+
+                sendingProfileId = null
+                viewModel.resetState()
+
+            }
+
+            is SendInterestsUIState.Error -> {
+                sendingProfileId = null
+                viewModel.resetState()
+
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> Unit
+        }
+    }
 
     Column(
         Modifier
@@ -216,7 +270,6 @@ fun MatchesScreen(
                         ProfileCard(
                             profile = profile,
                             onInterest = onInterestSent,
-                            onInterestRemoved = onInterestRemoved,
                             onOpen = { onProfile(profile) },
                             viewModel = viewModel
                         )
@@ -266,5 +319,5 @@ fun MatchTabButton(
 @Preview
 @Composable
 fun MatchesScreenPreview() {
-    MatchesScreen(onProfile = {}, onInterestSent = {}, onInterestRemoved = {})
+    MatchesScreen(onProfile = {}, onInterestSent = {})
 }

@@ -3,6 +3,7 @@ package com.saravanamarriagebureau.util
 import android.content.Context
 import android.content.SharedPreferences
 import com.saravanamarriagebureau.util.Constants.KEY_ACCESS_TOKEN
+import com.saravanamarriagebureau.util.Constants.KEY_IS_ADMIN
 import com.saravanamarriagebureau.util.Constants.KEY_IS_LOGGED_IN
 import com.saravanamarriagebureau.util.Constants.KEY_MEDIA_ID
 import com.saravanamarriagebureau.util.Constants.KEY_MEDIA_URL
@@ -55,6 +56,16 @@ class AppPreferences @Inject constructor(
 
     fun isLoggedIn(): Boolean {
         return preferences.getBoolean(KEY_IS_LOGGED_IN, false)
+    }
+
+    fun saveUserStaus(isAdmin: Boolean) {
+        preferences.edit()
+            .putBoolean(KEY_IS_ADMIN, isAdmin)
+            .apply()
+    }
+
+    fun isUserStatus(): Boolean {
+        return preferences.getBoolean(KEY_IS_ADMIN, false)
     }
 
     fun isRememberMe(rememberMe: Boolean) {

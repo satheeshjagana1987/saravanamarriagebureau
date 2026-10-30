@@ -58,6 +58,10 @@ class LoginViewModel @Inject constructor(
                         isLoggedIn = true
                     )
 
+                    appPreferences.saveUserStaus(
+                        isAdmin = result.data.user.isAdmin
+                    )
+
                     appPreferences.saveUserType(
                         result.data.userType ?: KEY_USER_TYPE
                     )

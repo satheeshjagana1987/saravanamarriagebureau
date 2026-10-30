@@ -1,7 +1,9 @@
 package com.saravanamarriagebureau.data.api
 
+import com.saravanamarriagebureau.data.model.AcceptRequest
 import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.data.model.AdminInterestsResponse
+import com.saravanamarriagebureau.data.model.AdminUserDetails
 import com.saravanamarriagebureau.data.model.AdminUserDetailsResponse
 import com.saravanamarriagebureau.data.model.ApiResponse
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
@@ -22,6 +24,9 @@ import com.saravanamarriagebureau.data.model.ProfileRequest
 import com.saravanamarriagebureau.data.model.RefreshTokenRequest
 import com.saravanamarriagebureau.data.model.RegisterRequest
 import com.saravanamarriagebureau.data.model.RegisterResponse
+import com.saravanamarriagebureau.data.model.RegistrationApprovalData
+import com.saravanamarriagebureau.data.model.RegistrationRejectionData
+import com.saravanamarriagebureau.data.model.RejectRequest
 import com.saravanamarriagebureau.data.model.ResetPasswordRequest
 import com.saravanamarriagebureau.data.model.ResetPasswordResponse
 import com.saravanamarriagebureau.data.model.UploadResponse
@@ -119,12 +124,12 @@ interface SmbApi {
     @PATCH("interests/{interestId}/accept")
     suspend fun acceptReceivedInterest(
         @Path("interestId") interestId: String
-    ): Response<ApiResponse<List<UserInterestsData>>>
+    ): Response<ApiResponse<UserInterestsData>>
 
     @PATCH("interests/{interestId}/reject")
     suspend fun rejectReceivedInterest(
         @Path("interestId") interestId: String
-    ): Response<ApiResponse<List<UserInterestsData>>>
+    ): Response<ApiResponse<UserInterestsData>>
 
     @POST("interests/{profileId}")
     suspend fun sendInterest(
@@ -141,18 +146,42 @@ interface SmbApi {
 
     //Admin
 
-    @GET("registration/pending?limit=20&offset=0")
-    suspend fun getAdminUsers(): Response<ApiResponse<List<PendingApprovalUser>>>
+    @GET("registration/pending?limit=20&offset=0&status=PENDING_APPROVAL")
+    suspend fun getAdminPendingUsers(): Response<ApiResponse<List<PendingApprovalUser>>>
+
+    @GET("registration/pending?limit=20&offset=0&status=APPROVED")
+    suspend fun getAdminApprovedUsers(): Response<ApiResponse<List<PendingApprovalUser>>>
+
+    @GET("registration/pending?limit=20&offset=0&status=REJECTED")
+    suspend fun getAdminRejectedUsers(): Response<ApiResponse<List<PendingApprovalUser>>>
 
     @GET("registration/{userId}")
-    suspend fun getAdminUserById( @Path("userId") userId: String
-    ): Response<ApiResponse<AdminUserDetailsResponse>>
+    suspend fun getAdminUserById(
+        @Path("userId") userId: String
+    ): Response<ApiResponse<AdminUserDetails>>
 
-    @GET("admin/interests?limit=20&offset=0&status=PENDING")
-    suspend fun getAdminInterests(): Response<ApiResponse<List<AdminInterestsData>>>
+    @POST("registration/{userId}/approve")
+    suspend fun approveAdminUser(
+        @Path("userId") userId: String,
+        @Body request: AcceptRequest
+    ): Response<ApiResponse<RegistrationApprovalData>>
 
-    @GET("/admin/interests/{interestId}")
-    suspend fun getAdminInterestById( @Path("interestId") interestId: String
+    @POST("registration/{userId}/reject")
+    suspend fun rejectAdminUser(
+        @Path("userId") userId: String,
+        @Body request: RejectRequest
+    ): Response<ApiResponse<RegistrationRejectionData>>
+
+    @GET("admin/interests?status=PENDING")
+    suspend fun getAdminPendingInterests(): Response<ApiResponse<List<AdminInterestsData>>>
+
+    @GET("admin/interests?status=ACCEPTED")
+    suspend fun getAdminAcceptedInterests(): Response<ApiResponse<List<AdminInterestsData>>>
+
+
+    @GET("admin/interests/{interestId}")
+    suspend fun getAdminInterestById(
+        @Path("interestId") interestId: String
     ): Response<ApiResponse<AdminInterestsData>>
 
 }

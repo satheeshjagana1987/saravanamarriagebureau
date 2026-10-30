@@ -77,8 +77,49 @@ fun InterestsScreen(
     val uiStateReceived by viewModel.uiStateReceived.collectAsStateWithLifecycle()
     val uiStateSentInterest by viewModel.uiStateSentInterest.collectAsStateWithLifecycle()
 
+    val uiStateDeleteInterest by
+    viewModel.uiStateDeleteInterest.collectAsStateWithLifecycle()
+
+    var deletingInterestId by remember {
+        mutableStateOf<String?>(null)
+    }
+
     LaunchedEffect(Unit) {
         viewModel.getReceivedInterests()
+    }
+
+    LaunchedEffect(uiStateDeleteInterest) {
+        when (val state = uiStateDeleteInterest) {
+
+            is SendInterestsUIState.Success -> {
+                // Remove the deleted item immediately.
+                deletingInterestId?.let { deletedId ->
+                    sentInterests = sentInterests.filterNot {
+                        it.id == deletedId
+                    }
+                }
+
+                ToastUtils.success(
+                    context = context,
+                    message = state.message ?: "Interest removed successfully"
+                )
+
+                deletingInterestId = null
+                viewModel.resetDeleteInterestState()
+
+                // Refresh from the server to keep the list synchronized.
+                viewModel.getSentInterests()
+            }
+
+            is SendInterestsUIState.Error -> {
+                ToastUtils.error(context, state.message)
+
+                deletingInterestId = null
+                viewModel.resetDeleteInterestState()
+            }
+
+            else -> Unit
+        }
     }
 
     LoadingDialog(isLoading = isLoading)
@@ -145,6 +186,10 @@ fun InterestsScreen(
                             interest = interest,
                             selectedTab = selectedTab,
                             onOpen = { onInterestItemClick(interest) },
+                            onDelete = { interestId ->
+                                deletingInterestId = interestId
+                                viewModel.deleteInterest(interestId)
+                            },
                             viewModel = viewModel
                         )
                     }
@@ -161,10 +206,6 @@ fun InterestsScreen(
                 is UserInterestsUIState.Success -> {
                     isLoading = false
                     receivedInterests = state.data
-                    ToastUtils.success(
-                        context = context,
-                        message = "Received Interests fetched successfully"
-                    )
                 }
 
                 is UserInterestsUIState.Error -> {
@@ -187,10 +228,9 @@ fun InterestsScreen(
             is UserInterestsUIState.Success -> {
                 isLoading = false
                 sentInterests = state.data
-                ToastUtils.success(
-                    context = context,
-                    message = "Received Interests fetched successfully"
-                )
+                sentInterests = sentInterests.filterNot {
+                    it.status == "CANCELLED"
+                }
             }
 
             is UserInterestsUIState.Error -> {

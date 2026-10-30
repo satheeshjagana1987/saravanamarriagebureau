@@ -82,12 +82,14 @@ import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.Gender
 import com.saravanamarriagebureau.data.enums.InterestStatus
 import com.saravanamarriagebureau.data.enums.InterestTab
+import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
+import com.saravanamarriagebureau.ui.screens.interests.UserInterestsAcceptRejectUIState
 import com.saravanamarriagebureau.ui.screens.interests.UserInterestsUIState
 import com.saravanamarriagebureau.ui.screens.interests.UserInterestsViewModel
 import com.saravanamarriagebureau.ui.screens.matches.DeleteInterestsUIState
@@ -96,6 +98,7 @@ import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Gray
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
+import com.saravanamarriagebureau.ui.theme.Rose
 import com.saravanamarriagebureau.ui.theme.SoftRose
 import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.SuccessSoft
@@ -352,13 +355,11 @@ private fun ProfilePhotoContent(
 fun ProfileCard(
     profile: MatchesData,
     onInterest: () -> Unit,
-    onInterestRemoved: () -> Unit,
     onOpen: () -> Unit,
     viewModel: MatchesViewModel,
 ) {
     val context = LocalContext.current
     val uiStateSendInterest by viewModel.uiStateSendInterest.collectAsStateWithLifecycle()
-    val uiStateDeleteInterest by viewModel.uiStateDeleteInterest.collectAsStateWithLifecycle()
     var isLoading by remember {
         mutableStateOf(false)
     }
@@ -393,10 +394,10 @@ fun ProfileCard(
                 )
             }
             Spacer(Modifier.width(10.dp))
-            val age =  if(profile.dateOfBirth.isNullOrEmpty()) {
+            val age = if (profile.dateOfBirth.isNullOrEmpty()) {
                 "NA"
             } else {
-                 calculateAge(profile.dateOfBirth).toString()
+                calculateAge(profile.dateOfBirth).toString()
             }
             Column(Modifier.weight(1f)) {
                 LabelName(
@@ -420,6 +421,15 @@ fun ProfileCard(
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
+                if (profile.isInterested) {
+                    LabelName(
+                        labelName = "Interest already sent",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Rose,
+                        modifier = Modifier.padding(0.dp)
+                    )
+                }
                 if (profile.isAdminVerified) {
                     LabelName(
                         labelName = "● " + stringResource(id = R.string.verified),
@@ -438,18 +448,7 @@ fun ProfileCard(
                 }
             }
             if (profile.isAdminVerified) {
-                if(profile.isInterested) {
-                    Icon(
-                        Icons.Default.Favorite,
-                        null, tint = Maroon,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clickable {
-                                notInterested = true
-                                viewModel.deleteInterest(interestId = profile.id)
-                            },
-                    )
-                } else {
+                if (!profile.isInterested) {
                     Icon(
                         Icons.Default.FavoriteBorder,
                         null, tint = TextSecondary,
@@ -477,29 +476,6 @@ fun ProfileCard(
                 }
 
                 is SendInterestsUIState.Error -> {
-                    isLoading = false
-                    ToastUtils.error(context, state.message)
-                }
-
-                else -> {
-                    isLoading = false
-                }
-            }
-
-            when (val state = uiStateDeleteInterest) {
-
-                is DeleteInterestsUIState.Loading -> {
-                    isLoading = true
-                }
-
-                is DeleteInterestsUIState.Success -> {
-                    isLoading = false
-                    if (notInterested) {
-                        onInterestRemoved()
-                    }
-                }
-
-                is DeleteInterestsUIState.Error -> {
                     isLoading = false
                     ToastUtils.error(context, state.message)
                 }
@@ -579,11 +555,18 @@ fun AdminUserStatusContent(
             )
         }
 
-        else -> {
-
+        "APPROVED" -> {
             AdminStatusText(
                 text = stringResource(R.string.approved),
                 color = Success
+            )
+        }
+
+        else -> {
+
+            AdminStatusText(
+                text = stringResource(R.string.rejected),
+                color = Red
             )
         }
 
@@ -596,6 +579,7 @@ fun InterestCard(
     interest: UserInterestsData,
     selectedTab: InterestTab,
     onOpen: () -> Unit,
+    onDelete: (String) -> Unit,
     viewModel: UserInterestsViewModel
 ) {
 
@@ -610,7 +594,7 @@ fun InterestCard(
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
             NetworkImage(interest.receiver.profilePhoto ?: "")
             Spacer(Modifier.width(10.dp))
-            val age =  if(interest.receiver.dateOfBirth.isNullOrEmpty()) {
+            val age = if (interest.receiver.dateOfBirth.isNullOrEmpty()) {
                 "NA"
             } else {
                 calculateAge(interest.receiver.dateOfBirth).toString()
@@ -657,11 +641,25 @@ fun InterestCard(
 
             }
             Spacer(modifier = Modifier.size(20.dp))
-            InterestStatusContent(
-                selectedTab,
-                interest = interest,
-                viewModel = viewModel
-            )
+            Column {
+                InterestStatusContent(
+                    selectedTab,
+                    interest = interest,
+                    viewModel = viewModel
+                )
+
+                if (interest.status == "PENDING" && selectedTab == InterestTab.SENT) {
+                    Icon(
+                        Icons.Default.Favorite,
+                        null, tint = Maroon,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable {
+                                onDelete(interest.id)
+                            },
+                    )
+                }
+            }
         }
     }
 }
@@ -762,17 +760,16 @@ fun InterestStatusContent(
 
     when (val state = uiStateAcceptInterest) {
 
-        is UserInterestsUIState.Loading -> {
+        is UserInterestsAcceptRejectUIState.Loading -> {
             isLoading = true
         }
 
-        is UserInterestsUIState.Success -> {
+        is UserInterestsAcceptRejectUIState.Success -> {
             isLoading = false
-            ToastUtils.error(context, "Interest Accepted")
             viewModel.getReceivedInterests()
         }
 
-        is UserInterestsUIState.Error -> {
+        is UserInterestsAcceptRejectUIState.Error -> {
             isLoading = false
             ToastUtils.error(context, state.message)
         }
@@ -784,17 +781,16 @@ fun InterestStatusContent(
 
     when (val state = uiStateRejectInterest) {
 
-        is UserInterestsUIState.Loading -> {
+        is UserInterestsAcceptRejectUIState.Loading -> {
             isLoading = true
         }
 
-        is UserInterestsUIState.Success -> {
+        is UserInterestsAcceptRejectUIState.Success -> {
             isLoading = false
-            ToastUtils.error(context, "Interest Rejected")
             viewModel.getReceivedInterests()
         }
 
-        is UserInterestsUIState.Error -> {
+        is UserInterestsAcceptRejectUIState.Error -> {
             isLoading = false
             ToastUtils.error(context, state.message)
         }
@@ -807,9 +803,10 @@ fun InterestStatusContent(
     LoadingDialog(isLoading = isLoading)
 }
 
+
 @Composable
 fun AdminInterestCard(
-    interest: Interest,
+    interest: AdminInterestsData,
     onOpen: () -> Unit,
 ) {
     Card(
@@ -825,43 +822,31 @@ fun AdminInterestCard(
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 LabelName(
-                    labelName = interest.name,
+                    labelName = interest.sender.fullName,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Maroon,
                     modifier = Modifier.padding(0.dp)
                 )
-                LabelName(
-                    labelName = "${interest.age} yrs",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = TextSecondary,
-                    modifier = Modifier.padding(0.dp)
-                )
-                LabelName(
-                    labelName = interest.education,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = TextSecondary,
-                    modifier = Modifier.padding(0.dp)
-                )
-                if (interest.isAdminVerified) {
-                    LabelName(
-                        labelName = "● " + stringResource(id = R.string.verified),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Success,
-                        modifier = Modifier.padding(0.dp)
-                    )
+                val age = if (interest.sender.dateOfBirth.isNullOrEmpty()) {
+                    "NA"
                 } else {
-                    LabelName(
-                        labelName = "● " + stringResource(id = R.string.profile_under_review),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Warning
-                    )
+                    calculateAge(interest.sender.dateOfBirth).toString()
                 }
-
+                LabelName(
+                    labelName = "$age yrs",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
+                LabelName(
+                    labelName = interest.sender.education ?: NA,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    modifier = Modifier.padding(0.dp)
+                )
 
             }
             Spacer(modifier = Modifier.size(20.dp))
@@ -874,33 +859,18 @@ fun AdminInterestCard(
 
 @Composable
 fun AdminInterestStatusContent(
-    interest: Interest
+    interest: AdminInterestsData
 ) {
     when (interest.status) {
-        InterestStatus.PENDING -> {
-            if (interest.type == InterestTab.RECEIVED) {
-                AdminStatusText(
-                    text = stringResource(id = R.string.pending),
-                    color = Warning
-                )
+        "PENDING" -> {
+            AdminStatusText(
+                text = stringResource(id = R.string.pending),
+                color = Warning
+            )
 
-            } else {
-                if (interest.type == InterestTab.MATCH_FIXED) {
-                    AdminStatusText(
-                        text = stringResource(id = R.string.payment_pending),
-                        color = Warning
-                    )
-                } else {
-                    // SENT + PENDING
-                    AdminStatusText(
-                        text = stringResource(id = R.string.pending),
-                        color = Warning
-                    )
-                }
-            }
         }
 
-        InterestStatus.ACCEPTED -> {
+       "ACCEPTED" -> {
 
             AdminStatusText(
                 text = stringResource(R.string.accepted),
@@ -908,21 +878,7 @@ fun AdminInterestStatusContent(
             )
         }
 
-        InterestStatus.REJECTED -> {
 
-            AdminStatusText(
-                text = stringResource(R.string.rejected),
-                color = Red
-            )
-        }
-
-        InterestStatus.DONE -> {
-
-            AdminStatusText(
-                text = stringResource(R.string.payment_completed),
-                color = Success
-            )
-        }
     }
 }
 
@@ -1005,7 +961,7 @@ fun ProfileInfoRow(
         Text(
             text = value,
             color = Black,
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold
         )
 
@@ -1022,7 +978,7 @@ fun ProfileInfoRow(
             Text(
                 text = secondValue,
                 color = Black,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -1041,7 +997,7 @@ fun ProfileInfoRow(
             Text(
                 text = thirdValue,
                 color = TextPrimary,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )
         }

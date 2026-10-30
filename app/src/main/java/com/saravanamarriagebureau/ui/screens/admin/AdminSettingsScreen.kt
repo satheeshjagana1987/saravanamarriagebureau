@@ -52,13 +52,13 @@ fun AdminSettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Text(
-                    text = stringResource(id = R.string.logout),
-                    color = TextSecondary,
-                    fontSize = 14.sp,
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                VerticalDivider()
+//                Text(
+//                    text = stringResource(id = R.string.logout),
+//                    color = TextSecondary,
+//                    fontSize = 14.sp,
+//                )
+//                Spacer(modifier = Modifier.size(10.dp))
+//                VerticalDivider()
                 Spacer(modifier = Modifier.size(10.dp))
                 PrimaryButton(
                     text = stringResource(id = R.string.logout),

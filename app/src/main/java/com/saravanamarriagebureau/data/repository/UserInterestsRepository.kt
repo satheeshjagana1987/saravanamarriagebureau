@@ -26,7 +26,7 @@ class UserInterestsRepository @Inject constructor(
 
     suspend fun acceptReceivedInterest(
         interestId: String
-    ): ApiResult<List<UserInterestsData>> {
+    ): ApiResult<UserInterestsData> {
         return safeApiCall {
             api.acceptReceivedInterest(
                 interestId = interestId
@@ -36,11 +36,19 @@ class UserInterestsRepository @Inject constructor(
 
     suspend fun rejectReceivedInterest(
         interestId: String
-    ): ApiResult<List<UserInterestsData>> {
+    ): ApiResult<UserInterestsData> {
         return safeApiCall {
             api.rejectReceivedInterest(
                 interestId = interestId
             )
+        }
+    }
+
+    suspend fun deleteInterest(
+        interestId: String
+    ): ApiResult<UserInterestsResponse> {
+        return safeApiCall {
+            api.deleteInterest(interestId = interestId)
         }
     }
 }

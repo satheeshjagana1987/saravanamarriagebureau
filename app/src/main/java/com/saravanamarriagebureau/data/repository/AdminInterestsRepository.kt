@@ -10,9 +10,15 @@ class AdminInterestsRepository @Inject constructor(
     private val api: SmbApi
 ) {
 
-    suspend fun getAdminInterests(): ApiResult<List<AdminInterestsData>> {
+    suspend fun getAdminPendingInterests(): ApiResult<List<AdminInterestsData>> {
         return safeApiCall {
-            api.getAdminInterests()
+            api.getAdminPendingInterests()
+        }
+    }
+
+    suspend fun getAdminAcceptedInterests(): ApiResult<List<AdminInterestsData>> {
+        return safeApiCall {
+            api.getAdminAcceptedInterests()
         }
     }
 

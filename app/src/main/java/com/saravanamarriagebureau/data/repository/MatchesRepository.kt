@@ -37,11 +37,4 @@ class MatchesRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteInterest(
-        interestId: String
-    ): ApiResult<UserInterestsResponse> {
-        return safeApiCall {
-            api.deleteInterest(interestId = interestId)
-        }
-    }
 }

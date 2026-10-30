@@ -33,10 +33,12 @@ object Routes {
     const val profileWithStepper = "profile_with_stepper"
     const val Admin = "admin"
     const val Users = "users"
+    const val AdminUserDetails = "admin_user_details/{userId}"
     const val PendingProfiles = "pending_profiles"
     const val PendingPayments = "pending_payments"
     const val MutualInterests = "mutual_interests"
     const val AdminDashboard = "admin_dashboard"
+    const val AdminInterestDetails = "admin_interest_details/{interestId}"
     const val AdminSettings = "admin_settings"
     const val AdminInterests = "admin_interests"
     const val AdminPayments = "admin_payments"
@@ -45,6 +47,14 @@ object Routes {
 
 fun profileRoute(profileId: String): String {
     return "profile/${Uri.encode(profileId)}"
+}
+
+fun adminInterestDetailsRoute(interestId: String): String {
+    return "admin_interest_details/${Uri.encode(interestId)}"
+}
+
+fun adminUserDetailsRoute(userId: String): String {
+    return "admin_user_details/${Uri.encode(userId)}"
 }
 
 fun paymentRoute(selectedPlan: String): String {

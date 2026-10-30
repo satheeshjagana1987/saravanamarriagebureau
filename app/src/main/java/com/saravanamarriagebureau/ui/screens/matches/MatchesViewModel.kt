@@ -38,10 +38,6 @@ class MatchesViewModel @Inject constructor(
 
     val uiStateSendInterest = _uiStateSendInterest.asStateFlow()
 
-    private val _uiStateDeleteInterest =
-        MutableStateFlow<DeleteInterestsUIState>(DeleteInterestsUIState.Idle)
-
-    val uiStateDeleteInterest = _uiStateDeleteInterest.asStateFlow()
 
     fun getTodayMatches() {
 
@@ -158,32 +154,7 @@ class MatchesViewModel @Inject constructor(
         }
     }
 
-    fun deleteInterest(interestId: String) {
-        viewModelScope.launch {
-            _uiStateDeleteInterest.value = DeleteInterestsUIState.Loading
-
-            when (val result = matchesRepository.deleteInterest(interestId = interestId)) {
-                is ApiResult.Success -> {
-                    _uiStateDeleteInterest.value =
-                        DeleteInterestsUIState.Success(
-                            data = result.data,
-                            message = result.message
-                        )
-                }
-
-                is ApiResult.Error -> {
-                    _uiStateDeleteInterest.value =
-                        DeleteInterestsUIState.Error(
-                            result.message
-                        )
-                }
-
-                else -> {}
-            }
-        }
-    }
-
     fun resetState() {
-        _uiStateToday.value = MatchesUiState.Idle
+        _uiStateSendInterest.value = SendInterestsUIState.Idle
     }
 }

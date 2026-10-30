@@ -4,37 +4,44 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.AdminInterestsRepository
 import com.saravanamarriagebureau.util.ApiResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class AdminInterestsViewModel @Inject constructor(
     private val adminInterestsRepository: AdminInterestsRepository
 ) : ViewModel() {
 
-    private val _uiStateAdminInterests =
+    private val _uiStateAdminPendingInterests =
         MutableStateFlow<AdminInterestsUIState>(AdminInterestsUIState.Idle)
 
-    val uiStateAdminInterests = _uiStateAdminInterests.asStateFlow()
+    val uiStateAdminPendingInterests = _uiStateAdminPendingInterests.asStateFlow()
+
+    private val _uiStateAdminAcceptedInterests =
+        MutableStateFlow<AdminInterestsUIState>(AdminInterestsUIState.Idle)
+
+    val uiStateAdminAcceptedInterests = _uiStateAdminAcceptedInterests.asStateFlow()
 
     private val _uiStateAdminInterestsById =
         MutableStateFlow<AdminInterestsByIdUIState>(AdminInterestsByIdUIState.Idle)
 
     val uiStateAdminInterestsById = _uiStateAdminInterestsById.asStateFlow()
 
-    fun getAdminInterests() {
+    fun getAdminPendingInterests() {
 
         viewModelScope.launch {
 
-            _uiStateAdminInterests.value = AdminInterestsUIState.Loading
+            _uiStateAdminPendingInterests.value = AdminInterestsUIState.Loading
 
             when (
-                val result = adminInterestsRepository.getAdminInterests()
+                val result = adminInterestsRepository.getAdminPendingInterests()
             ) {
 
                 is ApiResult.Success -> {
-                    _uiStateAdminInterests.value =
+                    _uiStateAdminPendingInterests.value =
                         AdminInterestsUIState.Success(
                             data = result.data,
                             message = result.message
@@ -42,7 +49,37 @@ class AdminInterestsViewModel @Inject constructor(
                 }
 
                 is ApiResult.Error -> {
-                    _uiStateAdminInterests.value =
+                    _uiStateAdminPendingInterests.value =
+                        AdminInterestsUIState.Error(
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Loading -> Unit
+            }
+        }
+    }
+
+    fun getAdminAcceptedInterests() {
+
+        viewModelScope.launch {
+
+            _uiStateAdminAcceptedInterests.value = AdminInterestsUIState.Loading
+
+            when (
+                val result = adminInterestsRepository.getAdminAcceptedInterests()
+            ) {
+
+                is ApiResult.Success -> {
+                    _uiStateAdminAcceptedInterests.value =
+                        AdminInterestsUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateAdminAcceptedInterests.value =
                         AdminInterestsUIState.Error(
                             message = result.message
                         )
@@ -80,9 +117,5 @@ class AdminInterestsViewModel @Inject constructor(
                 else -> {}
             }
         }
-    }
-
-    fun resetState() {
-        _uiStateAdminInterests.value = AdminInterestsUIState.Idle
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.enums.UsersTab
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.ui.components.AdminUserCard
@@ -47,33 +48,99 @@ fun AdminUsersScreen(
         mutableStateOf(false)
     }
 
-    var adminUsersData by remember {
+    var adminPendingUsersData by remember {
         mutableStateOf<List<PendingApprovalUser>>(emptyList())
     }
-    val uiState by viewModel.uiStateAdminUsers.collectAsStateWithLifecycle()
+
+    var adminApprovedUsersData by remember {
+        mutableStateOf<List<PendingApprovalUser>>(emptyList())
+    }
+
+    var adminRejectedUsersData by remember {
+        mutableStateOf<List<PendingApprovalUser>>(emptyList())
+    }
 
     var selectedTab by remember {
         mutableStateOf(UsersTab.PENDING)
     }
 
+    val displayedUsers = when (selectedTab) {
+        UsersTab.PENDING -> adminPendingUsersData
+        UsersTab.APPROVED -> adminApprovedUsersData
+        UsersTab.REJECTED -> adminRejectedUsersData
+    }
+
+    val uiStatePending by viewModel.uiStateAdminPendingUsers.collectAsStateWithLifecycle()
+    val uiStateApproved by viewModel.uiStateAdminApprovedUsers.collectAsStateWithLifecycle()
+    val uiStateRejected by viewModel.uiStateAdminRejectedUsers.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
-        viewModel.getAdminUsers()
+        viewModel.getAdminPendingUsers()
     }
 
     LoadingDialog(isLoading = isLoading)
 
-    LaunchedEffect(uiState) {
+    LaunchedEffect(uiStatePending) {
 
-        when (val state = uiState) {
+        when (val state = uiStatePending) {
 
             is AdminUsersUIState.Loading -> {
                 isLoading = true
             }
 
             is AdminUsersUIState.Success -> {
-                viewModel.resetState()
                 isLoading = false
-                adminUsersData = state.data
+                adminPendingUsersData = state.data
+                ToastUtils.success(context = context, message = "Users data fetched successfully")
+            }
+
+            is AdminUsersUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> {
+                isLoading = false
+            }
+        }
+    }
+
+    LaunchedEffect(uiStateApproved) {
+
+        when (val state = uiStateApproved) {
+
+            is AdminUsersUIState.Loading -> {
+                isLoading = true
+            }
+
+            is AdminUsersUIState.Success -> {
+                isLoading = false
+                adminApprovedUsersData = state.data
+                ToastUtils.success(context = context, message = "Users data fetched successfully")
+            }
+
+            is AdminUsersUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> {
+                isLoading = false
+            }
+        }
+    }
+
+    LaunchedEffect(uiStateRejected) {
+
+        when (val state = uiStateRejected) {
+
+            is AdminUsersUIState.Loading -> {
+                isLoading = true
+            }
+
+            is AdminUsersUIState.Success -> {
+                isLoading = false
+                adminRejectedUsersData = state.data
                 ToastUtils.success(context = context, message = "Users data fetched successfully")
             }
 
@@ -104,6 +171,7 @@ fun AdminUsersScreen(
                     selected = selectedTab == UsersTab.PENDING,
                     onClick = {
                         selectedTab = UsersTab.PENDING
+                        viewModel.getAdminPendingUsers()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -113,18 +181,20 @@ fun AdminUsersScreen(
                     selected = selectedTab == UsersTab.APPROVED,
                     onClick = {
                         selectedTab = UsersTab.APPROVED
+                        viewModel.getAdminApprovedUsers()
                     },
                     modifier = Modifier.weight(1f)
                 )
 
-//                UserTabButton(
-//                    text = "Rejected",
-//                    selected = selectedTab == UsersTab.REJECTED,
-//                    onClick = {
-//                        selectedTab = UsersTab.REJECTED
-//                    },
-//                    modifier = Modifier.weight(1f)
-//                )
+                UserTabButton(
+                    text = "Rejected",
+                    selected = selectedTab == UsersTab.REJECTED,
+                    onClick = {
+                        selectedTab = UsersTab.REJECTED
+                        viewModel.getAdminRejectedUsers()
+                    },
+                    modifier = Modifier.weight(1f)
+                )
 
             }
             LazyColumn(
@@ -132,7 +202,7 @@ fun AdminUsersScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
-                if (adminUsersData.isEmpty()) {
+                if (displayedUsers.isEmpty()) {
                     item {
                         Text(
                             text = "No data found",
@@ -142,7 +212,7 @@ fun AdminUsersScreen(
                     }
                 } else {
                     items(
-                        items = adminUsersData,
+                        items = displayedUsers,
                         key = { profile -> profile.id }
                     ) { profile ->
                         AdminUserCard(
