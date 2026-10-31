@@ -79,6 +79,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.Gender
 import com.saravanamarriagebureau.data.enums.InterestTab
+import com.saravanamarriagebureau.data.model.AddMembershipPlanData
 import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
@@ -91,7 +92,6 @@ import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Gray
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
-import com.saravanamarriagebureau.ui.theme.Rose
 import com.saravanamarriagebureau.ui.theme.SoftRose
 import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.SuccessSoft
@@ -101,6 +101,7 @@ import com.saravanamarriagebureau.ui.theme.Warning
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
+import java.text.NumberFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
@@ -500,7 +501,7 @@ fun AdminUserCard(
     profile: PendingApprovalUser,
     onOpen: () -> Unit
 ) {
-    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -575,6 +576,142 @@ fun AdminUserStatusContent(
         }
 
     }
+}
+
+@Composable
+fun AdminMembershipCard(
+    profile: AddMembershipPlanData,
+    onEdit: (String) -> Unit,
+    onDelete: (String) -> Unit
+) {
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+
+            },
+        shape = RoundedCornerShape(5.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
+            Column(Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    LabelName(
+                        labelName = "Plan Name:",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = TextSecondary,
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    LabelName(
+                        labelName = profile.name,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Black,
+                    )
+                }
+
+                Spacer(Modifier.height(5.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    LabelName(
+                        labelName = "Duration:",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = TextSecondary,
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    LabelName(
+                        labelName = "${profile.durationDays} days",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Black,
+                    )
+                }
+                Spacer(Modifier.height(5.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    LabelName(
+                        labelName = "Price:",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = TextSecondary,
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    val price = formatPaiseToRupees(profile.priceMinorUnits.toLong())
+                    LabelName(
+                        labelName = "₹$price",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Black,
+                    )
+                }
+                Spacer(Modifier.height(5.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    LabelName(
+                        labelName = "Status:",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = TextSecondary,
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    LabelName(
+                        labelName = if(profile.isActive) "Active" else "InActive",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if(profile.isActive) Success else Red,
+                    )
+                }
+            }
+            Spacer(Modifier.weight(1f))
+
+            Column {
+                CustomButton(
+                    text = "Edit",
+                    onClick = {
+                       onEdit(profile.id)
+                    },
+                    modifier = Modifier,
+                    height = 40.dp,
+                    width = 80.dp,
+                    cornerRadius = 20.dp,
+                    textColor = Black,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    backgroundColor = White
+                )
+
+                Spacer(
+                    Modifier.height(10.dp)
+                )
+
+                CustomButton(
+                    text = "InActive",
+                    onClick = {
+                       onDelete(profile.id)
+                    },
+                    modifier = Modifier,
+                    height = 40.dp,
+                    width = 85.dp,
+                    cornerRadius = 20.dp,
+                    textColor = White,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    backgroundColor = Red
+                )
+            }
+
+        }
+    }
+}
+
+fun formatPaiseToRupees(paise: Long): String {
+    return NumberFormat.getCurrencyInstance(
+        Locale("en", "IN")
+    ).format(paise / 100.0)
 }
 
 @Composable

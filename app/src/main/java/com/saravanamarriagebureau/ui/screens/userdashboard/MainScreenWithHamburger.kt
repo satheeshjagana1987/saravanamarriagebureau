@@ -42,6 +42,7 @@ import com.saravanamarriagebureau.ui.navigation.profileRoute
 import com.saravanamarriagebureau.ui.screens.AdminVoiceScreen
 import com.saravanamarriagebureau.ui.screens.ContactsLockedScreen
 import com.saravanamarriagebureau.ui.screens.PrivacyScreen
+import com.saravanamarriagebureau.ui.screens.admin.membership.AddMembershipPlanScreen
 import com.saravanamarriagebureau.ui.screens.changepassword.ChangePasswordScreen
 import com.saravanamarriagebureau.ui.screens.interests.InterestSentDialogScreen
 import com.saravanamarriagebureau.ui.screens.interests.InterestsScreen
@@ -527,11 +528,8 @@ fun MainScreenWithHamburger(
                         onBack = {
                             navController.popBackStack()
                         },
-                        onContinue = { selectedPlan ->
-                            Timber.e("selectedPlan ==> $selectedPlan")
-//                            navController.navigate(
-//                                paymentRoute(selectedPlan = selectedPlan)
-//                            )
+                        onContinue = {
+                            navController.navigate(Routes.Home)
                         }
                     )
                 }

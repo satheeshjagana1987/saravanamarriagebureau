@@ -2,12 +2,15 @@ package com.saravanamarriagebureau.ui.screens.membership
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.saravanamarriagebureau.data.model.MembershipPlanPurchaseData
 import com.saravanamarriagebureau.data.repository.MemberShipPlansRepository
 import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
 import com.saravanamarriagebureau.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,6 +38,12 @@ class MemberShipPlansViewModel @Inject constructor(
         MutableStateFlow<MembershipPlanPurchasePaymentCompleteUIState>(MembershipPlanPurchasePaymentCompleteUIState.Idle)
 
     val uiStateMemberShipPlanPurchasePaymentComplete = _uiStateMemberShipPlanPurchasePaymentComplete.asStateFlow()
+
+    private val _purchaseCheckoutEvent =
+        Channel<MembershipPlanPurchaseData>(Channel.BUFFERED)
+
+    val purchaseCheckoutEvent =
+        _purchaseCheckoutEvent.receiveAsFlow()
 
     fun getMemberShipPlans() {
         viewModelScope.launch {
@@ -71,11 +80,25 @@ class MemberShipPlansViewModel @Inject constructor(
                 planId = planId
             )) {
                 is ApiResult.Success -> {
+                    val purchase = result.data
                     _uiStateMemberShipPlanPurchase.value =
                         MemberShipPlanPurchaseUiState.Success(
-                            data = result.data,
+                            data = purchase,
                             message = result.message
                         )
+
+                    if (purchase.payment.provider.equals(
+                            "razorpay",
+                            ignoreCase = true
+                        )
+                    ) {
+                        _purchaseCheckoutEvent.send(purchase)
+                    } else {
+                        _uiStateMemberShipPlanPurchase.value =
+                            MemberShipPlanPurchaseUiState.Error(
+                                "Unsupported payment provider"
+                            )
+                    }
                 }
 
                 is ApiResult.Error -> {
@@ -85,7 +108,7 @@ class MemberShipPlansViewModel @Inject constructor(
                         )
                 }
 
-                else -> {}
+                else -> Unit
             }
         }
     }

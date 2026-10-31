@@ -104,4 +104,7 @@ dependencies {
     //Image Loading Library
     implementation("io.coil-kt.coil3:coil-compose:3.3.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+
+    // Razorpay Standard Checkout
+    implementation("com.razorpay:checkout:1.6.41")
 }

@@ -101,4 +101,9 @@
     <string name="never_married">Never Married</string>
     <string name="others">Others</string>
     <string name="password_min_chars">Password should be min 8 chars</string>
+    <string name="plan_code">Plan Code</string>
+    <string name="plan_name">Plan Name</string>
+    <string name="description">Description</string>
+    <string name="duration">Duration(in days)</string>
+    <string name="price">Price(minor units)</string>
 </resources>

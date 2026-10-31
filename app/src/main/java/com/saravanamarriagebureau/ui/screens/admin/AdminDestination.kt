@@ -1,6 +1,7 @@
 package com.saravanamarriagebureau.ui.screens.admin
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CardMembership
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Interests
@@ -27,10 +28,10 @@ sealed class AdminDestination (
         icon = Icons.Default.People
     )
 
-    data object Matches : AdminDestination(
-        route = "matches",
-        label = "Matches",
-        icon = Icons.Default.Favorite
+    data object Memberships : AdminDestination(
+        route = "memberships",
+        label = "Memberships",
+        icon = Icons.Default.CardMembership
     )
 
     data object Interests : AdminDestination(

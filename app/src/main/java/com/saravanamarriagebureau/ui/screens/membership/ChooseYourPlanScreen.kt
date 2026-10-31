@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.data.model.PlanData
+import com.saravanamarriagebureau.payment.RazorpayCheckoutHost
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.PrimaryButton
@@ -53,7 +54,7 @@ import com.saravanamarriagebureau.util.ToastUtils
 @Composable
 fun ChooseYourPlanScreen(
     onBack: () -> Unit,
-    onContinue: (String) -> Unit,
+    onContinue: () -> Unit,
     viewModel: MemberShipPlansViewModel = hiltViewModel()
 ) {
 
@@ -84,6 +85,10 @@ fun ChooseYourPlanScreen(
 
     val uiStateMemberShipPlans by viewModel.uiStateMemberShipPlans.collectAsStateWithLifecycle()
     val uiStateMemberShipPlanPurchase by viewModel.uiStateMemberShipPlanPurchase.collectAsStateWithLifecycle()
+    val razorpayHost = context as? RazorpayCheckoutHost
+    val uiStatePaymentComplete by
+    viewModel.uiStateMemberShipPlanPurchasePaymentComplete
+        .collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.getMemberShipPlans()
@@ -135,6 +140,110 @@ fun ChooseYourPlanScreen(
 
         else -> {
             isLoading = false
+        }
+    }
+
+    LaunchedEffect(viewModel, razorpayHost) {
+
+        viewModel.purchaseCheckoutEvent.collect { purchase ->
+
+            val payment = purchase.payment
+
+            // Validate provider.
+            if (!payment.provider.equals("razorpay", true)) {
+                ToastUtils.error(
+                    context,
+                    "Unsupported payment provider"
+                )
+                return@collect
+            }
+
+            // Validate amount.
+            if (purchase.amountMinorUnits !in 1..Int.MAX_VALUE.toLong()) {
+                ToastUtils.error(
+                    context,
+                    "Invalid payment amount"
+                )
+                return@collect
+            }
+
+            // Validate payment details.
+            if (payment.keyId.isBlank() ||
+                payment.orderId.isBlank()
+            ) {
+                ToastUtils.error(
+                    context,
+                    "Invalid payment configuration"
+                )
+                return@collect
+            }
+
+            if (razorpayHost == null) {
+                ToastUtils.error(
+                    context,
+                    "Payment activity unavailable"
+                )
+                return@collect
+            }
+
+            razorpayHost.launchCheckout(
+                keyId = payment.keyId,
+                orderId = payment.orderId,
+                amount = purchase.amountMinorUnits.toInt(),
+                currency = purchase.currency,
+
+                onSuccess = { paymentId, signature ->
+
+                    viewModel.membershipPlanPurchasePaymentComplete(
+                        invoiceId = purchase.invoiceId,
+                        providerPaymentId = paymentId,
+                        providerSignature = signature,
+                        providerOrderId = payment.orderId
+                    )
+                },
+
+                onFailure = { message ->
+
+                    ToastUtils.error(
+                        context,
+                        message
+                    )
+                }
+            )
+        }
+    }
+
+    LaunchedEffect(uiStatePaymentComplete) {
+
+        when (val state = uiStatePaymentComplete) {
+
+            is MembershipPlanPurchasePaymentCompleteUIState.Loading -> {
+                isLoading = true
+            }
+
+            is MembershipPlanPurchasePaymentCompleteUIState.Success -> {
+
+                isLoading = false
+
+                ToastUtils.success(
+                    context,
+                    "Membership activated successfully"
+                )
+
+                onContinue()
+            }
+
+            is MembershipPlanPurchasePaymentCompleteUIState.Error -> {
+
+                isLoading = false
+
+                ToastUtils.error(
+                    context,
+                    state.message
+                )
+            }
+
+            else -> Unit
         }
     }
 
@@ -207,7 +316,9 @@ fun ChooseYourPlanScreen(
                             end = 16.dp,
                             bottom = 50.dp
                         ),
-                    enabled = selectedPlan != null
+                    enabled = selectedPlan != null &&
+                            uiStateMemberShipPlanPurchase !is
+                                    MemberShipPlanPurchaseUiState.Loading
                 )
             }
         }

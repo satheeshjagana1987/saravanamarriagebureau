@@ -1,6 +1,8 @@
 package com.saravanamarriagebureau.data.api
 
 import com.saravanamarriagebureau.data.model.AcceptRequest
+import com.saravanamarriagebureau.data.model.AddMembershipPlanData
+import com.saravanamarriagebureau.data.model.AddMembershipPlanRequest
 import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.data.model.AdminInterestsResponse
 import com.saravanamarriagebureau.data.model.AdminUserDetails
@@ -8,6 +10,7 @@ import com.saravanamarriagebureau.data.model.AdminUserDetailsResponse
 import com.saravanamarriagebureau.data.model.ApiResponse
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
 import com.saravanamarriagebureau.data.model.DeleteMediaResponse
+import com.saravanamarriagebureau.data.model.DeleteMembershipPlanData
 import com.saravanamarriagebureau.data.model.ForgetPasswordRequest
 import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
 import com.saravanamarriagebureau.data.model.Invoice
@@ -208,5 +211,32 @@ interface SmbApi {
         @Path("invoiceId") invoiceId: String,
         @Body request: MembershipPlanPurchasePaymentCompleteRequest
     ): Response<ApiResponse<MembershipPlanPurchasePaymentCompleteData>>
+
+
+    //Admin Membership Plans
+    @GET("admin/membership/plans")
+    suspend fun getAdminMemberShipPlans(
+    ): Response<ApiResponse<List<AddMembershipPlanData>>>
+
+    @POST("admin/membership/plans")
+    suspend fun addAdminMemberShipPlan(
+        @Body request: AddMembershipPlanRequest
+    ): Response<ApiResponse<AddMembershipPlanData>>
+
+    @GET("admin/membership/plans/{planId}")
+    suspend fun getAdminMemberShipPlanDetailsById(
+        @Path("planId") planId: String
+    ): Response<ApiResponse<AddMembershipPlanData>>
+
+    @PATCH("admin/membership/plans/{planId}")
+    suspend fun updateAdminMemberShipPlan(
+        @Path("planId") planId: String,
+        @Body request: AddMembershipPlanRequest
+    ): Response<ApiResponse<AddMembershipPlanData>>
+
+    @DELETE("admin/membership/plans/{planId}")
+    suspend fun deleteAdminMemberShipPlanDetails(
+        @Path("planId") planId: String
+    ): Response<ApiResponse<DeleteMembershipPlanData>>
 
 }

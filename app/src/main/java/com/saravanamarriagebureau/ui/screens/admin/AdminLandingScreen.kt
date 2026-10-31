@@ -16,11 +16,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.saravanamarriagebureau.ui.navigation.Routes
+import com.saravanamarriagebureau.ui.navigation.adminEditMembershipDetailsRoute
 import com.saravanamarriagebureau.ui.navigation.adminInterestDetailsRoute
 import com.saravanamarriagebureau.ui.navigation.adminUserDetailsRoute
 import com.saravanamarriagebureau.ui.navigation.profileRoute
 import com.saravanamarriagebureau.ui.screens.admin.interests.AdminInterestDetailsScreen
 import com.saravanamarriagebureau.ui.screens.admin.interests.AdminInterestsScreen
+import com.saravanamarriagebureau.ui.screens.admin.membership.AddMembershipPlanScreen
+import com.saravanamarriagebureau.ui.screens.admin.membership.AdminMembershipPlanScreen
+import com.saravanamarriagebureau.ui.screens.admin.membership.EditMembershipScreen
 import com.saravanamarriagebureau.ui.screens.admin.users.AdminUserDetailsScreen
 import com.saravanamarriagebureau.ui.screens.admin.users.AdminUsersScreen
 import com.saravanamarriagebureau.ui.screens.userdashboard.LogoutDialog
@@ -41,6 +45,7 @@ fun AdminLandingScreen(
     val destinations = listOf(
         AdminDestination.Users,
         AdminDestination.Interests,
+        AdminDestination.Memberships,
         AdminDestination.Settings
     )
 
@@ -76,8 +81,45 @@ fun AdminLandingScreen(
                 )
             }
 
-            composable(AdminDestination.Payments.route) {
-                AdminPaymentsScreen()
+            composable(Routes.AdminAddMembershipPlan) {
+                AddMembershipPlanScreen(
+                    onBack = {
+                        adminNavController.popBackStack()
+                    }
+                )
+
+            }
+
+            composable(AdminDestination.Memberships.route) {
+                AdminMembershipPlanScreen(
+                    openEdit = { profile ->
+                            adminNavController.navigate(
+                                adminEditMembershipDetailsRoute(planId = profile.id)
+                            )
+                    }
+                )
+            }
+
+            composable(
+                route = Routes.AdminEditMembershipPlan,
+                arguments = listOf(
+                    navArgument("planId") {
+                        type = NavType.StringType
+                    },
+
+                    )
+            ) { backStackEntry ->
+
+                val planId =
+                    backStackEntry.arguments?.getString("planId").orEmpty()
+
+                EditMembershipScreen(
+                    planId = planId,
+                    onBack = {
+                        adminNavController.popBackStack()
+                    },
+
+                    )
             }
 
             composable(AdminDestination.Settings.route) {

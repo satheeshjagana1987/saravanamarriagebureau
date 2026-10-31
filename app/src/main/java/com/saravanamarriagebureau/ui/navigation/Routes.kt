@@ -39,7 +39,8 @@ object Routes {
     const val MutualInterests = "mutual_interests"
     const val AdminDashboard = "admin_dashboard"
     const val AdminInterestDetails = "admin_interest_details/{interestId}"
-    const val AdminSettings = "admin_settings"
+    const val AdminAddMembershipPlan = "admin_add_membership_plan"
+    const val AdminEditMembershipPlan = "admin_edit_membership_plan/{planId}"
     const val AdminInterests = "admin_interests"
     const val AdminPayments = "admin_payments"
 
@@ -55,6 +56,10 @@ fun adminInterestDetailsRoute(interestId: String): String {
 
 fun adminUserDetailsRoute(userId: String): String {
     return "admin_user_details/${Uri.encode(userId)}"
+}
+
+fun adminEditMembershipDetailsRoute(planId: String): String {
+    return "admin_edit_membership_plan/${Uri.encode(planId)}"
 }
 
 fun paymentRoute(selectedPlan: String): String {

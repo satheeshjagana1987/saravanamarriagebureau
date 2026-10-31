@@ -671,6 +671,32 @@ data class MembershipPlanPurchasePaymentCompleteData(
     val membershipId: String
 )
 
+data class AddMembershipPlanRequest(
+    val code: String,
+    val name: String,
+    val description: String,
+    val durationDays: Int,
+    val priceMinorUnits: Int,
+    val currency: String,
+    val isActive: Boolean
+)
+
+data class AddMembershipPlanData(
+    val id: String,
+    val code: String,
+    val name: String,
+    val description: String,
+    val durationDays: Int,
+    val priceMinorUnits: Int,
+    val currency: String,
+    val isActive: Boolean
+)
+
+data class DeleteMembershipPlanData(
+    val id: String,
+    val deactivated: Boolean
+)
+
 // Primary Bottom Bar Destinations
 sealed class BottomBarScreen(val route: String, val title: String, val icon: ImageVector) {
     object Home : BottomBarScreen(Routes.Home, "Home", Icons.Default.Home)
