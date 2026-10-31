@@ -79,10 +79,13 @@
     <string name="verified">Verified</string>
     <string name="profile_under_review">Profile Under Review</string>
     <string name="yearly_membership">Yearly Membership</string>
-    <string name="annual_membership">Annual Membership</string>
-    <string name="only_for_profile_viewing">Only for Profile Viewing</string>
+    <string name="membership_advantage">Membership Advantage</string>
+    <string name="basic_plan">Basic Plan (Current Plan)</string>
+    <string name="upgrade_plan">Upgrade Plan</string>
+    <string name="to_get_extra_benfits">to get extra benefits like send interest and view full profile information</string>
     <string name="year">Year</string>
     <string name="view_plans">View Plans</string>
+    <string name="renew_plan">Renew Plan</string>
     <string name="change_language">Change Language</string>
     <string name="marital_status">Marital Status</string>
     <string name="male">Male</string>

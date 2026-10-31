@@ -356,6 +356,7 @@ data class MatchesData(
 
     val isAdminVerified: Boolean,
     val isInterested: Boolean,
+    val isPaidUser: Boolean,
 
     val height: String?,
 
@@ -588,6 +589,86 @@ data class AdminInterestsDetails(
     val profilePhoto: String?,
     val matchRejectRemarks: String?,
     val isMatchFixed: Boolean
+)
+
+//Membership Plans
+data class MembershipPlansResponse(
+    val success: Boolean,
+    val data: List<PlanData>,
+    val pagination: Pagination,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class PlanData(
+    val id: String,
+    val code: String,
+    val name: String,
+    val description: String,
+    val durationDays: Int,
+    val priceMinorUnits: Int,
+    val currency: String
+)
+
+data class MembershipPlanPurchaseRequest(
+    val planId: String
+)
+
+data class MembershipPlanPurchaseResponse(
+    val success: Boolean,
+    val data: MembershipPlanPurchaseData,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class MembershipPlanPurchaseData(
+    val invoiceId: String,
+    val invoiceNumber: String,
+    val invoiceType: String,
+    val amountMinorUnits: Long,
+    val currency: String,
+    val status: String,
+    val payment: PaymentProvider,
+)
+
+data class PaymentProvider(
+    val provider: String,
+    val orderId: String,
+    val keyId: String
+)
+
+data class MembershipDetails(
+    val id: String,
+    val planId: String,
+    val planName: String?,
+    val status: String,
+    val startsAt: String,
+    val expiresAt: String,
+    val currency: String
+)
+
+data class MembershipPlanPurchasePaymentCompleteRequest(
+    val providerPaymentId: String,
+    val providerSignature: String,
+    val providerOrderId: String,
+)
+
+data class MembershipPlanPurchasePaymentCompleteResponse(
+    val success: Boolean,
+    val data: MembershipPlanPurchasePaymentCompleteData,
+    val requestId: String,
+    val timestamp: String
+)
+
+data class MembershipPlanPurchasePaymentCompleteData(
+    val invoiceId: String,
+    val invoiceNumber: String,
+    val invoiceType: String,
+    val invoiceStatus: String,
+    val transactionStatus: String,
+    val unlockId: String,
+    val changed: Boolean,
+    val membershipId: String
 )
 
 // Primary Bottom Bar Destinations

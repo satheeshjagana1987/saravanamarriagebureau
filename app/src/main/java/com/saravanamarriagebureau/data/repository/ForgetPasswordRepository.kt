@@ -15,7 +15,7 @@ class ForgetPasswordRepository @Inject constructor(
     ): ApiResult<ForgetPasswordResponse> {
         return safeApiCall {
             api.forgetPassword(
-                ForgetPasswordRequest(
+                request = ForgetPasswordRequest(
                     mobile = mobile,
                 )
             )

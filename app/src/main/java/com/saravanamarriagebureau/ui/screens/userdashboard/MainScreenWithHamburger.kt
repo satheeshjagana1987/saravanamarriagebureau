@@ -48,6 +48,7 @@ import com.saravanamarriagebureau.ui.screens.interests.InterestsScreen
 import com.saravanamarriagebureau.ui.screens.invoice.InvoiceScreen
 import com.saravanamarriagebureau.ui.screens.invoice.MatchFixedScreen
 import com.saravanamarriagebureau.ui.screens.matches.MatchesScreen
+import com.saravanamarriagebureau.ui.screens.membership.ChooseYourPlanScreen
 import com.saravanamarriagebureau.ui.screens.profile.ProfileCreationScreen
 import com.saravanamarriagebureau.ui.screens.profile.ProfileViewScreen
 import kotlinx.coroutines.launch

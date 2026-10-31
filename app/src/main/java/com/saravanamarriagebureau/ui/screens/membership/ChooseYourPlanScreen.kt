@@ -1,8 +1,9 @@
-package com.saravanamarriagebureau.ui.screens.userdashboard
+package com.saravanamarriagebureau.ui.screens.membership
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -18,7 +21,9 @@ import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,13 +31,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.saravanamarriagebureau.R
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saravanamarriagebureau.data.model.PlanData
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Black
@@ -40,12 +48,96 @@ import com.saravanamarriagebureau.ui.theme.CardBorder
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Success
+import com.saravanamarriagebureau.util.ToastUtils
 
 @Composable
 fun ChooseYourPlanScreen(
     onBack: () -> Unit,
-    onContinue: (String) -> Unit
+    onContinue: (String) -> Unit,
+    viewModel: MemberShipPlansViewModel = hiltViewModel()
 ) {
+
+    val context = LocalContext.current
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+
+    var planData by remember {
+        mutableStateOf<List<PlanData>>(emptyList())
+    }
+
+    var selectedPlan by remember {
+        mutableStateOf<PlanData?>(null)
+    }
+
+    var invoiceId by remember {
+        mutableStateOf("")
+    }
+
+    var keyId by remember {
+        mutableStateOf("")
+    }
+
+    var orderId by remember {
+        mutableStateOf("")
+    }
+
+    val uiStateMemberShipPlans by viewModel.uiStateMemberShipPlans.collectAsStateWithLifecycle()
+    val uiStateMemberShipPlanPurchase by viewModel.uiStateMemberShipPlanPurchase.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getMemberShipPlans()
+    }
+
+    LoadingDialog(isLoading = isLoading)
+
+    LaunchedEffect(uiStateMemberShipPlans) {
+
+        when (val state = uiStateMemberShipPlans) {
+
+            is MemberShipPlansUIState.Loading -> {
+                isLoading = true
+            }
+
+            is MemberShipPlansUIState.Success -> {
+                isLoading = false
+                planData = state.data
+            }
+
+            is MemberShipPlansUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> {
+                isLoading = false
+            }
+        }
+    }
+
+    when (val state = uiStateMemberShipPlanPurchase) {
+
+        is MemberShipPlanPurchaseUiState.Loading -> {
+            isLoading = true
+        }
+
+        is MemberShipPlanPurchaseUiState.Success -> {
+            isLoading = false
+            invoiceId = state.data.invoiceId
+            orderId = state.data.payment.orderId
+            keyId = state.data.payment.keyId
+        }
+
+        is MemberShipPlanPurchaseUiState.Error -> {
+            isLoading = false
+            ToastUtils.error(context, state.message)
+        }
+
+        else -> {
+            isLoading = false
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -60,35 +152,53 @@ fun ChooseYourPlanScreen(
                 .padding(16.dp)
                 .selectableGroup() // Crucial for screen-reader accessibility
         ) {
-            var selectedPlan by remember { mutableStateOf("299") }
 
             Column(Modifier.fillMaxSize()) {
 
-                PlanCard(
-                    title = "Dasara Offer",
-                    subtitle = "Free Registration",
-                    price = "₹0",
-                    selected = selectedPlan == "0",
-                    onClick = { selectedPlan = "0" }
-                )
-
-                PlanCard(
-                    title = stringResource(R.string.yearly_membership),
-                    subtitle = "For profile viewing only",
-                    price = "₹299 / Year",
-                    selected = selectedPlan == "299",
-                    onClick = {
-                        selectedPlan = "299"
+                LazyColumn(
+                    modifier = Modifier.padding(
+                        start = 0.dp,
+                        top = 16.dp,
+                        end = 0.dp,
+                        bottom = 16.dp
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (planData.isEmpty()) {
+                        item {
+                            Text(
+                                text = "No matches found",
+                                modifier = Modifier.padding(16.dp),
+                                color = Black
+                            )
+                        }
+                    } else {
+                        items(
+                            items = planData,
+                            key = { plan -> plan.id }
+                        ) { plan ->
+                            PlanCard(
+                                plan = plan,
+                                isSelected = selectedPlan?.id == plan.id,
+                                onClick = {
+                                    selectedPlan = plan
+                                }
+                            )
+                        }
                     }
-                )
+
+                }
 
                 Spacer(Modifier.weight(1f))
 
                 PrimaryButton(
                     "Proceed to payment",
                     onClick = {
-                        onContinue(selectedPlan)
-                        // You can also use selectedPlan here
+                        selectedPlan?.let { plan ->
+                            viewModel.membershipPlanPurchase(planId = plan.id)
+//                            onContinue(plan.id)
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -96,7 +206,8 @@ fun ChooseYourPlanScreen(
                             start = 16.dp,
                             end = 16.dp,
                             bottom = 50.dp
-                        )
+                        ),
+                    enabled = selectedPlan != null
                 )
             }
         }
@@ -105,10 +216,8 @@ fun ChooseYourPlanScreen(
 
 @Composable
 private fun PlanCard(
-    title: String,
-    subtitle: String,
-    price: String,
-    selected: Boolean,
+    plan: PlanData,
+    isSelected: Boolean,
     onClick: () -> Unit
 ) {
     Card(
@@ -118,13 +227,13 @@ private fun PlanCard(
             .clickable { onClick() },
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (selected) {
+            containerColor = if (isSelected) {
                 Color(0xFFFFF5F5)
             } else {
                 Color.White
             }
         ),
-        border = if (selected) {
+        border = if (isSelected) {
             BorderStroke(1.dp, Maroon)
         } else {
             BorderStroke(1.dp, CardBorder)
@@ -134,7 +243,7 @@ private fun PlanCard(
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 LabelName(
-                    labelName = title,
+                    labelName = plan.name,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Black,
@@ -142,7 +251,7 @@ private fun PlanCard(
                 )
                 Spacer(Modifier.height(5.dp))
                 LabelName(
-                    labelName = price,
+                    labelName = plan.priceMinorUnits.toString(),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Maroon,
@@ -151,7 +260,7 @@ private fun PlanCard(
                 Spacer(Modifier.height(5.dp))
 
                 LabelName(
-                    labelName = subtitle,
+                    labelName = plan.description,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = Success,
@@ -159,17 +268,17 @@ private fun PlanCard(
                 )
             }
             Icon(
-                imageVector = if (selected) {
+                imageVector = if (isSelected) {
                     Icons.Default.CheckCircle
                 } else {
                     Icons.Default.RadioButtonUnchecked
                 },
-                contentDescription = if (selected) {
+                contentDescription = if (isSelected) {
                     "Selected plan"
                 } else {
                     "Select plan"
                 },
-                tint = if (selected) Success else CardBorder
+                tint = if (isSelected) Success else CardBorder
             )
         }
     }

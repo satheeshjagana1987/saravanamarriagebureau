@@ -4,9 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -80,19 +78,14 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.Gender
-import com.saravanamarriagebureau.data.enums.InterestStatus
 import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.AdminInterestsData
-import com.saravanamarriagebureau.data.model.Interest
 import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
-import com.saravanamarriagebureau.data.model.Profile
 import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
 import com.saravanamarriagebureau.ui.screens.interests.UserInterestsAcceptRejectUIState
-import com.saravanamarriagebureau.ui.screens.interests.UserInterestsUIState
 import com.saravanamarriagebureau.ui.screens.interests.UserInterestsViewModel
-import com.saravanamarriagebureau.ui.screens.matches.DeleteInterestsUIState
 import com.saravanamarriagebureau.ui.screens.matches.MatchesViewModel
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Gray
@@ -108,8 +101,12 @@ import com.saravanamarriagebureau.ui.theme.Warning
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
+import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun AppLogo(compact: Boolean = false) {
@@ -350,7 +347,6 @@ private fun ProfilePhotoContent(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileCard(
     profile: MatchesData,
@@ -426,7 +422,7 @@ fun ProfileCard(
                         labelName = "Interest already sent",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal,
-                        color = Rose,
+                        color = Color.Blue,
                         modifier = Modifier.padding(0.dp)
                     )
                 }
@@ -447,19 +443,27 @@ fun ProfileCard(
                     )
                 }
             }
-            if (profile.isAdminVerified) {
-                if (!profile.isInterested) {
-                    Icon(
-                        Icons.Default.FavoriteBorder,
-                        null, tint = TextSecondary,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clickable {
+            if (profile.isAdminVerified && !profile.isInterested) {
+                Icon(
+                    Icons.Default.FavoriteBorder,
+                    null, tint = TextSecondary,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            if (profile.isPaidUser) {
                                 notInterested = false
                                 viewModel.sendInterest(profileId = profile.id)
-                            },
-                    )
-                }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Upgrade your plan to access this feature",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                        },
+                )
+
             }
 
             when (val state = uiStateSendInterest) {
@@ -573,7 +577,6 @@ fun AdminUserStatusContent(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InterestCard(
     interest: UserInterestsData,
@@ -870,7 +873,7 @@ fun AdminInterestStatusContent(
 
         }
 
-       "ACCEPTED" -> {
+        "ACCEPTED" -> {
 
             AdminStatusText(
                 text = stringResource(R.string.accepted),
@@ -1202,7 +1205,6 @@ fun ErrorView(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun calculateAge(dateOfBirth: String): Int {
     val dob = LocalDate.parse(dateOfBirth) // yyyy-MM-dd
     val today = LocalDate.now()
@@ -1229,6 +1231,36 @@ fun isInternetAvailable(context: Context): Boolean {
         NetworkCapabilities.NET_CAPABILITY_VALIDATED
     )
 }
+
+fun formatMembershipDate(date: String): String {
+
+    return try {
+        val instant = Instant.parse(date)
+
+        val formatter = DateTimeFormatter.ofPattern(
+            "dd MMM yyyy",
+            Locale.ENGLISH
+        )
+
+        instant.atZone(ZoneId.systemDefault())
+            .format(formatter)
+
+    } catch (e: Exception) {
+        ""
+    }
+}
+
+fun isExpired(expiryDate: String): Boolean {
+    return try {
+        val expiry = Instant.parse(expiryDate)
+        val current = Instant.now()
+
+        !expiry.isAfter(current)
+    } catch (e: Exception) {
+        false
+    }
+}
+
 
 @Composable
 fun GenderSelection(

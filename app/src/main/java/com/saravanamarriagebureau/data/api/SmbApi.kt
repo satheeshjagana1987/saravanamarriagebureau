@@ -18,7 +18,13 @@ import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.MediaUploadCompleteResponse
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedRequest
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedResponse
+import com.saravanamarriagebureau.data.model.MembershipDetails
+import com.saravanamarriagebureau.data.model.MembershipPlanPurchaseData
+import com.saravanamarriagebureau.data.model.MembershipPlanPurchasePaymentCompleteData
+import com.saravanamarriagebureau.data.model.MembershipPlanPurchasePaymentCompleteRequest
+import com.saravanamarriagebureau.data.model.MembershipPlanPurchaseRequest
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
+import com.saravanamarriagebureau.data.model.PlanData
 import com.saravanamarriagebureau.data.model.ProfileData
 import com.saravanamarriagebureau.data.model.ProfileRequest
 import com.saravanamarriagebureau.data.model.RefreshTokenRequest
@@ -183,5 +189,24 @@ interface SmbApi {
     suspend fun getAdminInterestById(
         @Path("interestId") interestId: String
     ): Response<ApiResponse<AdminInterestsData>>
+
+    @GET("membership/me")
+    suspend fun getMemberShipDetails(
+    ): Response<ApiResponse<MembershipDetails>>
+
+    @GET("membership/plans")
+    suspend fun getMemberShipPlans(
+    ): Response<ApiResponse<List<PlanData>>>
+
+    @POST("membership/purchase")
+    suspend fun membershipPlanPurchase(
+        @Body request: MembershipPlanPurchaseRequest
+    ): Response<ApiResponse<MembershipPlanPurchaseData>>
+
+    @POST("payments/{invoiceId}/complete")
+    suspend fun membershipPlanPurchasePaymentComplete(
+        @Path("invoiceId") invoiceId: String,
+        @Body request: MembershipPlanPurchasePaymentCompleteRequest
+    ): Response<ApiResponse<MembershipPlanPurchasePaymentCompleteData>>
 
 }
