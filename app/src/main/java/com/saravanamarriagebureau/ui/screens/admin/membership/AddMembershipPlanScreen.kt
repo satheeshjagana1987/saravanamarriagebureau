@@ -282,7 +282,6 @@ fun AddMembershipPlanScreen(
                 modifier = Modifier.padding(16.dp),
                 onClick = {
 
-
                     planCodeError =
                         ValidationUtils.validateField(field = planCode.trim(), fieldName = "Plan Code")
                     planNameError = ValidationUtils.validateField(
@@ -344,6 +343,7 @@ fun AddMembershipPlanScreen(
 
             is AddAdminMembershipPlanUIState.Success -> {
                 isLoading = false
+                onBack()
             }
 
             is AddAdminMembershipPlanUIState.Error -> {

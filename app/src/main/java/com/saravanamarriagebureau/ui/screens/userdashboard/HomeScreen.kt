@@ -132,7 +132,7 @@ private fun MembershipDetailsCard(
 ) {
     Column(
         Modifier
-            .padding(20.dp)
+            .padding(10.dp)
             .background(White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -148,7 +148,7 @@ private fun MembershipDetailsCard(
                 fontWeight = FontWeight.Bold,
                 color = Maroon
             )
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(5.dp))
             LabelName(
                 labelName = if (expired) "Expired" else membershipDetails.status,
                 fontSize = 16.sp,
@@ -156,12 +156,12 @@ private fun MembershipDetailsCard(
                 color = if (expired) Red else Success,
                 textAlign = TextAlign.End
             )
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(5.dp))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp),
+                    .padding(vertical = 5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
@@ -184,12 +184,12 @@ private fun MembershipDetailsCard(
 
             }
 
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(5.dp))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp),
+                    .padding(vertical = 5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
@@ -211,11 +211,11 @@ private fun MembershipDetailsCard(
                 )
             }
             Spacer(Modifier.height(20.dp))
-            if (expired) {
-                PrimaryButton(text = stringResource(id = R.string.renew_plan), onClick = {
-                    onClick()
-                })
-            }
+
+            PrimaryButton(text = stringResource(id = R.string.upgrade_plan), onClick = {
+                onClick()
+            })
+            
         } else {
             LabelName(
                 labelName = "Basic Plan(Current plan)",

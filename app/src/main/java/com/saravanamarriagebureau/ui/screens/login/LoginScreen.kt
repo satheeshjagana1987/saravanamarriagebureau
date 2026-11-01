@@ -297,22 +297,22 @@ fun LoginScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = isCheckedRememberMe,
-                            onCheckedChange = { checked ->
-                                isCheckedRememberMe = checked
-                            }
-                        )
-                        Spacer(Modifier.width(5.dp))
-                        LabelName(
-                            labelName = stringResource(id = R.string.remember_me),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Checkbox(
+//                            checked = isCheckedRememberMe,
+//                            onCheckedChange = { checked ->
+//                                isCheckedRememberMe = checked
+//                            }
+//                        )
+//
+//                    Spacer(Modifier.width(5.dp))
+//                    LabelName(
+//                        labelName = stringResource(id = R.string.remember_me),
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
                     LabelName(
                         labelName = stringResource(id = R.string.forgot_password),
                         textDecoration = TextDecoration.Underline,

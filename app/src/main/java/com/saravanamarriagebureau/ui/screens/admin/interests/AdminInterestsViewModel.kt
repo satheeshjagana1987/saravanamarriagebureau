@@ -33,7 +33,8 @@ class AdminInterestsViewModel @Inject constructor(
     private val _uiStateAdminInterestsApproveOrRejectMatch =
         MutableStateFlow<AdminInterestsByIdUIState>(AdminInterestsByIdUIState.Idle)
 
-    val uiStateAdminInterestsApproveOrRejectMatch = _uiStateAdminInterestsApproveOrRejectMatch.asStateFlow()
+    val uiStateAdminInterestsApproveOrRejectMatch =
+        _uiStateAdminInterestsApproveOrRejectMatch.asStateFlow()
 
     fun getAdminPendingInterests() {
 
@@ -125,13 +126,15 @@ class AdminInterestsViewModel @Inject constructor(
     }
 
     fun adminApproveOrRejectMatch(
+        interestId: String,
         isMatchFixed: Boolean,
-        matchRejectionReason:String
+        matchRejectionReason: String
     ) {
         viewModelScope.launch {
             _uiStateAdminInterestsApproveOrRejectMatch.value = AdminInterestsByIdUIState.Loading
 
             when (val result = adminInterestsRepository.adminApproveOrRejectMatch(
+                interestId = interestId,
                 isMatchFixed = isMatchFixed,
                 matchRejectionReason = matchRejectionReason
             )) {

@@ -19,22 +19,14 @@ fun OfferScreen() {
             .fillMaxWidth()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.splash_bg),
+            painter = painterResource(id = R.drawable.splash_screen_bg),
             contentDescription = "A descriptive label for accessibility",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp) // Set sizing or styling
         )
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(50.dp))
 
-        Image(
-            painter = painterResource(id = R.drawable.splash_bg),
-            contentDescription = "A descriptive label for accessibility",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp) // Set sizing or styling
-        )
     }
 }

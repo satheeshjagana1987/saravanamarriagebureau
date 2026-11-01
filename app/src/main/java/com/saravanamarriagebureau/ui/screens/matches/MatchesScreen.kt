@@ -157,56 +157,6 @@ fun MatchesScreen(
         }
     }
 
-    LaunchedEffect(uiStateSendInterest) {
-        when (val state = uiStateSendInterest) {
-
-            is SendInterestsUIState.Success -> {
-                val sentId = sendingProfileId
-
-                if (sentId != null) {
-                    // Update the visible list without reloading it.
-                    todayMatchesData = todayMatchesData.map { profile ->
-                        if (profile.id == sentId) {
-                            profile.copy(isInterested = true)
-                        } else {
-                            profile
-                        }
-                    }
-
-                    pastMatchesData = pastMatchesData.map { profile ->
-                        if (profile.id == sentId) {
-                            profile.copy(isInterested = true)
-                        } else {
-                            profile
-                        }
-                    }
-
-                    recommendedMatchesData =
-                        recommendedMatchesData.map { profile ->
-                            if (profile.id == sentId) {
-                                profile.copy(isInterested = true)
-                            } else {
-                                profile
-                            }
-                        }
-                }
-
-                sendingProfileId = null
-                viewModel.resetState()
-
-            }
-
-            is SendInterestsUIState.Error -> {
-                sendingProfileId = null
-                viewModel.resetState()
-
-                ToastUtils.error(context, state.message)
-            }
-
-            else -> Unit
-        }
-    }
-
     Column(
         Modifier
             .fillMaxSize()
@@ -269,13 +219,43 @@ fun MatchesScreen(
                     ) { profile ->
                         ProfileCard(
                             profile = profile,
-                            onInterest = onInterestSent,
+                            onInterest = { matchId ->
+                                viewModel.sendInterest(profileId = matchId)
+                            },
                             onOpen = { onProfile(profile) },
                             viewModel = viewModel
                         )
                     }
                 }
 
+            }
+
+            when (val state = uiStateSendInterest) {
+
+                is SendInterestsUIState.Loading -> {
+                }
+
+                is SendInterestsUIState.Success -> {
+
+                    when (selectedTab) {
+                        MatchTab.TODAY -> {
+                            viewModel.getTodayMatches()
+                        }
+                        MatchTab.PAST -> {
+                            viewModel.getPastMatches()
+                        }
+                        else -> {
+                            viewModel.getRecommendedMatches()
+                        }
+                    }
+
+                }
+
+                is SendInterestsUIState.Error -> {
+                    ToastUtils.error(context, state.message)
+                }
+
+                else -> Unit
             }
         }
     }
@@ -315,7 +295,6 @@ fun MatchTabButton(
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun MatchesScreenPreview() {

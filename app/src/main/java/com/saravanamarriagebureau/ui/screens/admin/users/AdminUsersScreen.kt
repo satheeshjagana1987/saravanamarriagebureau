@@ -91,7 +91,7 @@ fun AdminUsersScreen(
             is AdminUsersUIState.Success -> {
                 isLoading = false
                 adminPendingUsersData = state.data
-                ToastUtils.success(context = context, message = "Users data fetched successfully")
+                
             }
 
             is AdminUsersUIState.Error -> {

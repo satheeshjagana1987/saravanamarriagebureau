@@ -1,7 +1,5 @@
 package com.saravanamarriagebureau.ui.screens.interests
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -152,15 +149,14 @@ fun InterestsScreen(
                     },
                     modifier = Modifier.weight(1f)
                 )
-
-                InterestTabButton(
-                    text = "Match Fixed",
-                    selected = selectedTab == InterestTab.MATCH_FIXED,
-                    onClick = {
-                        selectedTab = InterestTab.MATCH_FIXED
-                    },
-                    modifier = Modifier.weight(1f)
-                )
+//                InterestTabButton(
+//                    text = "Match Fixed",
+//                    selected = selectedTab == InterestTab.MATCH_FIXED,
+//                    onClick = {
+//                        selectedTab = InterestTab.MATCH_FIXED
+//                    },
+//                    modifier = Modifier.weight(1f)
+//                )
 
             }
             LazyColumn(

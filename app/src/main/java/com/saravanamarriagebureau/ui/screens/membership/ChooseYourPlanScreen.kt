@@ -44,6 +44,7 @@ import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.components.formatPaiseToRupees
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.CardBorder
 import com.saravanamarriagebureau.ui.theme.Cream
@@ -361,8 +362,9 @@ private fun PlanCard(
                     modifier = Modifier.padding(0.dp)
                 )
                 Spacer(Modifier.height(5.dp))
+                val price = formatPaiseToRupees(plan.priceMinorUnits.toLong())
                 LabelName(
-                    labelName = plan.priceMinorUnits.toString(),
+                    labelName = price,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Maroon,

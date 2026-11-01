@@ -5,9 +5,7 @@ import com.saravanamarriagebureau.data.model.AddMembershipPlanData
 import com.saravanamarriagebureau.data.model.AddMembershipPlanRequest
 import com.saravanamarriagebureau.data.model.AdminApproveOrRejectMatchRequest
 import com.saravanamarriagebureau.data.model.AdminInterestsData
-import com.saravanamarriagebureau.data.model.AdminInterestsResponse
 import com.saravanamarriagebureau.data.model.AdminUserDetails
-import com.saravanamarriagebureau.data.model.AdminUserDetailsResponse
 import com.saravanamarriagebureau.data.model.ApiResponse
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
 import com.saravanamarriagebureau.data.model.DeleteMediaResponse
@@ -17,7 +15,6 @@ import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
 import com.saravanamarriagebureau.data.model.Invoice
 import com.saravanamarriagebureau.data.model.LoginData
 import com.saravanamarriagebureau.data.model.LoginRequest
-import com.saravanamarriagebureau.data.model.LoginResponse
 import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.MediaUploadCompleteResponse
 import com.saravanamarriagebureau.data.model.MediaUploadInitiatedRequest
@@ -184,6 +181,7 @@ interface SmbApi {
 
     @PATCH("admin/interests/{interestId}/follow-up")
     suspend fun adminApproveOrRejectMatch(
+        @Path("interestId") interestId: String,
         @Body request: AdminApproveOrRejectMatchRequest
     ): Response<ApiResponse<AdminInterestsData>>
 

@@ -40,14 +40,13 @@ import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
-import com.saravanamarriagebureau.ui.screens.admin.membership.AddAdminMembershipPlanUIState
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
-import timber.log.Timber
 
 @Composable
 fun AdminInterestDetailsScreen(
@@ -140,155 +139,158 @@ fun AdminInterestDetailsScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .background(Cream),
     ) {
         ScreenHeader("Interest Details", onBack)
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-        ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .background(Cream),
+        Column(Modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
             ) {
-                Text(
-                    text = "Sender",
-                    color = Black,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.height(15.dp))
-                DividerLine()
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(White),
+                ) {
+                    Text(
+                        text = "Sender",
+                        color = Black,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(15.dp))
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.full_name),
-                    value = senderName
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.full_name),
+                        value = senderName
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.date_of_birth),
-                    value = senderDob
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.date_of_birth),
+                        value = senderDob
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.mobile_number),
-                    value = senderMobileNumber
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.mobile_number),
+                        value = senderMobileNumber
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.gender),
-                    value = senderGender
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.gender),
+                        value = senderGender
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.profession),
-                    value = senderProfession
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.profession),
+                        value = senderProfession
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.education),
-                    value = senderEducation
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.education),
+                        value = senderEducation
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.marital_status),
-                    value = senderMaritalStatus
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.marital_status),
+                        value = senderMaritalStatus
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.city),
-                    value = senderCity
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.city),
+                        value = senderCity
+                    )
 
-                Spacer(Modifier.height(15.dp))
+                    Spacer(Modifier.height(15.dp))
 
-                Text(
-                    text = "Receiver",
-                    color = Black,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.height(15.dp))
-                DividerLine()
+                    Text(
+                        text = "Receiver",
+                        color = Black,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(15.dp))
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.full_name),
-                    value = receiverName
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.full_name),
+                        value = receiverName
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.date_of_birth),
-                    value = receiverDob
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.date_of_birth),
+                        value = receiverDob
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.mobile_number),
-                    value = receiverMobileNumber
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.mobile_number),
+                        value = receiverMobileNumber
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.gender),
-                    value = receiverGender
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.gender),
+                        value = receiverGender
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.profession),
-                    value = receiverProfession
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.profession),
+                        value = receiverProfession
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.education),
-                    value = receiverEducation
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.education),
+                        value = receiverEducation
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.marital_status),
-                    value = receiverMaritalStatus
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.marital_status),
+                        value = receiverMaritalStatus
+                    )
 
-                DividerLine()
+                    DividerLine()
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.city),
-                    value = receiverCity
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.city),
+                        value = receiverCity
+                    )
+                }
             }
         }
         Spacer(Modifier.weight(1f))
         if (interestData?.status == "ACCEPTED" && interestData?.isMatchFixed == false) {
-            Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp)) {
+            Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 16.dp)) {
                 LabelName(
                     labelName = "Reason",
                     fontSize = 14.sp,
@@ -306,7 +308,7 @@ fun AdminInterestDetailsScreen(
                     minLines = 1,
                     maxLines = 5
                 )
-
+                Spacer(Modifier.height(15.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -325,6 +327,7 @@ fun AdminInterestDetailsScreen(
 
                         onClick = {
                             viewModel.adminApproveOrRejectMatch(
+                                interestId = interestId,
                                 isMatchFixed = true,
                                 matchRejectionReason = ""
                             )
@@ -348,6 +351,7 @@ fun AdminInterestDetailsScreen(
                             }
 
                             viewModel.adminApproveOrRejectMatch(
+                                interestId = interestId,
                                 isMatchFixed = false,
                                 matchRejectionReason = reason.trim()
                             )

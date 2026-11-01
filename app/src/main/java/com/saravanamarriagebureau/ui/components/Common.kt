@@ -351,7 +351,7 @@ private fun ProfilePhotoContent(
 @Composable
 fun ProfileCard(
     profile: MatchesData,
-    onInterest: () -> Unit,
+    onInterest: (String) -> Unit,
     onOpen: () -> Unit,
     viewModel: MatchesViewModel,
 ) {
@@ -451,46 +451,11 @@ fun ProfileCard(
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                            if (profile.isPaidUser) {
-                                notInterested = false
-                                viewModel.sendInterest(profileId = profile.id)
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Upgrade your plan to access this feature",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                            }
+                          onInterest(profile.id)
                         },
                 )
 
             }
-
-            when (val state = uiStateSendInterest) {
-
-                is SendInterestsUIState.Loading -> {
-                    isLoading = true
-                }
-
-                is SendInterestsUIState.Success -> {
-                    isLoading = false
-                    if (!notInterested) {
-                        onInterest()
-                    }
-                }
-
-                is SendInterestsUIState.Error -> {
-                    isLoading = false
-                    ToastUtils.error(context, state.message)
-                }
-
-                else -> {
-                    isLoading = false
-                }
-            }
-
-            LoadingDialog(isLoading = isLoading)
 
         }
     }
@@ -513,7 +478,7 @@ fun AdminUserCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-            NetworkImage(url = profile.profilePhoto, modifier = Modifier.size(75.dp))
+            NetworkImage(url = profile.profilePhoto ?: "", modifier = Modifier.size(75.dp))
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 LabelName(
@@ -596,15 +561,15 @@ fun AdminMembershipCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-            Column(Modifier.weight(1f)) {
+            Column(Modifier.weight(0.6f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    LabelName(
-                        labelName = "Plan Name:",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = TextSecondary,
-                    )
-                    Spacer(Modifier.width(5.dp))
+//                    LabelName(
+//                        labelName = "Plan Name:",
+//                        fontSize = 14.sp,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = TextSecondary,
+//                    )
+//                    Spacer(Modifier.width(5.dp))
                     LabelName(
                         labelName = profile.name,
                         fontSize = 16.sp,
@@ -613,16 +578,16 @@ fun AdminMembershipCard(
                     )
                 }
 
-                Spacer(Modifier.height(5.dp))
+                Spacer(Modifier.height(10.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    LabelName(
-                        labelName = "Duration:",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = TextSecondary,
-                    )
-                    Spacer(Modifier.width(5.dp))
+//                    LabelName(
+//                        labelName = "Duration:",
+//                        fontSize = 14.sp,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = TextSecondary,
+//                    )
+//                    Spacer(Modifier.width(5.dp))
                     LabelName(
                         labelName = "${profile.durationDays} days",
                         fontSize = 16.sp,
@@ -630,34 +595,34 @@ fun AdminMembershipCard(
                         color = Black,
                     )
                 }
-                Spacer(Modifier.height(5.dp))
+                Spacer(Modifier.height(10.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    LabelName(
-                        labelName = "Price:",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = TextSecondary,
-                    )
-                    Spacer(Modifier.width(5.dp))
+//                    LabelName(
+//                        labelName = "Price:",
+//                        fontSize = 14.sp,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = TextSecondary,
+//                    )
+//                    Spacer(Modifier.width(5.dp))
                     val price = formatPaiseToRupees(profile.priceMinorUnits.toLong())
                     LabelName(
-                        labelName = "₹$price",
+                        labelName = price,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Black,
                     )
                 }
-                Spacer(Modifier.height(5.dp))
+                Spacer(Modifier.height(10.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    LabelName(
-                        labelName = "Status:",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = TextSecondary,
-                    )
-                    Spacer(Modifier.width(5.dp))
+//                    LabelName(
+//                        labelName = "Status:",
+//                        fontSize = 14.sp,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = TextSecondary,
+//                    )
+//                    Spacer(Modifier.width(5.dp))
                     LabelName(
                         labelName = if (profile.isActive) "Active" else "InActive",
                         fontSize = 16.sp,
@@ -666,8 +631,7 @@ fun AdminMembershipCard(
                     )
                 }
             }
-            Spacer(Modifier.weight(1f))
-
+            Spacer(Modifier.weight(0.4f))
             Column {
                 CustomButton(
                     text = "Edit",
@@ -691,7 +655,9 @@ fun AdminMembershipCard(
                 CustomButton(
                     text = "InActive",
                     onClick = {
-                        onDelete(profile.id)
+                        if(profile.isActive) {
+                            onDelete(profile.id)
+                        }
                     },
                     modifier = Modifier,
                     height = 40.dp,
@@ -700,7 +666,7 @@ fun AdminMembershipCard(
                     textColor = White,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp,
-                    backgroundColor = Red
+                    backgroundColor = if(profile.isActive) Red else Gray
                 )
             }
 

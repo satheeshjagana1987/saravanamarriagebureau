@@ -81,7 +81,7 @@ fun MainScreenWithHamburger(
     val bottomItems = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Matches,
-        BottomBarScreen.Search,
+//        BottomBarScreen.Search,
         BottomBarScreen.Interests,
         BottomBarScreen.ProfileCreation
     )

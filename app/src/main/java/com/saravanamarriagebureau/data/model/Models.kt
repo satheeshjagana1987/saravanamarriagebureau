@@ -434,7 +434,7 @@ data class PendingApprovalUser(
     val city: String?,
     val status: String,
     val createdAt: String,
-    val profilePhoto: String,
+    val profilePhoto: String?,
 )
 
 data class AdminUserDetailsResponse(
@@ -458,7 +458,7 @@ data class AdminUserDetails(
     val approvedAt: String?,
     val rejectionReason: String?,
     val createdAt: String,
-    val profilePhoto: String,
+    val profilePhoto: String?,
     val profile: AdminUserProfile
 )
 

@@ -34,11 +34,13 @@ class AdminInterestsRepository @Inject constructor(
     }
 
     suspend fun adminApproveOrRejectMatch(
+        interestId:String,
         isMatchFixed: Boolean,
         matchRejectionReason:String
     ): ApiResult<AdminInterestsData> {
         return safeApiCall {
             api.adminApproveOrRejectMatch(
+                interestId = interestId,
                 request = AdminApproveOrRejectMatchRequest(
                     isMatchFixed = isMatchFixed,
                     matchRejectRemarks = matchRejectionReason

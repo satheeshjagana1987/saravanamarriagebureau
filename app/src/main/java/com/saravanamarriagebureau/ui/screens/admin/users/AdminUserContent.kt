@@ -1,8 +1,8 @@
 package com.saravanamarriagebureau.ui.screens.admin.users
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,9 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,6 +42,7 @@ import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
@@ -123,143 +122,155 @@ fun AdminUserContent(
             .background(Cream),
     ) {
         ScreenHeader("Profile", onBack)
-        Spacer(Modifier.height(20. dp))
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
+        Column(
+            Modifier.padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .background(Cream),
+            Spacer(Modifier.height(10.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(White),
+                ) {
 
 
-                // ---------------------------------------------------------
-                // Profile image section
-                // ---------------------------------------------------------
+                    // ---------------------------------------------------------
+                    // Profile image section
+                    // ---------------------------------------------------------
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        NetworkImage(
+                            url = profile.profilePhoto ?: "",
+                            modifier = Modifier.size(120.dp)
+                        )
+                    }
 
-                NetworkImage(url = profile.profilePhoto,modifier = Modifier.size(120.dp))
 
+                    // ---------------------------------------------------------
+                    // Information card
+                    // ---------------------------------------------------------
 
-                // ---------------------------------------------------------
-                // Information card
-                // ---------------------------------------------------------
+                    Spacer(Modifier.height(20.dp))
 
-                Spacer(Modifier.height(20. dp))
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.full_name),
+                        value = profile.fullName
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.full_name),
-                    value = profile.fullName
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.mobile_number),
+                        value = profile.mobile
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.mobile_number),
-                    value = profile.mobile
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.email),
+                        value = profile.email ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.email),
-                    value = profile.email ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.date_of_birth),
+                        value = profile.dateOfBirth ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.date_of_birth),
-                    value = profile.dateOfBirth ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.birth_time),
+                        value = profile.profile.birthTime ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.birth_time),
-                    value = profile.profile.birthTime ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.native_place),
+                        value = profile.profile.nativePlace ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.native_place),
-                    value = profile.profile.nativePlace ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.city),
+                        value = profile.profile.city ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.city),
-                    value = profile.profile.city ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.district),
+                        value = profile.profile.district ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.district),
-                    value = profile.profile.district ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.education),
+                        value = profile.profile.education ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.education),
-                    value = profile.profile.education ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.profession),
+                        value = profile.profile.profession ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.profession),
-                    value = profile.profile.profession ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.star),
+                        value = profile.profile.birthStar ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.star),
-                    value = profile.profile.birthStar ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.rasi),
+                        value = profile.profile.rasi ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.rasi),
-                    value = profile.profile.rasi ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.place_of_profession),
+                        value = profile.profile.workLocation ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.place_of_profession),
-                    value = profile.profile.workLocation ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.salary),
+                        value = profile.profile.income ?: NA
+                    )
 
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.salary),
-                    value = profile.profile.income ?: NA
-                )
+                    DividerLine()
 
-                DividerLine()
-
-                ProfileInfoRow(
-                    label = stringResource(id = R.string.family_details),
-                    value = profile.profile.familyDetails ?: NA
-                )
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.family_details),
+                        value = profile.profile.familyDetails ?: NA
+                    )
+                }
             }
         }
+        Timber.e("status==>${profile.status}")
 
-        Spacer(Modifier.weight(1f))
         if (profile.status == "PENDING_APPROVAL") {
-            Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp)) {
+            Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 16.dp)) {
                 LabelName(
                     labelName = "Reason",
                     fontSize = 14.sp,

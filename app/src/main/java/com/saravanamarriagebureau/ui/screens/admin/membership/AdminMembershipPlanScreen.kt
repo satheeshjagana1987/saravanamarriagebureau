@@ -109,7 +109,7 @@ fun AdminMembershipPlanScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(Modifier.padding(horizontal = 16.dp)) {
+        Column(Modifier.padding(horizontal = 16.dp).weight(1f)) {
 
             LazyColumn(
                 modifier = Modifier.padding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 16.dp),
@@ -142,7 +142,7 @@ fun AdminMembershipPlanScreen(
                 }
             }
         }
-        Spacer(Modifier.weight(1f))
+
         PrimaryButton(
             text = stringResource(id = R.string.add_plan),
             modifier = Modifier.padding(16.dp),
