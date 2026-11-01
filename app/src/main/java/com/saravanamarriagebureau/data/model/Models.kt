@@ -432,7 +432,8 @@ data class PendingApprovalUser(
     val gender: String,
     val city: String?,
     val status: String,
-    val createdAt: String
+    val createdAt: String,
+    val profilePhoto: String,
 )
 
 data class AdminUserDetailsResponse(
@@ -456,6 +457,7 @@ data class AdminUserDetails(
     val approvedAt: String?,
     val rejectionReason: String?,
     val createdAt: String,
+    val profilePhoto: String,
     val profile: AdminUserProfile
 )
 
@@ -492,6 +494,12 @@ data class RejectRequest(
     val action: String,
     val reason: String
 )
+
+data class AdminApproveOrRejectMatchRequest(
+    val isMatchFixed: Boolean,
+    val matchRejectRemarks: String
+)
+
 
 data class RegistrationApprovalResponse(
 
@@ -570,6 +578,7 @@ data class AdminInterestsData(
     val status: String,
     val createdAt: String,
     val updatedAt: String,
+    val isMatchFixed: Boolean,
     val sender: AdminInterestsDetails,
     val receiver: AdminInterestsDetails
 )
@@ -588,7 +597,9 @@ data class AdminInterestsDetails(
     val isPaidUser: Boolean,
     val profilePhoto: String?,
     val matchRejectRemarks: String?,
-    val isMatchFixed: Boolean
+    val isMatchFixed: Boolean,
+    val mobile: String?,
+    val fullAddress: String,
 )
 
 //Membership Plans

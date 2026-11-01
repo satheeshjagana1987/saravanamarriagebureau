@@ -3,6 +3,7 @@ package com.saravanamarriagebureau.data.api
 import com.saravanamarriagebureau.data.model.AcceptRequest
 import com.saravanamarriagebureau.data.model.AddMembershipPlanData
 import com.saravanamarriagebureau.data.model.AddMembershipPlanRequest
+import com.saravanamarriagebureau.data.model.AdminApproveOrRejectMatchRequest
 import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.data.model.AdminInterestsResponse
 import com.saravanamarriagebureau.data.model.AdminUserDetails
@@ -180,6 +181,11 @@ interface SmbApi {
         @Path("userId") userId: String,
         @Body request: RejectRequest
     ): Response<ApiResponse<RegistrationRejectionData>>
+
+    @PATCH("admin/interests/{interestId}/follow-up")
+    suspend fun adminApproveOrRejectMatch(
+        @Body request: AdminApproveOrRejectMatchRequest
+    ): Response<ApiResponse<AdminInterestsData>>
 
     @GET("admin/interests?status=PENDING")
     suspend fun getAdminPendingInterests(): Response<ApiResponse<List<AdminInterestsData>>>

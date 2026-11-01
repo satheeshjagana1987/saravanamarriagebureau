@@ -3,6 +3,7 @@ package com.saravanamarriagebureau.ui.screens.admin.membership
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,12 +18,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.model.AddMembershipPlanData
 import com.saravanamarriagebureau.ui.components.AdminMembershipCard
 import com.saravanamarriagebureau.ui.components.LoadingDialog
+import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.util.ToastUtils
@@ -30,7 +34,8 @@ import com.saravanamarriagebureau.util.ToastUtils
 @Composable
 fun AdminMembershipPlanScreen(
     viewModel: AdminMembershipViewModel = hiltViewModel(),
-    openEdit: (AddMembershipPlanData) -> Unit
+    openEdit: (String) -> Unit,
+    onNext: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -137,5 +142,13 @@ fun AdminMembershipPlanScreen(
                 }
             }
         }
+        Spacer(Modifier.weight(1f))
+        PrimaryButton(
+            text = stringResource(id = R.string.add_plan),
+            modifier = Modifier.padding(16.dp),
+            onClick = {
+                onNext()
+            }
+        )
     }
 }

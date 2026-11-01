@@ -19,7 +19,6 @@ import com.saravanamarriagebureau.ui.navigation.Routes
 import com.saravanamarriagebureau.ui.navigation.adminEditMembershipDetailsRoute
 import com.saravanamarriagebureau.ui.navigation.adminInterestDetailsRoute
 import com.saravanamarriagebureau.ui.navigation.adminUserDetailsRoute
-import com.saravanamarriagebureau.ui.navigation.profileRoute
 import com.saravanamarriagebureau.ui.screens.admin.interests.AdminInterestDetailsScreen
 import com.saravanamarriagebureau.ui.screens.admin.interests.AdminInterestsScreen
 import com.saravanamarriagebureau.ui.screens.admin.membership.AddMembershipPlanScreen
@@ -28,7 +27,6 @@ import com.saravanamarriagebureau.ui.screens.admin.membership.EditMembershipScre
 import com.saravanamarriagebureau.ui.screens.admin.users.AdminUserDetailsScreen
 import com.saravanamarriagebureau.ui.screens.admin.users.AdminUsersScreen
 import com.saravanamarriagebureau.ui.screens.userdashboard.LogoutDialog
-import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -92,10 +90,13 @@ fun AdminLandingScreen(
 
             composable(AdminDestination.Memberships.route) {
                 AdminMembershipPlanScreen(
-                    openEdit = { profile ->
-                            adminNavController.navigate(
-                                adminEditMembershipDetailsRoute(planId = profile.id)
-                            )
+                    openEdit = { planId ->
+                        adminNavController.navigate(
+                            adminEditMembershipDetailsRoute(planId = planId)
+                        )
+                    },
+                    onNext = {
+                        adminNavController.navigate(Routes.AdminAddMembershipPlan)
                     }
                 )
             }
@@ -118,8 +119,7 @@ fun AdminLandingScreen(
                     onBack = {
                         adminNavController.popBackStack()
                     },
-
-                    )
+                )
             }
 
             composable(AdminDestination.Settings.route) {
@@ -150,7 +150,7 @@ fun AdminLandingScreen(
                         type = NavType.StringType
                     },
 
-                )
+                    )
             ) { backStackEntry ->
 
                 val userId =

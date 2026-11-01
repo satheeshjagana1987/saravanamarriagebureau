@@ -36,6 +36,7 @@ import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.PrimaryButton
+import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.util.ToastUtils
@@ -70,11 +71,14 @@ fun AddMembershipPlanScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(Modifier.padding(horizontal = 16.dp)) {
+        ScreenHeader(title = "Add Membership Plan", onBack)
+        Column(
+            Modifier.padding(horizontal = 16.dp)
+                . verticalScroll(rememberScrollState())
+        ) {
             Spacer(Modifier.height(20.dp))
 
             Card(
@@ -96,7 +100,6 @@ fun AddMembershipPlanScreen(
                     onValueChange = {
                         planCode = it
                     },
-                    readOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
@@ -133,7 +136,6 @@ fun AddMembershipPlanScreen(
                     onValueChange = {
                         planName = it
                     },
-                    readOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
@@ -149,7 +151,7 @@ fun AddMembershipPlanScreen(
 
                     placeholder = {
                         Text(
-                            text = "Enter Plan Code",
+                            text = "Enter Plan Name",
                             color = Color(0xFFB5B5BD),
                             fontSize = 14.sp
                         )
@@ -170,7 +172,6 @@ fun AddMembershipPlanScreen(
                     onValueChange = {
                         description = it
                     },
-                    readOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
@@ -186,7 +187,7 @@ fun AddMembershipPlanScreen(
 
                     placeholder = {
                         Text(
-                            text = "Enter Plan Code",
+                            text = "Enter Description",
                             color = Color(0xFFB5B5BD),
                             fontSize = 14.sp
                         )
@@ -207,7 +208,6 @@ fun AddMembershipPlanScreen(
                     onValueChange = {
                         duration = it
                     },
-                    readOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
@@ -223,7 +223,7 @@ fun AddMembershipPlanScreen(
 
                     placeholder = {
                         Text(
-                            text = "Enter Plan Code",
+                            text = "Enter Duration",
                             color = Color(0xFFB5B5BD),
                             fontSize = 14.sp
                         )
@@ -244,7 +244,7 @@ fun AddMembershipPlanScreen(
                     onValueChange = {
                         price = it
                     },
-                    readOnly = true,
+
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
@@ -276,64 +276,65 @@ fun AddMembershipPlanScreen(
         }
 
         Spacer(Modifier.weight(1f))
+        Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp)) {
+            PrimaryButton(
+                text = stringResource(id = R.string.submit),
+                modifier = Modifier.padding(16.dp),
+                onClick = {
 
-        PrimaryButton(
-            text = stringResource(id = R.string.submit),
-            modifier = Modifier.padding(16.dp),
-            onClick = {
 
+                    planCodeError =
+                        ValidationUtils.validateField(field = planCode.trim(), fieldName = "Plan Code")
+                    planNameError = ValidationUtils.validateField(
+                        field = planName.trim(),
+                        fieldName = "Plan Name"
+                    )
+                    descriptionError = ValidationUtils.validateField(
+                        field = description.trim(),
+                        fieldName = "Description"
+                    )
+                    durationError = ValidationUtils.validateField(
+                        field = duration.trim(),
+                        fieldName = "Duration"
+                    )
 
-                planCodeError =
-                    ValidationUtils.validateField(field = planCode.trim(), fieldName = "Plan Code")
-                planNameError = ValidationUtils.validateField(
-                    field = planName.trim(),
-                    fieldName = "Plan Name"
-                )
-                descriptionError = ValidationUtils.validateField(
-                    field = description.trim(),
-                    fieldName = "Description"
-                )
-                durationError = ValidationUtils.validateField(
-                    field = duration.trim(),
-                    fieldName = "Duration"
-                )
+                    priceError = ValidationUtils.validateField(
+                        field = price.trim(),
+                        fieldName = "Price"
+                    )
 
-                priceError = ValidationUtils.validateField(
-                    field = price.trim(),
-                    fieldName = "Price"
-                )
+                    if (planCodeError != null) {
+                        ToastUtils.error(context = context, message = planCodeError.toString())
+                        return@PrimaryButton
+                    }
+                    if (planNameError != null) {
+                        ToastUtils.error(context = context, message = planNameError.toString())
+                        return@PrimaryButton
+                    }
+                    if (descriptionError != null) {
+                        ToastUtils.error(context = context, message = descriptionError.toString())
+                        return@PrimaryButton
+                    }
+                    if (durationError != null) {
+                        ToastUtils.error(context = context, message = durationError.toString())
+                        return@PrimaryButton
+                    }
+                    if (priceError != null) {
+                        ToastUtils.error(context = context, message = priceError.toString())
+                        return@PrimaryButton
+                    }
 
-                if (planCodeError != null) {
-                    ToastUtils.error(context = context, message = planCodeError.toString())
-                    return@PrimaryButton
+                    viewModel.addAdminMemberShipPlan(
+                        code = planCode.trim(),
+                        name = planName.trim(),
+                        description = description.trim(),
+                        durationDays = duration.toInt(),
+                        priceMinorUnits = price.toInt(),
+                    )
+
                 }
-                if (planNameError != null) {
-                    ToastUtils.error(context = context, message = planNameError.toString())
-                    return@PrimaryButton
-                }
-                if (descriptionError != null) {
-                    ToastUtils.error(context = context, message = descriptionError.toString())
-                    return@PrimaryButton
-                }
-                if (durationError != null) {
-                    ToastUtils.error(context = context, message = durationError.toString())
-                    return@PrimaryButton
-                }
-                if (priceError != null) {
-                    ToastUtils.error(context = context, message = priceError.toString())
-                    return@PrimaryButton
-                }
-
-                viewModel.addAdminMemberShipPlan(
-                    code = planCode.trim(),
-                    name = planName.trim(),
-                    description = description.trim(),
-                    durationDays = duration.toInt(),
-                    priceMinorUnits = price.toInt(),
-                )
-
-            }
-        )
+            )
+        }
 
         when (val state = uiStateAddAdminMembershipPlan) {
 

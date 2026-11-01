@@ -81,6 +81,7 @@
     <string name="yearly_membership">Yearly Membership</string>
     <string name="membership_advantage">Membership Advantage</string>
     <string name="basic_plan">Basic Plan (Current Plan)</string>
+    <string name="add_plan">Add Plan</string>
     <string name="upgrade_plan">Upgrade Plan</string>
     <string name="to_get_extra_benfits">to get extra benefits like send interest and view full profile information</string>
     <string name="year">Year</string>

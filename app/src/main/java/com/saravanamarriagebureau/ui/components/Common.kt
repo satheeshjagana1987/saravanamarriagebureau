@@ -382,7 +382,7 @@ fun ProfileCard(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
             if (profile.isAdminVerified) {
-                NetworkImage(profile.profilePhoto ?: "")
+                NetworkImage(url = profile.profilePhoto ?: "", modifier = Modifier.size(75.dp))
             } else {
                 BlurredProfileImage(
                     R.drawable.profile_pic,
@@ -513,7 +513,7 @@ fun AdminUserCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-            ProfilePhoto("", Modifier.size(74.dp))
+            NetworkImage(url = profile.profilePhoto, modifier = Modifier.size(75.dp))
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 LabelName(
@@ -659,10 +659,10 @@ fun AdminMembershipCard(
                     )
                     Spacer(Modifier.width(5.dp))
                     LabelName(
-                        labelName = if(profile.isActive) "Active" else "InActive",
+                        labelName = if (profile.isActive) "Active" else "InActive",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if(profile.isActive) Success else Red,
+                        color = if (profile.isActive) Success else Red,
                     )
                 }
             }
@@ -672,7 +672,7 @@ fun AdminMembershipCard(
                 CustomButton(
                     text = "Edit",
                     onClick = {
-                       onEdit(profile.id)
+                        onEdit(profile.id)
                     },
                     modifier = Modifier,
                     height = 40.dp,
@@ -691,7 +691,7 @@ fun AdminMembershipCard(
                 CustomButton(
                     text = "InActive",
                     onClick = {
-                       onDelete(profile.id)
+                        onDelete(profile.id)
                     },
                     modifier = Modifier,
                     height = 40.dp,
@@ -732,7 +732,10 @@ fun InterestCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
-            NetworkImage(interest.receiver.profilePhoto ?: "")
+            NetworkImage(
+                url = interest.receiver.profilePhoto ?: "",
+                modifier = Modifier.size(75.dp)
+            )
             Spacer(Modifier.width(10.dp))
             val age = if (interest.receiver.dateOfBirth.isNullOrEmpty()) {
                 "NA"
@@ -958,7 +961,7 @@ fun AdminInterestCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
-            ProfilePhoto("", Modifier.size(74.dp))
+            NetworkImage(url = interest.sender.profilePhoto ?: "", modifier = Modifier.size(75.dp))
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 LabelName(
@@ -1210,20 +1213,28 @@ fun BlurredProfileImage(
 }
 
 @Composable
-fun NetworkImage(url: String) {
+fun NetworkImage(
+    url: String,
+    modifier: Modifier = Modifier
+) {
     SubcomposeAsyncImage(
         model = url,
         contentDescription = "Network image",
         contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .width(75.dp)
-            .height(75.dp)
+        modifier = modifier
             .clip(CircleShape),
         loading = {
             CircularProgressIndicator()
         },
         error = {
-            Text("Failed to load image")
+            Image(
+                painter = painterResource(id = R.drawable.profile_image_placholder),
+                contentDescription = "placeholder",
+                contentScale = ContentScale.Crop,
+                modifier = modifier
+                    .clip(CircleShape)
+            )
+
         }
     )
 }

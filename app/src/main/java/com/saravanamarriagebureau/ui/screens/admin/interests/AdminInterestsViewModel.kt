@@ -30,6 +30,11 @@ class AdminInterestsViewModel @Inject constructor(
 
     val uiStateAdminInterestsById = _uiStateAdminInterestsById.asStateFlow()
 
+    private val _uiStateAdminInterestsApproveOrRejectMatch =
+        MutableStateFlow<AdminInterestsByIdUIState>(AdminInterestsByIdUIState.Idle)
+
+    val uiStateAdminInterestsApproveOrRejectMatch = _uiStateAdminInterestsApproveOrRejectMatch.asStateFlow()
+
     fun getAdminPendingInterests() {
 
         viewModelScope.launch {
@@ -109,6 +114,37 @@ class AdminInterestsViewModel @Inject constructor(
 
                 is ApiResult.Error -> {
                     _uiStateAdminInterestsById.value =
+                        AdminInterestsByIdUIState.Error(
+                            result.message
+                        )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun adminApproveOrRejectMatch(
+        isMatchFixed: Boolean,
+        matchRejectionReason:String
+    ) {
+        viewModelScope.launch {
+            _uiStateAdminInterestsApproveOrRejectMatch.value = AdminInterestsByIdUIState.Loading
+
+            when (val result = adminInterestsRepository.adminApproveOrRejectMatch(
+                isMatchFixed = isMatchFixed,
+                matchRejectionReason = matchRejectionReason
+            )) {
+                is ApiResult.Success -> {
+                    _uiStateAdminInterestsApproveOrRejectMatch.value =
+                        AdminInterestsByIdUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateAdminInterestsApproveOrRejectMatch.value =
                         AdminInterestsByIdUIState.Error(
                             result.message
                         )

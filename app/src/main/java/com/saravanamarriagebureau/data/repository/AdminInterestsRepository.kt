@@ -1,6 +1,7 @@
 package com.saravanamarriagebureau.data.repository
 
 import com.saravanamarriagebureau.data.api.SmbApi
+import com.saravanamarriagebureau.data.model.AdminApproveOrRejectMatchRequest
 import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.safeApiCall
@@ -28,6 +29,20 @@ class AdminInterestsRepository @Inject constructor(
         return safeApiCall {
             api.getAdminInterestById(
                 interestId = interestId
+            )
+        }
+    }
+
+    suspend fun adminApproveOrRejectMatch(
+        isMatchFixed: Boolean,
+        matchRejectionReason:String
+    ): ApiResult<AdminInterestsData> {
+        return safeApiCall {
+            api.adminApproveOrRejectMatch(
+                request = AdminApproveOrRejectMatchRequest(
+                    isMatchFixed = isMatchFixed,
+                    matchRejectRemarks = matchRejectionReason
+                )
             )
         }
     }

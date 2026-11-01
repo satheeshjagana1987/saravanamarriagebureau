@@ -42,7 +42,6 @@ import com.saravanamarriagebureau.ui.navigation.profileRoute
 import com.saravanamarriagebureau.ui.screens.AdminVoiceScreen
 import com.saravanamarriagebureau.ui.screens.ContactsLockedScreen
 import com.saravanamarriagebureau.ui.screens.PrivacyScreen
-import com.saravanamarriagebureau.ui.screens.admin.membership.AddMembershipPlanScreen
 import com.saravanamarriagebureau.ui.screens.changepassword.ChangePasswordScreen
 import com.saravanamarriagebureau.ui.screens.interests.InterestSentDialogScreen
 import com.saravanamarriagebureau.ui.screens.interests.InterestsScreen
@@ -53,7 +52,6 @@ import com.saravanamarriagebureau.ui.screens.membership.ChooseYourPlanScreen
 import com.saravanamarriagebureau.ui.screens.profile.ProfileCreationScreen
 import com.saravanamarriagebureau.ui.screens.profile.ProfileViewScreen
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +94,7 @@ fun MainScreenWithHamburger(
         DrawerScreen.ChangePassword,
         DrawerScreen.ChangeLanguage,
         DrawerScreen.Logout,
-        )
+    )
 
     // -----------------------------------------
     // Screens WITHOUT drawer / bottom bar
