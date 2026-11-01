@@ -733,18 +733,18 @@ fun InterestCard(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
             NetworkImage(
-                url = interest.receiver.profilePhoto ?: "",
+                url = interest.party.profilePhoto ?: "",
                 modifier = Modifier.size(75.dp)
             )
             Spacer(Modifier.width(10.dp))
-            val age = if (interest.receiver.dateOfBirth.isNullOrEmpty()) {
+            val age = if (interest.party.dateOfBirth.isNullOrEmpty()) {
                 "NA"
             } else {
-                calculateAge(interest.receiver.dateOfBirth).toString()
+                calculateAge(interest.party.dateOfBirth).toString()
             }
             Column(Modifier.weight(1f)) {
                 LabelName(
-                    labelName = interest.receiver.fullName ?: NA,
+                    labelName = interest.party.fullName ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Maroon,
@@ -758,13 +758,13 @@ fun InterestCard(
                     modifier = Modifier.padding(0.dp)
                 )
                 LabelName(
-                    labelName = interest.receiver.profession ?: NA,
+                    labelName = interest.party.profession ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = TextSecondary,
                     modifier = Modifier.padding(0.dp)
                 )
-                if (interest.receiver.isAdminVerified) {
+                if (interest.party.isAdminVerified) {
                     LabelName(
                         labelName = "● " + stringResource(id = R.string.verified),
                         fontSize = 12.sp,

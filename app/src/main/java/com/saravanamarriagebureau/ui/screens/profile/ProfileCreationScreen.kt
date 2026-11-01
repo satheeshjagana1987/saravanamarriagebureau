@@ -1,13 +1,10 @@
 package com.saravanamarriagebureau.ui.screens.profile
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,12 +32,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -60,11 +55,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.rememberAsyncImagePainter
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
@@ -75,6 +68,7 @@ import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.LoadingView
+import com.saravanamarriagebureau.ui.components.NetworkImage
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfilePhoto
 import com.saravanamarriagebureau.ui.screens.media.MediaUploadCompleteViewModel
@@ -84,7 +78,6 @@ import com.saravanamarriagebureau.ui.screens.media.getFileInfo
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
-import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
@@ -123,6 +116,7 @@ fun ProfileCreationScreen(
     var income by remember { mutableStateOf("") }
     var placeOfProfession by remember { mutableStateOf("") }
     var familyDetails by remember { mutableStateOf("") }
+    var profilePhoto by remember { mutableStateOf("") }
     // Location dropdown
     val options = listOf("Amaravathi, Guntur, Vizag")
     var expanded by remember { mutableStateOf(false) }
@@ -256,6 +250,7 @@ fun ProfileCreationScreen(
                 placeOfProfession = profile.workLocation.orEmpty()
                 income = profile.income.orEmpty()
                 familyDetails = profile.familyDetails.orEmpty()
+                profilePhoto = profile.profilePhoto ?: ""
 
                 ToastUtils.success(context = context, message = "Profile data fetched successfully")
             }
@@ -1189,12 +1184,9 @@ fun ProfileCreationScreen(
                             horizontalArrangement = Arrangement.Center
                         ) {
                             state.imageUri?.let { uri ->
-                                ProfilePhoto(uri, Modifier.size(100.dp))
+                                ProfilePhoto(uri, Modifier.size(120.dp))
                             } ?: run {
-                                ProfilePhoto(
-                                    defaultImage = R.drawable.profile_pic,
-                                    Modifier.size(100.dp)
-                                )
+                                NetworkImage(url = profilePhoto, modifier = Modifier.size(120.dp))
                             }
                             Spacer(Modifier.weight(1f))
 //                            CustomButtonForUpload(
@@ -1270,7 +1262,10 @@ fun ProfileCreationScreen(
                                 }
 
                                 if (state.success) {
-                                    ToastUtils.success(context = context, message = state.message.toString())
+                                    ToastUtils.success(
+                                        context = context,
+                                        message = state.message.toString()
+                                    )
 //                                    mediaUploadCompleteViewModel.mediaUploadComplete()
                                 }
 
@@ -1357,7 +1352,10 @@ fun ProfileCreationScreen(
                                 }
 
                                 if (videoState.success) {
-                                    ToastUtils.success(context = context, message = state.message.toString())
+                                    ToastUtils.success(
+                                        context = context,
+                                        message = state.message.toString()
+                                    )
 //                                    mediaUploadCompleteViewModel.mediaUploadComplete()
                                 }
 
@@ -1627,7 +1625,10 @@ fun ProfileCreationScreen(
                         return@PrimaryButton
                     }
                     if (placeOfProfessionError != null) {
-                        ToastUtils.error(context = context, message = placeOfProfessionError.toString())
+                        ToastUtils.error(
+                            context = context,
+                            message = placeOfProfessionError.toString()
+                        )
                         return@PrimaryButton
                     }
                     if (familyDetailsError != null) {

@@ -25,14 +25,13 @@ import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.theme.Cream
 import timber.log.Timber
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileViewScreen(
     onBack: () -> Unit,
     onInterest: () -> Unit,
     profileId: String,
+    isMatchFixed: Boolean,
     profileType: String,
-    onMatchFixed: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     Timber.e("profileId  => $profileId")
@@ -65,7 +64,7 @@ fun ProfileViewScreen(
                 onBack = onBack,
                 onInterest = onInterest,
                 profileType = profileType,
-                onMatchFixed = onMatchFixed
+                isMatchFixed = isMatchFixed
             )
         }
 
@@ -104,9 +103,14 @@ fun ProfileViewScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun ProfileViewScreenPreview() {
-    ProfileViewScreen(onBack = {}, onInterest = {}, profileId = "", onMatchFixed = {}, profileType = "")
+    ProfileViewScreen(
+        onBack = {},
+        onInterest = {},
+        profileId = "",
+        profileType = "",
+        isMatchFixed = false
+    )
 }

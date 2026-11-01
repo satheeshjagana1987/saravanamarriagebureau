@@ -363,7 +363,7 @@ fun MainScreenWithHamburger(
                     MatchesScreen(
                         onProfile = { profile ->
                             navController.navigate(
-                                profileRoute(profile.id)
+                                profileRoute(profileId = profile.id, isMatchFixed = false)
                             )
                         },
 
@@ -384,9 +384,9 @@ fun MainScreenWithHamburger(
                 composable(BottomBarScreen.Interests.route) {
 
                     InterestsScreen(
-                        onInterestItemClick = { interest ->
+                        onInterestItemClick = { profileId,isMatchFixed ->
                             navController.navigate(
-                                profileRoute(profileId = interest.receiverProfileId)
+                                 profileRoute(profileId = profileId, isMatchFixed = isMatchFixed)
                             )
                         },
                     )
@@ -421,6 +421,9 @@ fun MainScreenWithHamburger(
                     arguments = listOf(
                         navArgument("profileId") {
                             type = NavType.StringType
+                        },
+                        navArgument("isMatchFixed") {
+                            type = NavType.BoolType
                         }
                     )
                 ) { backStackEntry ->
@@ -428,8 +431,12 @@ fun MainScreenWithHamburger(
                     val profileId =
                         backStackEntry.arguments?.getString("profileId").orEmpty()
 
+                    val isMatchFixed =
+                        backStackEntry.arguments?.getBoolean("isMatchFixed") ?: false
+
                     ProfileViewScreen(
                         profileId = profileId,
+                        isMatchFixed = isMatchFixed,
                         profileType = "",
 
                         onBack = {
@@ -439,10 +446,6 @@ fun MainScreenWithHamburger(
                         onInterest = {
                             navController.navigate(Routes.InterestSent)
                         },
-
-                        onMatchFixed = {
-                            navController.navigate(Routes.MatchFixed)
-                        }
                     )
                 }
 

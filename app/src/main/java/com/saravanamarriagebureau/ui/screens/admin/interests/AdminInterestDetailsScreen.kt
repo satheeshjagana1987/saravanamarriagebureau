@@ -40,6 +40,7 @@ import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.screens.admin.membership.AddAdminMembershipPlanUIState
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
@@ -85,6 +86,7 @@ fun AdminInterestDetailsScreen(
     var receiverMaritalStatus by remember { mutableStateOf("") }
 
     val uiStateAdminInterestsById by viewModel.uiStateAdminInterestsById.collectAsStateWithLifecycle()
+    val uiStateAdminInterestsApproveOrRejectMatch by viewModel.uiStateAdminInterestsApproveOrRejectMatch.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.loadAdminInterestById(
@@ -355,6 +357,28 @@ fun AdminInterestDetailsScreen(
 
                 }
             }
+        }
+
+        when (val state = uiStateAdminInterestsApproveOrRejectMatch) {
+
+            AdminInterestsByIdUIState.Loading -> {
+                isLoading = true
+            }
+
+            is AdminInterestsByIdUIState.Success -> {
+                isLoading = false
+                onBack()
+            }
+
+            is AdminInterestsByIdUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context = context, message = state.message)
+            }
+
+            else -> {
+                isLoading = false
+            }
+
         }
     }
 }

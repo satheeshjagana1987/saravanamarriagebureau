@@ -14,7 +14,7 @@ object Routes {
     const val VoiceBio = "voice_bio"
     const val ParentsTalk = "parents_talk"
     const val Home = "home"
-    const val Profile = "profile/{profileId}"
+    const val Profile = "profile/{profileId}/{isMatchFixed}"
     const val AdminVoice = "admin_voice"
     const val Matches = "matches"
     const val Privacy = "privacy"
@@ -41,13 +41,12 @@ object Routes {
     const val AdminInterestDetails = "admin_interest_details/{interestId}"
     const val AdminAddMembershipPlan = "admin_add_membership_plan"
     const val AdminEditMembershipPlan = "admin_edit_membership_plan/{planId}"
-    const val AdminInterests = "admin_interests"
-    const val AdminPayments = "admin_payments"
+
 
 }
 
-fun profileRoute(profileId: String): String {
-    return "profile/${Uri.encode(profileId)}"
+fun profileRoute(profileId: String,isMatchFixed: Boolean): String {
+    return "profile/${Uri.encode(profileId)}/$isMatchFixed"
 }
 
 fun adminInterestDetailsRoute(interestId: String): String {

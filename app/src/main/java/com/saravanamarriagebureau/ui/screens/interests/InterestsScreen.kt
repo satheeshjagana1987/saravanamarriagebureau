@@ -39,10 +39,9 @@ import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.ToastUtils
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InterestsScreen(
-    onInterestItemClick: (UserInterestsData) -> Unit,
+    onInterestItemClick: (String, Boolean) -> Unit,
     viewModel: UserInterestsViewModel = hiltViewModel()
 ) {
 
@@ -185,7 +184,13 @@ fun InterestsScreen(
                         InterestCard(
                             interest = interest,
                             selectedTab = selectedTab,
-                            onOpen = { onInterestItemClick(interest) },
+                            onOpen = {
+                                if(selectedTab==InterestTab.RECEIVED) {
+                                    onInterestItemClick(interest.senderProfileId,interest.isMatchFixed)
+                                }else{
+                                    onInterestItemClick(interest.receiverProfileId,interest.isMatchFixed)
+                                }
+                            },
                             onDelete = { interestId ->
                                 deletingInterestId = interestId
                                 viewModel.deleteInterest(interestId)

@@ -223,9 +223,10 @@ data class UserInterestsData(
     val id: String,
     val senderProfileId: String,
     val receiverProfileId: String,
-    val receiver: InterestProfile,
-    val sender: InterestProfile,
+    val party: InterestProfile,
     val status: String,
+    val matchRejectRemarks: String,
+    val isMatchFixed: Boolean,
     val createdAt: String,
     val updatedAt: String,
 )
