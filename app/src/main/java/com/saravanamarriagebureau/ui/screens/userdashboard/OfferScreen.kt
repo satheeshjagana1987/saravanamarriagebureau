@@ -24,9 +24,9 @@ fun OfferScreen() {
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp) // Set sizing or styling
+                .height(300.dp) // Set sizing or styling
         )
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(30.dp))
 
     }
 }

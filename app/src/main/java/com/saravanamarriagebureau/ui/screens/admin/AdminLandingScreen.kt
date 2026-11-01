@@ -135,9 +135,9 @@ fun AdminLandingScreen(
 
             composable(Routes.Users) {
                 AdminUsersScreen(
-                    onProfile = { profile ->
+                    onProfile = { profileId, isFromPending->
                         adminNavController.navigate(
-                            adminUserDetailsRoute(userId = profile.id)
+                            adminUserDetailsRoute(userId = profileId, isFromPending = isFromPending)
                         )
                     }
                 )
@@ -149,6 +149,9 @@ fun AdminLandingScreen(
                     navArgument("userId") {
                         type = NavType.StringType
                     },
+                    navArgument("isFromPending") {
+                        type = NavType.BoolType
+                    }
 
                     )
             ) { backStackEntry ->
@@ -156,8 +159,13 @@ fun AdminLandingScreen(
                 val userId =
                     backStackEntry.arguments?.getString("userId").orEmpty()
 
+                val isFromPending =
+                    backStackEntry.arguments?.getBoolean("isFromPending") ?: false
+
+
                 AdminUserDetailsScreen(
                     profileId = userId,
+                    isFromPending = isFromPending,
                     onBack = {
                         adminNavController.popBackStack()
                     },

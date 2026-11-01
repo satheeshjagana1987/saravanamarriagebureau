@@ -51,55 +51,55 @@ fun SplashScreen(
             contentScale = ContentScale.FillBounds
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    start = 24.dp,
-                    end = 24.dp,
-                    top = 80.dp,
-                    bottom = 50.dp
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-
-            AppLogo()
-
-            Spacer(Modifier.height(20.dp))
-
-            val normalStyle = SpanStyle(color = Black)
-            val dotStyle = SpanStyle(color = Maroon) // Change to your preferred dot color
-
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = normalStyle) { append("Real Families") }
-                    withStyle(style = dotStyle) { append("  •  ") }
-                    withStyle(style = normalStyle) { append("Genuine Matches") }
-                    withStyle(style = dotStyle) { append("  •  ") }
-                    withStyle(style = normalStyle) { append("Forever") }
-                },
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-
-
-
-            Spacer(Modifier.weight(1f))
-
-            Text(
-                text = "More than a match...",
-                color = Maroon,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            Text(
-                text = "It's a relationship of families",
-                color = Maroon,
-                fontSize = 15.sp
-            )
-        }
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(
+//                    start = 24.dp,
+//                    end = 24.dp,
+//                    top = 80.dp,
+//                    bottom = 50.dp
+//                ),
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            verticalArrangement = Arrangement.Top
+//        ) {
+//
+//            AppLogo()
+//
+//            Spacer(Modifier.height(20.dp))
+//
+//            val normalStyle = SpanStyle(color = Black)
+//            val dotStyle = SpanStyle(color = Maroon) // Change to your preferred dot color
+//
+//            Text(
+//                text = buildAnnotatedString {
+//                    withStyle(style = normalStyle) { append("Real Families") }
+//                    withStyle(style = dotStyle) { append("  •  ") }
+//                    withStyle(style = normalStyle) { append("Genuine Matches") }
+//                    withStyle(style = dotStyle) { append("  •  ") }
+//                    withStyle(style = normalStyle) { append("Forever") }
+//                },
+//                fontSize = 14.sp,
+//                fontWeight = FontWeight.SemiBold
+//            )
+//
+//
+//
+//            Spacer(Modifier.weight(1f))
+//
+//            Text(
+//                text = "More than a match...",
+//                color = Maroon,
+//                fontSize = 20.sp,
+//                fontWeight = FontWeight.SemiBold
+//            )
+//
+//            Text(
+//                text = "It's a relationship of families",
+//                color = Maroon,
+//                fontSize = 15.sp
+//            )
+//        }
     }
 }
 

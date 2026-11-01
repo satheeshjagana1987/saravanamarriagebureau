@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.enums.UsersTab
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.ui.components.AdminUserCard
@@ -39,7 +38,7 @@ import com.saravanamarriagebureau.util.ToastUtils
 
 @Composable
 fun AdminUsersScreen(
-    onProfile: (PendingApprovalUser) -> Unit,
+    onProfile: (String, Boolean) -> Unit,
     viewModel: AdminUsersViewModel = hiltViewModel()
 ) {
 
@@ -91,7 +90,7 @@ fun AdminUsersScreen(
             is AdminUsersUIState.Success -> {
                 isLoading = false
                 adminPendingUsersData = state.data
-                
+
             }
 
             is AdminUsersUIState.Error -> {
@@ -217,7 +216,14 @@ fun AdminUsersScreen(
                     ) { profile ->
                         AdminUserCard(
                             profile,
-                            onOpen = { onProfile(profile) })
+                            onOpen = {
+                                if (selectedTab == UsersTab.PENDING) {
+                                    onProfile(profile.id, true)
+                                } else {
+                                    onProfile(profile.id, false)
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -257,10 +263,4 @@ fun UserTabButton(
 
         borderStroke = 0.2.dp
     )
-}
-
-@Preview
-@Composable
-fun AdminUsersScreenPreview(){
-    AdminUsersScreen(onProfile = {})
 }

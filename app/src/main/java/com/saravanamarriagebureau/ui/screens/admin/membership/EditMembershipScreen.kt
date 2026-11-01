@@ -40,6 +40,7 @@ import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
 
@@ -125,194 +126,196 @@ fun EditMembershipScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
-                LabelName(
-                    labelName = stringResource(id = R.string.plan_code),
-                    fontSize = 14.sp,
-                    color = Maroon,
-                    fontWeight = FontWeight.Normal
-                )
-                Spacer(Modifier.height(5.dp))
-                OutlinedTextField(
-                    value = planCode,
-                    onValueChange = {
-                        planCode = it
-                    },
+                Column(Modifier.padding(16.dp).background(White)) {
+                    LabelName(
+                        labelName = stringResource(id = R.string.plan_code),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    OutlinedTextField(
+                        value = planCode,
+                        onValueChange = {
+                            planCode = it
+                        },
 
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFE2E2E8),
-                        unfocusedBorderColor = Color(0xFFE2E2E8),
-                        cursorColor = Color(0xFF555555),
-                        focusedTextColor = Color(0xFF333333),
-                        unfocusedTextColor = Color(0xFF333333)
-                    ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
 
-                    placeholder = {
-                        Text(
-                            text = "Enter Plan Code",
-                            color = Color(0xFFB5B5BD),
-                            fontSize = 14.sp
-                        )
-                    }
-                )
+                        placeholder = {
+                            Text(
+                                text = "Enter Plan Code",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
 
-                Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(10.dp))
 
-                LabelName(
-                    labelName = stringResource(id = R.string.plan_name),
-                    fontSize = 14.sp,
-                    color = Maroon,
-                    fontWeight = FontWeight.Normal
-                )
-                Spacer(Modifier.height(5.dp))
-                OutlinedTextField(
-                    value = planName,
-                    onValueChange = {
-                        planName = it
-                    },
+                    LabelName(
+                        labelName = stringResource(id = R.string.plan_name),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    OutlinedTextField(
+                        value = planName,
+                        onValueChange = {
+                            planName = it
+                        },
 
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFE2E2E8),
-                        unfocusedBorderColor = Color(0xFFE2E2E8),
-                        cursorColor = Color(0xFF555555),
-                        focusedTextColor = Color(0xFF333333),
-                        unfocusedTextColor = Color(0xFF333333)
-                    ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
 
-                    placeholder = {
-                        Text(
-                            text = "Enter Plan Name",
-                            color = Color(0xFFB5B5BD),
-                            fontSize = 14.sp
-                        )
-                    }
-                )
+                        placeholder = {
+                            Text(
+                                text = "Enter Plan Name",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
 
-                Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(10.dp))
 
-                LabelName(
-                    labelName = stringResource(id = R.string.description),
-                    fontSize = 14.sp,
-                    color = Maroon,
-                    fontWeight = FontWeight.Normal
-                )
-                Spacer(Modifier.height(5.dp))
-                OutlinedTextField(
-                    value = description,
-                    onValueChange = {
-                        description = it
-                    },
+                    LabelName(
+                        labelName = stringResource(id = R.string.description),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = {
+                            description = it
+                        },
 
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFE2E2E8),
-                        unfocusedBorderColor = Color(0xFFE2E2E8),
-                        cursorColor = Color(0xFF555555),
-                        focusedTextColor = Color(0xFF333333),
-                        unfocusedTextColor = Color(0xFF333333)
-                    ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
 
-                    placeholder = {
-                        Text(
-                            text = "Enter Description",
-                            color = Color(0xFFB5B5BD),
-                            fontSize = 14.sp
-                        )
-                    }
-                )
+                        placeholder = {
+                            Text(
+                                text = "Enter Description",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
 
-                Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(10.dp))
 
-                LabelName(
-                    labelName = stringResource(id = R.string.duration),
-                    fontSize = 14.sp,
-                    color = Maroon,
-                    fontWeight = FontWeight.Normal
-                )
-                Spacer(Modifier.height(5.dp))
-                OutlinedTextField(
-                    value = duration,
-                    onValueChange = {
-                        duration = it
-                    },
+                    LabelName(
+                        labelName = stringResource(id = R.string.duration),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    OutlinedTextField(
+                        value = duration,
+                        onValueChange = {
+                            duration = it
+                        },
 
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFE2E2E8),
-                        unfocusedBorderColor = Color(0xFFE2E2E8),
-                        cursorColor = Color(0xFF555555),
-                        focusedTextColor = Color(0xFF333333),
-                        unfocusedTextColor = Color(0xFF333333)
-                    ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
 
-                    placeholder = {
-                        Text(
-                            text = "Enter Duration",
-                            color = Color(0xFFB5B5BD),
-                            fontSize = 14.sp
-                        )
-                    }
-                )
+                        placeholder = {
+                            Text(
+                                text = "Enter Duration",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
 
-                Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(10.dp))
 
-                LabelName(
-                    labelName = stringResource(id = R.string.price),
-                    fontSize = 14.sp,
-                    color = Maroon,
-                    fontWeight = FontWeight.Normal
-                )
-                Spacer(Modifier.height(5.dp))
-                OutlinedTextField(
-                    value = price,
-                    onValueChange = {
-                        price = it
-                    },
+                    LabelName(
+                        labelName = stringResource(id = R.string.price),
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    OutlinedTextField(
+                        value = price,
+                        onValueChange = {
+                            price = it
+                        },
 
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFE2E2E8),
-                        unfocusedBorderColor = Color(0xFFE2E2E8),
-                        cursorColor = Color(0xFF555555),
-                        focusedTextColor = Color(0xFF333333),
-                        unfocusedTextColor = Color(0xFF333333)
-                    ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE2E2E8),
+                            unfocusedBorderColor = Color(0xFFE2E2E8),
+                            cursorColor = Color(0xFF555555),
+                            focusedTextColor = Color(0xFF333333),
+                            unfocusedTextColor = Color(0xFF333333)
+                        ),
 
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
 
-                    placeholder = {
-                        Text(
-                            text = "Enter Price",
-                            color = Color(0xFFB5B5BD),
-                            fontSize = 14.sp
-                        )
-                    }
-                )
+                        placeholder = {
+                            Text(
+                                text = "Enter Price",
+                                color = Color(0xFFB5B5BD),
+                                fontSize = 14.sp
+                            )
+                        }
+                    )
 
-                Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(10.dp))
+                }
             }
         }
 

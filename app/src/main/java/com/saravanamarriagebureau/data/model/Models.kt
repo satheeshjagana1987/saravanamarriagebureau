@@ -155,6 +155,7 @@ data class ProfileData(
     val familyDetails: String?,
     val income: String?,
     val profilePhoto: String?,
+    val rejectionReason: String?,
     val familyVideo: String?,
 )
 

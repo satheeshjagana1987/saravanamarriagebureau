@@ -78,6 +78,7 @@ import com.saravanamarriagebureau.ui.screens.media.getFileInfo
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
@@ -117,6 +118,7 @@ fun ProfileCreationScreen(
     var placeOfProfession by remember { mutableStateOf("") }
     var familyDetails by remember { mutableStateOf("") }
     var profilePhoto by remember { mutableStateOf("") }
+    var rejectionReason by remember { mutableStateOf("") }
     // Location dropdown
     val options = listOf("Amaravathi, Guntur, Vizag")
     var expanded by remember { mutableStateOf(false) }
@@ -251,6 +253,7 @@ fun ProfileCreationScreen(
                 income = profile.income.orEmpty()
                 familyDetails = profile.familyDetails.orEmpty()
                 profilePhoto = profile.profilePhoto ?: ""
+                rejectionReason = profile.rejectionReason ?: ""
 
                 ToastUtils.success(context = context, message = "Profile data fetched successfully")
             }
@@ -374,6 +377,16 @@ fun ProfileCreationScreen(
                 )
 
             }
+            if (rejectionReason.isNotEmpty()) {
+                LabelName(
+                    labelName = rejectionReason,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Red,
+                    modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)
+                )
+            }
+
             Spacer(Modifier.height(20.dp))
 
             Card(

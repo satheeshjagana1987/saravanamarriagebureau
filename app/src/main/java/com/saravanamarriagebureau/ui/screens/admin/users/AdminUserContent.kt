@@ -51,6 +51,7 @@ import timber.log.Timber
 @Composable
 fun AdminUserContent(
     profile: AdminUserDetails,
+    isFromPending: Boolean,
     onBack: () -> Unit,
     viewModel: AdminUsersViewModel
 ) {
@@ -123,7 +124,8 @@ fun AdminUserContent(
     ) {
         ScreenHeader("Profile", onBack)
         Column(
-            Modifier.padding(16.dp)
+            Modifier
+                .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(Modifier.height(10.dp))
@@ -269,7 +271,7 @@ fun AdminUserContent(
         }
         Timber.e("status==>${profile.status}")
 
-        if (profile.status == "PENDING_APPROVAL") {
+        if (isFromPending) {
             Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 16.dp)) {
                 LabelName(
                     labelName = "Reason",

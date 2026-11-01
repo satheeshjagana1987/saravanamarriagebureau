@@ -33,7 +33,7 @@ object Routes {
     const val profileWithStepper = "profile_with_stepper"
     const val Admin = "admin"
     const val Users = "users"
-    const val AdminUserDetails = "admin_user_details/{userId}"
+    const val AdminUserDetails = "admin_user_details/{userId}/{isFromPending}"
     const val PendingProfiles = "pending_profiles"
     const val PendingPayments = "pending_payments"
     const val MutualInterests = "mutual_interests"
@@ -53,8 +53,8 @@ fun adminInterestDetailsRoute(interestId: String): String {
     return "admin_interest_details/${Uri.encode(interestId)}"
 }
 
-fun adminUserDetailsRoute(userId: String): String {
-    return "admin_user_details/${Uri.encode(userId)}"
+fun adminUserDetailsRoute(userId: String,isFromPending: Boolean): String {
+    return "admin_user_details/${Uri.encode(userId)}/$isFromPending"
 }
 
 fun adminEditMembershipDetailsRoute(planId: String): String {

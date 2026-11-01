@@ -64,6 +64,7 @@ import com.saravanamarriagebureau.util.ToastUtils
 fun AdminUserDetailsScreen(
     onBack: () -> Unit,
     profileId: String,
+    isFromPending: Boolean,
     viewModel: AdminUsersViewModel = hiltViewModel()
 ) {
 
@@ -92,6 +93,7 @@ fun AdminUserDetailsScreen(
         is AdminUserByIdUIState.Success -> {
             AdminUserContent(
                 profile = state.data,
+                isFromPending = isFromPending,
                 onBack = onBack,
                 viewModel = viewModel
             )
@@ -131,10 +133,4 @@ fun AdminUserDetailsScreen(
         else -> {}
     }
 
-}
-
-@Preview
-@Composable
-fun AdminUserDetailsScreenPreview() {
-    AdminUserDetailsScreen(onBack = {}, profileId = "")
 }
