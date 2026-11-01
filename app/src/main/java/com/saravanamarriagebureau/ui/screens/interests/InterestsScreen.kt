@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.data.enums.InterestTab
-import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.InterestCard
@@ -185,10 +184,16 @@ fun InterestsScreen(
                             interest = interest,
                             selectedTab = selectedTab,
                             onOpen = {
-                                if(selectedTab==InterestTab.RECEIVED) {
-                                    onInterestItemClick(interest.senderProfileId,interest.isMatchFixed)
-                                }else{
-                                    onInterestItemClick(interest.receiverProfileId,interest.isMatchFixed)
+                                if (selectedTab == InterestTab.RECEIVED) {
+                                    onInterestItemClick(
+                                        interest.senderProfileId,
+                                        interest.isMatchFixed
+                                    )
+                                } else {
+                                    onInterestItemClick(
+                                        interest.receiverProfileId,
+                                        interest.isMatchFixed
+                                    )
                                 }
                             },
                             onDelete = { interestId ->
@@ -276,11 +281,4 @@ fun InterestTabButton(
 
         borderStroke = 0.2.dp
     )
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun InterestsScreenPreview() {
-    InterestsScreen(onInterestItemClick = {})
 }
