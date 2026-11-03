@@ -23,7 +23,6 @@ import com.saravanamarriagebureau.util.AppPreferences
 import com.saravanamarriagebureau.util.Constants.KEY_USER_TYPE
 import timber.log.Timber
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SmbNavigationApp(
     modifier: Modifier = Modifier,
@@ -146,8 +145,7 @@ fun SmbNavigationApp(
             MainScreenWithHamburger(
                 onLogout = {
                     navController.navigate(Routes.Login) {
-                        appPreferences.saveLoginStatus(isLoggedIn = false)
-                        appPreferences.saveUserStaus(isAdmin = false)
+                        clearPreferences(appPreferences)
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
@@ -161,8 +159,7 @@ fun SmbNavigationApp(
             AdminLandingScreen(
                 onLogout = {
                     navController.navigate(Routes.Login) {
-                        appPreferences.saveLoginStatus(isLoggedIn = false)
-                        appPreferences.saveUserStaus(isAdmin = false)
+                        clearPreferences(appPreferences)
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
@@ -273,4 +270,10 @@ fun SmbNavigationApp(
 //            AdminPanelScreen()
 //        }
     }
+}
+
+fun clearPreferences(appPreferences: AppPreferences){
+    appPreferences.saveLoginStatus(isLoggedIn = false)
+    appPreferences.saveUserStaus(isAdmin = false)
+    appPreferences.savePaidUser(isPaidUser = false)
 }

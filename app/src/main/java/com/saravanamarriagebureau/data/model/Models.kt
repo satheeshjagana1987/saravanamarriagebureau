@@ -45,6 +45,7 @@ data class User(
     val status: String,
     val gender: String,
     val isAdmin: Boolean,
+    val isPaidUser: Boolean,
 )
 
 data class RefreshTokenRequest(
@@ -157,7 +158,8 @@ data class ProfileData(
     val profilePhoto: String?,
     val rejectionReason: String?,
     val familyVideo: String?,
-)
+    val profilePhotos: List<String> = emptyList(),
+    )
 
 data class ProfileMedia(
     val mediaId: String,

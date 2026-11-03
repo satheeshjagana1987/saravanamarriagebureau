@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -84,7 +86,6 @@ import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.data.model.UserInterestsData
-import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
 import com.saravanamarriagebureau.ui.screens.interests.UserInterestsAcceptRejectUIState
 import com.saravanamarriagebureau.ui.screens.interests.UserInterestsViewModel
 import com.saravanamarriagebureau.ui.screens.matches.MatchesViewModel
@@ -95,7 +96,6 @@ import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.SoftRose
 import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.SuccessSoft
-import com.saravanamarriagebureau.ui.theme.TextPrimary
 import com.saravanamarriagebureau.ui.theme.TextSecondary
 import com.saravanamarriagebureau.ui.theme.Warning
 import com.saravanamarriagebureau.ui.theme.White
@@ -307,6 +307,109 @@ fun ProfilePhoto(
     )
 }
 
+
+@Composable
+fun ProfileImagePager(
+    profilePhotos: List<String>,
+    modifier: Modifier = Modifier
+) {
+    if (profilePhotos.isEmpty()) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(300.dp)
+                .background(Color.LightGray),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("No Profile Images")
+        }
+        return
+    }
+
+    val pagerState = rememberPagerState(
+        pageCount = { profilePhotos.size }
+    )
+
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+
+        // Image ViewPager
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(350.dp)
+        ) { page ->
+
+            SubcomposeAsyncImage(
+                model = profilePhotos[page],
+                contentDescription = "Profile Image ${page + 1}",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop,
+
+                loading = {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                },
+
+                error = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Image not available")
+                    }
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Page indicator: 1 / 5
+        Text(
+            text = "${pagerState.currentPage + 1} / ${profilePhotos.size}",
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            fontSize = 14.sp
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Dot indicators
+        Row(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            repeat(profilePhotos.size) { index ->
+
+                Box(
+                    modifier = Modifier
+                        .size(
+                            if (pagerState.currentPage == index) 10.dp
+                            else 7.dp
+                        )
+                        .clip(CircleShape)
+                        .background(
+                            if (pagerState.currentPage == index)
+                                Color(0xFF800020)
+                            else
+                                Color.LightGray
+                        )
+                )
+            }
+        }
+    }
+}
+
+
 @Composable
 fun ProfilePhoto(
     imageUrl: String,
@@ -451,7 +554,7 @@ fun ProfileCard(
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                          onInterest(profile.id)
+                            onInterest(profile.id)
                         },
                 )
 
@@ -655,7 +758,7 @@ fun AdminMembershipCard(
                 CustomButton(
                     text = "InActive",
                     onClick = {
-                        if(profile.isActive) {
+                        if (profile.isActive) {
                             onDelete(profile.id)
                         }
                     },
@@ -666,7 +769,7 @@ fun AdminMembershipCard(
                     textColor = White,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp,
-                    backgroundColor = if(profile.isActive) Red else Gray
+                    backgroundColor = if (profile.isActive) Red else Gray
                 )
             }
 
@@ -1047,10 +1150,6 @@ fun PlayButton(
 fun ProfileInfoRow(
     label: String,
     value: String,
-    secondLabel: String? = null,
-    secondValue: String? = null,
-    thirdLabel: String? = null,
-    thirdValue: String? = null
 ) {
     Row(
         modifier = Modifier
@@ -1063,53 +1162,16 @@ fun ProfileInfoRow(
             text = label,
             color = TextSecondary,
             fontSize = 14.sp,
+            modifier = Modifier.weight(0.4f)
         )
-        Spacer(modifier = Modifier.size(10.dp))
-        VerticalDivider()
-        Spacer(modifier = Modifier.size(10.dp))
+
         Text(
             text = value,
             color = Black,
             fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.weight(0.6f)
         )
-
-        if (secondLabel != null && secondValue != null) {
-            Spacer(modifier = Modifier.size(10.dp))
-            Text(
-                text = secondLabel,
-                color = TextSecondary,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.size(10.dp))
-            VerticalDivider()
-            Spacer(modifier = Modifier.size(10.dp))
-            Text(
-                text = secondValue,
-                color = Black,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-
-        if (thirdValue != null && thirdLabel != null) {
-            Spacer(modifier = Modifier.size(10.dp))
-            Text(
-                text = thirdLabel,
-                color = TextSecondary,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.size(10.dp))
-            VerticalDivider()
-            Spacer(modifier = Modifier.size(10.dp))
-
-            Text(
-                text = thirdValue,
-                color = TextPrimary,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
     }
 }
 

@@ -8,6 +8,7 @@ object Constants {
     const val KEY_REFRESH_TOKEN = "refresh_token"
     const val KEY_ACCESS_TOKEN = "access_token"
     const val KEY_IS_ADMIN = "is_admin"
+    const val KEY_IS_PAID_USER = "is_paid_user"
     const val KEY_RESET_TOKEN = "reset_token"
     const val KEY_USER_NAME = "user_name"
     const val KEY_MEDIA_URL = "media_url"

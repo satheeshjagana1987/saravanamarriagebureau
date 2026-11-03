@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.saravanamarriagebureau.util.Constants.KEY_ACCESS_TOKEN
 import com.saravanamarriagebureau.util.Constants.KEY_IS_ADMIN
 import com.saravanamarriagebureau.util.Constants.KEY_IS_LOGGED_IN
+import com.saravanamarriagebureau.util.Constants.KEY_IS_PAID_USER
 import com.saravanamarriagebureau.util.Constants.KEY_MEDIA_ID
 import com.saravanamarriagebureau.util.Constants.KEY_MEDIA_URL
 import com.saravanamarriagebureau.util.Constants.KEY_REFRESH_TOKEN
@@ -66,6 +67,17 @@ class AppPreferences @Inject constructor(
 
     fun isUserStatus(): Boolean {
         return preferences.getBoolean(KEY_IS_ADMIN, false)
+    }
+
+
+    fun savePaidUser(isPaidUser: Boolean) {
+        preferences.edit()
+            .putBoolean(KEY_IS_PAID_USER, isPaidUser)
+            .apply()
+    }
+
+    fun isPaidUser(): Boolean {
+        return preferences.getBoolean(KEY_IS_PAID_USER, false)
     }
 
     fun isRememberMe(rememberMe: Boolean) {

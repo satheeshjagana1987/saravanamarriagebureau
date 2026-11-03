@@ -19,7 +19,7 @@ fun OfferScreen() {
             .fillMaxWidth()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.splash_screen_bg),
+            painter = painterResource(id = R.drawable.splash_bg),
             contentDescription = "A descriptive label for accessibility",
             contentScale = ContentScale.Crop,
             modifier = Modifier

@@ -6,6 +6,7 @@ import com.saravanamarriagebureau.data.model.MembershipPlanPurchaseData
 import com.saravanamarriagebureau.data.repository.MemberShipPlansRepository
 import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
 import com.saravanamarriagebureau.util.ApiResult
+import com.saravanamarriagebureau.util.AppPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemberShipPlansViewModel @Inject constructor(
-    private val memberShipPlansRepository: MemberShipPlansRepository
+    private val memberShipPlansRepository: MemberShipPlansRepository,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val _uiStateMemberShipPlans =
@@ -134,6 +136,7 @@ class MemberShipPlansViewModel @Inject constructor(
                             data = result.data,
                             message = result.message
                         )
+                    appPreferences.savePaidUser(isPaidUser = true)
                 }
 
                 is ApiResult.Error -> {

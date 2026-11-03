@@ -365,10 +365,6 @@ fun MainScreenWithHamburger(
                             navController.navigate(
                                 profileRoute(profileId = profile.id, isMatchFixed = false)
                             )
-                        },
-
-                        onInterestSent = {
-                            navController.navigate(Routes.InterestSent)
                         }
                     )
                 }

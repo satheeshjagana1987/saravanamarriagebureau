@@ -6,6 +6,7 @@ import com.saravanamarriagebureau.data.repository.MatchesRepository
 import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgetPasswordUIState
 import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
 import com.saravanamarriagebureau.util.ApiResult
+import com.saravanamarriagebureau.util.AppPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MatchesViewModel @Inject constructor(
-    private val matchesRepository: MatchesRepository
+    private val matchesRepository: MatchesRepository,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val _uiStateToday =
@@ -38,6 +40,9 @@ class MatchesViewModel @Inject constructor(
 
     val uiStateSendInterest = _uiStateSendInterest.asStateFlow()
 
+    fun isPaidUser(): Boolean {
+        return appPreferences.isPaidUser()
+    }
 
     fun getTodayMatches() {
 

@@ -71,6 +71,7 @@ import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.NetworkImage
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfilePhoto
+import com.saravanamarriagebureau.ui.components.TimePickerTextField
 import com.saravanamarriagebureau.ui.screens.media.MediaUploadCompleteViewModel
 import com.saravanamarriagebureau.ui.screens.media.MediaUploadInitiatedUIState
 import com.saravanamarriagebureau.ui.screens.media.MediaUploadInitiatedViewModel
@@ -117,8 +118,9 @@ fun ProfileCreationScreen(
     var income by remember { mutableStateOf("") }
     var placeOfProfession by remember { mutableStateOf("") }
     var familyDetails by remember { mutableStateOf("") }
-    var profilePhoto by remember { mutableStateOf("") }
+    var profile by remember { mutableStateOf("") }
     var rejectionReason by remember { mutableStateOf("") }
+
     // Location dropdown
     val options = listOf("Amaravathi, Guntur, Vizag")
     var expanded by remember { mutableStateOf(false) }
@@ -147,6 +149,10 @@ fun ProfileCreationScreen(
     var incomeError by remember { mutableStateOf<String?>(null) }
     var placeOfProfessionError by remember { mutableStateOf<String?>(null) }
     var familyDetailsError by remember { mutableStateOf<String?>(null) }
+
+    var profilePhotos by remember {
+        mutableStateOf<List<String>>(emptyList())
+    }
 
     var selectedTab by remember {
         mutableStateOf(ProfileTab.PERSONAL)
@@ -252,8 +258,8 @@ fun ProfileCreationScreen(
                 placeOfProfession = profile.workLocation.orEmpty()
                 income = profile.income.orEmpty()
                 familyDetails = profile.familyDetails.orEmpty()
-                profilePhoto = profile.profilePhoto ?: ""
                 rejectionReason = profile.rejectionReason ?: ""
+                profilePhotos = profile.profilePhotos
 
                 ToastUtils.success(context = context, message = "Profile data fetched successfully")
             }
@@ -710,34 +716,11 @@ fun ProfileCreationScreen(
                             fontWeight = FontWeight.Normal
                         )
                         Spacer(Modifier.height(5.dp))
-                        OutlinedTextField(
-                            value = birthTime,
-                            onValueChange = {
-                                birthTime = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.birth_time),
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
+                        TimePickerTextField(
+                            label = "Birth Time",
+                            selectedTime = birthTime,
+                            onTimeSelected = { birthTime = it }
                         )
-
                         Spacer(Modifier.height(15.dp))
                         LabelName(
                             labelName = stringResource(id = R.string.native_place),
@@ -1190,308 +1173,349 @@ fun ProfileCreationScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(White)
-                            .padding(16.dp)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(White)
+                                .padding(16.dp)
                         ) {
-                            state.imageUri?.let { uri ->
-                                ProfilePhoto(uri, Modifier.size(120.dp))
-                            } ?: run {
-                                NetworkImage(url = profilePhoto, modifier = Modifier.size(120.dp))
-                            }
-                            Spacer(Modifier.weight(1f))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                state.imageUri?.let { uri ->
+                                    ProfilePhoto(uri, Modifier.size(120.dp))
+                                } ?: run {
+                                    NetworkImage(
+                                        url = profilePhotos[0],
+                                        modifier = Modifier.size(120.dp)
+                                    )
+                                }
+                                Spacer(Modifier.weight(1f))
 //                            CustomButtonForUpload(
 //                                text = stringResource(id = R.string.upload),
 //                                onClick = {},
 //                                modifier = Modifier.weight(1f),
 //                            )
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(10.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(10.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
                                 ) {
-                                    Button(
-                                        onClick = {
-                                            galleryLauncher.launch(
-                                                PickVisualMediaRequest(
-                                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        Button(
+                                            onClick = {
+                                                galleryLauncher.launch(
+                                                    PickVisualMediaRequest(
+                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                    )
                                                 )
-                                            )
+                                            }
+                                        ) {
+                                            Text("Gallery")
                                         }
-                                    ) {
-                                        Text("Gallery")
+
+                                        Button(
+                                            onClick = {
+                                                val file = File.createTempFile(
+                                                    "camera_",
+                                                    ".jpg",
+                                                    context.cacheDir
+                                                )
+
+                                                pendingCameraUri = FileProvider.getUriForFile(
+                                                    context,
+                                                    "${context.packageName}.fileprovider",
+                                                    file
+                                                )
+
+                                                cameraLauncher.launch(pendingCameraUri!!)
+                                            }
+                                        ) {
+                                            Text("Camera")
+                                        }
                                     }
 
                                     Button(
                                         onClick = {
-                                            val file = File.createTempFile(
-                                                "camera_",
-                                                ".jpg",
-                                                context.cacheDir
-                                            )
 
-                                            pendingCameraUri = FileProvider.getUriForFile(
-                                                context,
-                                                "${context.packageName}.fileprovider",
-                                                file
-                                            )
-
-                                            cameraLauncher.launch(pendingCameraUri!!)
-                                        }
-                                    ) {
-                                        Text("Camera")
-                                    }
-                                }
-
-                                Button(
-                                    onClick = {
-
-                                        imageViewModel.uploadImage()
+                                            imageViewModel.uploadImage()
 //                                        mediaInitiatedUploadViewModel.mediaUploadInitiated(
 //                                            mediaType = PRIMARY_PHOTO,
 //                                            fileSize = imageFileSize,
 //                                            originalFileName = imageFileName
 //                                        )
-                                    },
-                                    enabled = state.imageUri != null &&
-                                            !state.isLoading && !state.success,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        if (state.isLoading) "Uploading..."
-                                        else "Upload Image"
-                                    )
-                                }
-
-                                if (state.isLoading) {
-                                    LoadingView()
-                                }
-
-                                if (state.success) {
-                                    ToastUtils.success(
-                                        context = context,
-                                        message = state.message.toString()
-                                    )
-//                                    mediaUploadCompleteViewModel.mediaUploadComplete()
-                                }
-
-                                state.error?.let {
-                                    ToastUtils.error(context = context, message = it)
-                                }
-
-                                when (val state = mediaInitiatedUploadUiState) {
-
-                                    MediaUploadInitiatedUIState.Idle -> {
-                                        // Nothing
+                                        },
+                                        enabled = state.imageUri != null &&
+                                                !state.isLoading && !state.success,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            if (state.isLoading) "Uploading..."
+                                            else "Upload Image"
+                                        )
                                     }
 
-                                    MediaUploadInitiatedUIState.Loading -> {
+                                    if (state.isLoading) {
                                         LoadingView()
                                     }
 
-                                    is MediaUploadInitiatedUIState.Success -> {
-                                        Text(
-                                            text = state.message ?: "Media initiated"
+                                    if (state.success) {
+                                        ToastUtils.success(
+                                            context = context,
+                                            message = state.message.toString()
                                         )
+//                                    mediaUploadCompleteViewModel.mediaUploadComplete()
                                     }
 
-                                    is MediaUploadInitiatedUIState.Error -> {
-                                        Text(
-                                            text = state.message,
-                                            color = Color.Red
-                                        )
+                                    state.error?.let {
+                                        ToastUtils.error(context = context, message = it)
                                     }
-                                }
-                            }
-                        }
-                        Spacer(Modifier.height(20.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            LabelName(
-                                labelName = stringResource(id = R.string.family_video),
-                                fontSize = 14.sp,
-                                color = Maroon,
-                                fontWeight = FontWeight.Normal
-                            )
-                            Spacer(Modifier.weight(1f))
-                            Column {
-                                Button(
-                                    onClick = {
-                                        picker.launch(
-                                            PickVisualMediaRequest(
-                                                ActivityResultContracts.PickVisualMedia.VideoOnly
+
+                                    when (val state = mediaInitiatedUploadUiState) {
+
+                                        MediaUploadInitiatedUIState.Idle -> {
+                                            // Nothing
+                                        }
+
+                                        MediaUploadInitiatedUIState.Loading -> {
+                                            LoadingView()
+                                        }
+
+                                        is MediaUploadInitiatedUIState.Success -> {
+                                            Text(
+                                                text = state.message ?: "Media initiated"
                                             )
-                                        )
-                                    }
-                                ) {
-                                    Text("Select Video")
-                                }
-                                Spacer(Modifier.height(10.dp))
+                                        }
 
-                                Text(status)
-
-                                Button(
-                                    enabled = videoUri != null,
-                                    onClick = {
-                                        videoUri?.let { uri ->
-                                            scope.launch {
-                                                status = try {
-                                                    imageViewModel.uploadVideo(
-                                                        uri = uri,
-                                                        context = context
-                                                    )
-                                                    "Upload completed"
-                                                } catch (e: Exception) {
-                                                    "Upload failed: ${e.message}"
-                                                }
-                                            }
+                                        is MediaUploadInitiatedUIState.Error -> {
+                                            Text(
+                                                text = state.message,
+                                                color = Color.Red
+                                            )
                                         }
                                     }
-                                ) {
-                                    Text("Upload Video")
-                                }
-
-                                if (videoState.isLoading) {
-                                    LoadingView()
-                                }
-
-                                if (videoState.success) {
-                                    ToastUtils.success(
-                                        context = context,
-                                        message = state.message.toString()
-                                    )
-//                                    mediaUploadCompleteViewModel.mediaUploadComplete()
-                                }
-
-                                videoState.error?.let {
-                                    ToastUtils.error(context = context, message = it)
                                 }
                             }
-
                         }
-
-                        Spacer(Modifier.height(20.dp))
-//                        Row(
-//                            verticalAlignment = Alignment.CenterVertically,
-//                            horizontalArrangement = Arrangement.Center
-//                        ) {
-//                            LabelName(
-//                                labelName = stringResource(id = R.string.bride_groom_voice_record),
-//                                fontSize = 14.sp,
-//                                color = Maroon,
-//                                fontWeight = FontWeight.Normal
-//                            )
-//                            Spacer(Modifier.weight(1f))
+                        Spacer(Modifier.height(10.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(White)
+                                .padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                state.imageUri?.let { uri ->
+                                    ProfilePhoto(uri, Modifier.size(120.dp))
+                                } ?: run {
+                                    NetworkImage(
+                                        url = profilePhotos[1],
+                                        modifier = Modifier.size(120.dp)
+                                    )
+                                }
+                                Spacer(Modifier.weight(1f))
 //                            CustomButtonForUpload(
 //                                text = stringResource(id = R.string.upload),
 //                                onClick = {},
 //                                modifier = Modifier.weight(1f),
 //                            )
-//                        }
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(10.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        Button(
+                                            onClick = {
+                                                galleryLauncher.launch(
+                                                    PickVisualMediaRequest(
+                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                    )
+                                                )
+                                            }
+                                        ) {
+                                            Text("Gallery")
+                                        }
 
-//                        Column {
-//                            Button(
-//                                onClick = {
-//                                    if (!recording) {
-//                                        val granted = ContextCompat.checkSelfPermission(
-//                                            context,
-//                                            Manifest.permission.RECORD_AUDIO
-//                                        ) == PackageManager.PERMISSION_GRANTED
-//
-//                                        if (granted) {
-//                                            try {
-//                                                val voiceRecorder = VoiceRecorder(context)
-//                                                voiceRecorder.start()
-//                                                recorder = voiceRecorder
-//                                                recording = true
-//                                                status = "Recording..."
-//                                            } catch (e: Exception) {
-//                                                status = "Could not start recording"
-//                                            }
-//                                        } else {
-//                                            permissionLauncher.launch(
-//                                                Manifest.permission.RECORD_AUDIO
-//                                            )
-//                                        }
-//                                    } else {
-//                                        try {
-//                                            val file = recorder!!.stop()
-//                                            recorder = null
-//                                            recording = false
-//                                            status = "Voice note ready"
-//
-//                                            scope.launch {
-//                                                status = try {
-//                                                    imageViewModel.uploadVoiceGroomOrBrideRecord(
-//                                                        file = file
-//                                                    )
-//                                                    "Voice note uploaded"
-//                                                } catch (e: Exception) {
-//                                                    "Upload failed: ${e.message}"
-//                                                }
-//                                            }
-//                                        } catch (e: Exception) {
-//                                            recorder?.cancel()
-//                                            recorder = null
-//                                            recording = false
-//                                            status = "Could not finalize recording"
-//                                        }
-//                                    }
-//                                }
-//                            ) {
-//                                Text(if (recording) "Stop & Upload" else "Record Voice Note")
-//                            }
-//
-//                            if (recording) {
-//                                TextButton(onClick = {
-//                                    recorder?.cancel()
-//                                    recorder = null
-//                                    recording = false
-//                                    status = "Recording cancelled"
-//                                }) {
-//                                    Text("Cancel")
-//                                }
-//                            }
-//
-//                            Text(status)
-//                        }
+                                        Button(
+                                            onClick = {
+                                                val file = File.createTempFile(
+                                                    "camera_",
+                                                    ".jpg",
+                                                    context.cacheDir
+                                                )
+
+                                                pendingCameraUri = FileProvider.getUriForFile(
+                                                    context,
+                                                    "${context.packageName}.fileprovider",
+                                                    file
+                                                )
+
+                                                cameraLauncher.launch(pendingCameraUri!!)
+                                            }
+                                        ) {
+                                            Text("Camera")
+                                        }
+                                    }
+
+                                    Button(
+                                        onClick = {
+
+                                            imageViewModel.uploadImage()
+//                                        mediaInitiatedUploadViewModel.mediaUploadInitiated(
+//                                            mediaType = PRIMARY_PHOTO,
+//                                            fileSize = imageFileSize,
+//                                            originalFileName = imageFileName
+//                                        )
+                                        },
+                                        enabled = state.imageUri != null &&
+                                                !state.isLoading && !state.success,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            if (state.isLoading) "Uploading..."
+                                            else "Upload Image"
+                                        )
+                                    }
+
+                                    if (state.isLoading) {
+                                        LoadingView()
+                                    }
+
+                                    if (state.success) {
+                                        ToastUtils.success(
+                                            context = context,
+                                            message = state.message.toString()
+                                        )
+                                    }
+
+                                    state.error?.let {
+                                        ToastUtils.error(context = context, message = it)
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(Modifier.padding(10.dp))
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(White)
+                                .padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                state.imageUri?.let { uri ->
+                                    ProfilePhoto(uri, Modifier.size(120.dp))
+                                } ?: run {
+                                    NetworkImage(
+                                        url = profilePhotos[2],
+                                        modifier = Modifier.size(120.dp)
+                                    )
+                                }
+                                Spacer(Modifier.weight(1f))
+//                            CustomButtonForUpload(
+//                                text = stringResource(id = R.string.upload),
+//                                onClick = {},
+//                                modifier = Modifier.weight(1f),
+//                            )
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(10.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        Button(
+                                            onClick = {
+                                                galleryLauncher.launch(
+                                                    PickVisualMediaRequest(
+                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                    )
+                                                )
+                                            }
+                                        ) {
+                                            Text("Gallery")
+                                        }
+
+                                        Button(
+                                            onClick = {
+                                                val file = File.createTempFile(
+                                                    "camera_",
+                                                    ".jpg",
+                                                    context.cacheDir
+                                                )
+
+                                                pendingCameraUri = FileProvider.getUriForFile(
+                                                    context,
+                                                    "${context.packageName}.fileprovider",
+                                                    file
+                                                )
+
+                                                cameraLauncher.launch(pendingCameraUri!!)
+                                            }
+                                        ) {
+                                            Text("Camera")
+                                        }
+                                    }
+
+                                    Button(
+                                        onClick = {
+
+                                            imageViewModel.uploadImage()
+//                                        mediaInitiatedUploadViewModel.mediaUploadInitiated(
+//                                            mediaType = PRIMARY_PHOTO,
+//                                            fileSize = imageFileSize,
+//                                            originalFileName = imageFileName
+//                                        )
+                                        },
+                                        enabled = state.imageUri != null &&
+                                                !state.isLoading && !state.success,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            if (state.isLoading) "Uploading..."
+                                            else "Upload Image"
+                                        )
+                                    }
+
+                                    if (state.isLoading) {
+                                        LoadingView()
+                                    }
+
+                                    if (state.success) {
+                                        ToastUtils.success(
+                                            context = context,
+                                            message = state.message.toString()
+                                        )
+                                    }
+
+                                    state.error?.let {
+                                        ToastUtils.error(context = context, message = it)
+                                    }
+                                }
+                            }
+                        }
+
                     }
-
-//                    Spacer(Modifier.height(20.dp))
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        horizontalArrangement = Arrangement.Center
-//                    ) {
-//                        LabelName(
-//                            labelName = stringResource(id = R.string.parent_voice_record),
-//                            fontSize = 14.sp,
-//                            color = Maroon,
-//                            fontWeight = FontWeight.Normal
-//                        )
-//                        Spacer(Modifier.weight(1f))
-//                        CustomButtonForUpload(
-//                            text = stringResource(id = R.string.upload),
-//                            onClick = {},
-//                            modifier = Modifier.weight(1f),
-//                        )
-//                    }
-//                    Spacer(Modifier.height(30.dp))
-//                    LabelName(
-//                        labelName = stringResource(id = R.string.video_voice_limit),
-//                        fontSize = 12.sp,
-//                        color = Red,
-//                        fontWeight = FontWeight.Normal
-//                    )
-
                 }
             }
         }
@@ -1698,33 +1722,6 @@ fun ProfileTabButton(
         backgroundColor = if (selected) Maroon else White,
 
         borderColor = if (selected) Maroon else Black,
-
-        borderStroke = 0.2.dp
-    )
-}
-
-@Composable
-fun CustomButtonForUpload(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    CustomButton(
-        text = text,
-        onClick = onClick,
-        height = 40.dp,
-        width = 0.dp,
-        modifier = modifier,
-        cornerRadius = 5.dp,
-
-        textColor = White,
-
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
-
-        backgroundColor = Maroon,
-
-        borderColor = Maroon,
 
         borderStroke = 0.2.dp
     )

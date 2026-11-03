@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -47,6 +48,7 @@ import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
+import timber.log.Timber
 
 @Composable
 fun AdminInterestDetailsScreen(
@@ -60,7 +62,6 @@ fun AdminInterestDetailsScreen(
         mutableStateOf(false)
     }
 
-    var interestData by remember { mutableStateOf<AdminInterestsData?>(null) }
     var reason by remember { mutableStateOf("") }
     var reasonError by remember { mutableStateOf<String?>(null) }
 
@@ -86,6 +87,8 @@ fun AdminInterestDetailsScreen(
 
     val uiStateAdminInterestsById by viewModel.uiStateAdminInterestsById.collectAsStateWithLifecycle()
     val uiStateAdminInterestsApproveOrRejectMatch by viewModel.uiStateAdminInterestsApproveOrRejectMatch.collectAsStateWithLifecycle()
+    val interestData =
+        (uiStateAdminInterestsById as? AdminInterestsByIdUIState.Success)?.data
 
     LaunchedEffect(Unit) {
         viewModel.loadAdminInterestById(
@@ -105,7 +108,6 @@ fun AdminInterestDetailsScreen(
 
             is AdminInterestsByIdUIState.Success -> {
                 isLoading = false
-                interestData = state.data
                 senderName = state.data.sender.fullName
                 senderDob = state.data.sender.dateOfBirth ?: NA
                 senderGender = state.data.sender.gender
@@ -123,6 +125,7 @@ fun AdminInterestDetailsScreen(
                 receiverMaritalStatus = state.data.receiver.maritalStatus ?: NA
                 receiverProfession = state.data.receiver.profession ?: NA
                 receiverMobileNumber = state.data.receiver.mobile ?: NA
+
             }
 
             is AdminInterestsByIdUIState.Error -> {
@@ -142,9 +145,11 @@ fun AdminInterestDetailsScreen(
             .background(Cream),
     ) {
         ScreenHeader("Interest Details", onBack)
-        Column(Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())) {
+        Column(
+            Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -287,78 +292,69 @@ fun AdminInterestDetailsScreen(
                     )
                 }
             }
-        }
-        Spacer(Modifier.weight(1f))
-        if (interestData?.status == "ACCEPTED" && interestData?.isMatchFixed == false) {
-            Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 16.dp)) {
-                LabelName(
-                    labelName = "Reason",
-                    fontSize = 14.sp,
-                    color = Maroon,
-                    fontWeight = FontWeight.Normal
-                )
-                Spacer(Modifier.height(5.dp))
-                OutlinedTextField(
-                    value = reason,
-                    onValueChange = { reason = it },
-                    placeholder = { Text("Type your message here...") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp),
-                    minLines = 1,
-                    maxLines = 5
-                )
-                Spacer(Modifier.height(15.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = 50.dp
-                        ),
-
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    PrimaryButton(
-                        text = "Match Approve",
-                        modifier = Modifier.weight(1f),
-
-                        onClick = {
-                            viewModel.adminApproveOrRejectMatch(
-                                interestId = interestId,
-                                isMatchFixed = true,
-                                matchRejectionReason = ""
-                            )
-                        }
+            Timber.e("interest==>$interestData")
+            if (interestData?.status == "ACCEPTED" && !interestData.isMatchFixed) {
+                Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 20.dp)) {
+                    LabelName(
+                        labelName = "Reason",
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
                     )
+                    Spacer(Modifier.height(5.dp))
+                    OutlinedTextField(
+                        value = reason,
+                        onValueChange = { reason = it },
+                        placeholder = { Text("Type your message here...") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp),
+                        minLines = 1,
+                        maxLines = 5
+                    )
+                    Spacer(Modifier.height(15.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        PrimaryButton(
+                            text = "Match Approve",
 
-                    PrimaryButton(
-                        text = "Match Reject",
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            reasonError = ValidationUtils.validateField(
-                                field = reason.trim(),
-                                fieldName = "Reason"
-                            )
-                            if (reasonError != null) {
-                                ToastUtils.error(
-                                    context = context,
-                                    message = reasonError.toString()
+                            onClick = {
+                                viewModel.adminApproveOrRejectMatch(
+                                    interestId = interestId,
+                                    isMatchFixed = true,
+                                    matchRejectionReason = ""
                                 )
-                                return@PrimaryButton
                             }
+                        )
+                        Spacer(Modifier.width(15.dp))
+                        PrimaryButton(
+                            text = "Match Reject",
+                            onClick = {
+                                reasonError = ValidationUtils.validateField(
+                                    field = reason.trim(),
+                                    fieldName = "Reason"
+                                )
+                                if (reasonError != null) {
+                                    ToastUtils.error(
+                                        context = context,
+                                        message = reasonError.toString()
+                                    )
+                                    return@PrimaryButton
+                                }
 
-                            viewModel.adminApproveOrRejectMatch(
-                                interestId = interestId,
-                                isMatchFixed = false,
-                                matchRejectionReason = reason.trim()
-                            )
+                                viewModel.adminApproveOrRejectMatch(
+                                    interestId = interestId,
+                                    isMatchFixed = false,
+                                    matchRejectionReason = reason.trim()
+                                )
 
-                        }
-                    )
+                            }
+                        )
 
+                    }
                 }
             }
         }

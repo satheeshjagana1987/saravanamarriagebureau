@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -268,73 +269,63 @@ fun AdminUserContent(
                     )
                 }
             }
-        }
-        Timber.e("status==>${profile.status}")
 
-        if (isFromPending) {
-            Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 16.dp)) {
-                LabelName(
-                    labelName = "Reason",
-                    fontSize = 14.sp,
-                    color = Maroon,
-                    fontWeight = FontWeight.Normal
-                )
-                Spacer(Modifier.height(5.dp))
-                OutlinedTextField(
-                    value = reason,
-                    onValueChange = { reason = it },
-                    placeholder = { Text("Type your message here...") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp),
-                    minLines = 1,
-                    maxLines = 5
-                )
-
-                Timber.e("profile ==>  $profile")
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = 50.dp
-                        ),
-
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    PrimaryButton(
-                        text = stringResource(id = R.string.approve),
-                        modifier = Modifier.weight(1f),
-
-                        onClick = {
-                            viewModel.approveUser(userId = profile.id)
-                        }
+            if (isFromPending) {
+                Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 20.dp)) {
+                    LabelName(
+                        labelName = "Reason",
+                        fontSize = 14.sp,
+                        color = Maroon,
+                        fontWeight = FontWeight.Normal
                     )
+                    Spacer(Modifier.height(5.dp))
+                    OutlinedTextField(
+                        value = reason,
+                        onValueChange = { reason = it },
+                        placeholder = { Text("Type your message here...") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp),
+                        minLines = 1,
+                        maxLines = 5
+                    )
+                    Spacer(Modifier.width(15.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
 
-                    PrimaryButton(
-                        text = stringResource(id = R.string.reject),
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            reasonError = ValidationUtils.validateField(
-                                field = reason.trim(),
-                                fieldName = "Reason"
-                            )
-                            if (reasonError != null) {
-                                ToastUtils.error(
-                                    context = context,
-                                    message = reasonError.toString()
-                                )
-                                return@PrimaryButton
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        PrimaryButton(
+                            text = stringResource(id = R.string.approve),
+
+                            onClick = {
+                                viewModel.approveUser(userId = profile.id)
                             }
-                            viewModel.rejectUser(
-                                userId = profile.id,
-                                reason = reason.trim()
-                            )
-                        }
-                    )
+                        )
+                        Spacer(Modifier.width(15.dp))
+                        PrimaryButton(
+                            text = stringResource(id = R.string.reject),
+                            onClick = {
+                                reasonError = ValidationUtils.validateField(
+                                    field = reason.trim(),
+                                    fieldName = "Reason"
+                                )
+                                if (reasonError != null) {
+                                    ToastUtils.error(
+                                        context = context,
+                                        message = reasonError.toString()
+                                    )
+                                    return@PrimaryButton
+                                }
+                                viewModel.rejectUser(
+                                    userId = profile.id,
+                                    reason = reason.trim()
+                                )
+                            }
+                        )
 
+                    }
                 }
             }
         }

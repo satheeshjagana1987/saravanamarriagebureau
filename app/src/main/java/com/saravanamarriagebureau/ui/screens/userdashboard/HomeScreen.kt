@@ -97,10 +97,10 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxWidth()
             .background(Cream)
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OfferScreen()
-        Spacer(Modifier.height(20.dp))
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -132,7 +132,7 @@ private fun MembershipDetailsCard(
 ) {
     Column(
         Modifier
-            .padding(10.dp)
+            .padding(16.dp)
             .background(White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

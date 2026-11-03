@@ -6,6 +6,7 @@ import com.saravanamarriagebureau.data.api.SmbApi
 import com.saravanamarriagebureau.data.model.DeleteMediaResponse
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.AppPreferences
+import com.saravanamarriagebureau.util.ImageCompressor
 import com.saravanamarriagebureau.util.safeApiCall
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +37,14 @@ class ImageRepository @Inject constructor(
                 context.cacheDir
             )
 
+            val compressedFile = ImageCompressor.compress(
+                context = context,
+                uri = uri,
+                maxDimension = 1600,
+                quality = 75
+            )
+
+
             try {
                 val input = context.contentResolver
                     .openInputStream(uri)
@@ -47,7 +56,11 @@ class ImageRepository @Inject constructor(
                     }
                 }
 
-                val requestBody = tempFile.asRequestBody(
+//                val requestBody = tempFile.asRequestBody(
+//                    "image/jpeg".toMediaType()
+//                )
+
+                val requestBody = compressedFile.asRequestBody(
                     "image/jpeg".toMediaType()
                 )
 
@@ -75,7 +88,7 @@ class ImageRepository @Inject constructor(
                 }
 
             } finally {
-                tempFile.delete()
+                compressedFile.delete()
             }
         }
 

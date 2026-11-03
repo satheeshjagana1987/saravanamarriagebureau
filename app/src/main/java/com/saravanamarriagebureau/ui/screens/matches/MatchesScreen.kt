@@ -1,7 +1,5 @@
 package com.saravanamarriagebureau.ui.screens.matches
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,12 +36,11 @@ import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.ToastUtils
+import timber.log.Timber
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MatchesScreen(
     onProfile: (MatchesData) -> Unit,
-    onInterestSent: () -> Unit,
     viewModel: MatchesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -67,9 +64,10 @@ fun MatchesScreen(
     val uiStatePast by viewModel.uiStatePast.collectAsStateWithLifecycle()
     val uiStateRecommended by viewModel.uiStateRecommended.collectAsStateWithLifecycle()
 
-    var sendingProfileId by remember {
-        mutableStateOf<String?>(null)
+    val isPaidUser = remember {
+        viewModel.isPaidUser()
     }
+
 
     val uiStateSendInterest by
     viewModel.uiStateSendInterest.collectAsStateWithLifecycle()
@@ -220,7 +218,15 @@ fun MatchesScreen(
                         ProfileCard(
                             profile = profile,
                             onInterest = { matchId ->
-                                viewModel.sendInterest(profileId = matchId)
+                                Timber.e("isPaidUser==>$isPaidUser")
+                                if (isPaidUser) {
+                                    viewModel.sendInterest(profileId = matchId)
+                                } else {
+                                    ToastUtils.error(
+                                        context = context,
+                                        message = "Please upgrade your plan to access this feature"
+                                    )
+                                }
                             },
                             onOpen = { onProfile(profile) },
                             viewModel = viewModel
@@ -241,9 +247,11 @@ fun MatchesScreen(
                         MatchTab.TODAY -> {
                             viewModel.getTodayMatches()
                         }
+
                         MatchTab.PAST -> {
                             viewModel.getPastMatches()
                         }
+
                         else -> {
                             viewModel.getRecommendedMatches()
                         }
@@ -298,5 +306,5 @@ fun MatchTabButton(
 @Preview
 @Composable
 fun MatchesScreenPreview() {
-    MatchesScreen(onProfile = {}, onInterestSent = {})
+    MatchesScreen(onProfile = {})
 }
