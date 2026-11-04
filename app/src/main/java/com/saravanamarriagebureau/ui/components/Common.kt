@@ -310,7 +310,7 @@ fun ProfilePhoto(
 
 @Composable
 fun ProfileImagePager(
-    profilePhotos: List<String>,
+    profilePhotos: List<String?>,
     modifier: Modifier = Modifier
 ) {
     if (profilePhotos.isEmpty()) {

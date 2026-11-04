@@ -158,7 +158,7 @@ data class ProfileData(
     val profilePhoto: String?,
     val rejectionReason: String?,
     val familyVideo: String?,
-    val profilePhotos: List<String> = emptyList(),
+    val profilePhotos: List<String?> = emptyList(),
     )
 
 data class ProfileMedia(

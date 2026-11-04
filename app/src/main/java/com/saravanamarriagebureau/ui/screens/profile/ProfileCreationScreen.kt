@@ -151,7 +151,7 @@ fun ProfileCreationScreen(
     var familyDetailsError by remember { mutableStateOf<String?>(null) }
 
     var profilePhotos by remember {
-        mutableStateOf<List<String>>(emptyList())
+        mutableStateOf<List<String?>>(emptyList())
     }
 
     var selectedTab by remember {
@@ -1188,7 +1188,7 @@ fun ProfileCreationScreen(
                                     ProfilePhoto(uri, Modifier.size(120.dp))
                                 } ?: run {
                                     NetworkImage(
-                                        url = profilePhotos[0],
+                                        url = profilePhotos[0] ?: "",
                                         modifier = Modifier.size(120.dp)
                                     )
                                 }
@@ -1318,7 +1318,7 @@ fun ProfileCreationScreen(
                                     ProfilePhoto(uri, Modifier.size(120.dp))
                                 } ?: run {
                                     NetworkImage(
-                                        url = profilePhotos[1],
+                                        url = profilePhotos[1] ?: "",
                                         modifier = Modifier.size(120.dp)
                                     )
                                 }
@@ -1424,7 +1424,7 @@ fun ProfileCreationScreen(
                                     ProfilePhoto(uri, Modifier.size(120.dp))
                                 } ?: run {
                                     NetworkImage(
-                                        url = profilePhotos[2],
+                                        url = profilePhotos[2] ?: "",
                                         modifier = Modifier.size(120.dp)
                                     )
                                 }
