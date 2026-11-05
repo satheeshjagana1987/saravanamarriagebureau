@@ -58,6 +58,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)

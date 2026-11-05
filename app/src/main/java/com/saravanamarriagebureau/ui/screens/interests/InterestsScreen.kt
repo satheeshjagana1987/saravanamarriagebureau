@@ -135,6 +135,7 @@ fun InterestsScreen(
                     text = "Received",
                     selected = selectedTab == InterestTab.RECEIVED,
                     onClick = {
+                        if (selectedTab == InterestTab.RECEIVED) return@InterestTabButton
                         selectedTab = InterestTab.RECEIVED
                         viewModel.getReceivedInterests()
                     },
@@ -145,6 +146,7 @@ fun InterestsScreen(
                     text = "Sent",
                     selected = selectedTab == InterestTab.SENT,
                     onClick = {
+                        if (selectedTab == InterestTab.SENT) return@InterestTabButton
                         selectedTab = InterestTab.SENT
                         viewModel.getSentInterests()
                     },
@@ -228,28 +230,29 @@ fun InterestsScreen(
                 }
             }
         }
+        LaunchedEffect(uiStateSentInterest) {
+            when (val state = uiStateSentInterest) {
 
-        when (val state = uiStateSentInterest) {
-
-            is UserInterestsUIState.Loading -> {
-                isLoading = true
-            }
-
-            is UserInterestsUIState.Success -> {
-                isLoading = false
-                sentInterests = state.data
-                sentInterests = sentInterests.filterNot {
-                    it.status == "CANCELLED"
+                is UserInterestsUIState.Loading -> {
+                    isLoading = true
                 }
-            }
 
-            is UserInterestsUIState.Error -> {
-                isLoading = false
-                ToastUtils.error(context, state.message)
-            }
+                is UserInterestsUIState.Success -> {
+                    isLoading = false
+                    sentInterests = state.data
+                    sentInterests = sentInterests.filterNot {
+                        it.status == "CANCELLED"
+                    }
+                }
 
-            else -> {
-                isLoading = false
+                is UserInterestsUIState.Error -> {
+                    isLoading = false
+                    ToastUtils.error(context, state.message)
+                }
+
+                else -> {
+                    isLoading = false
+                }
             }
         }
     }

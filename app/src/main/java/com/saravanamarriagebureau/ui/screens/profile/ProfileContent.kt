@@ -28,6 +28,7 @@ import com.saravanamarriagebureau.ui.components.DividerLine
 import com.saravanamarriagebureau.ui.components.ProfileImagePager
 import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.components.VerticalDivider
 import com.saravanamarriagebureau.ui.components.calculateAge
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
@@ -50,9 +51,11 @@ fun ProfileContent(
             .background(Cream),
     ) {
         ScreenHeader("Profile", onBack)
-        Column(Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())) {
+        Column(
+            Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
             Spacer(Modifier.height(10.dp))
             Card(
                 modifier = Modifier
@@ -95,13 +98,32 @@ fun ProfileContent(
                         } else {
                             calculateAge(profile.dateOfBirth).toString()
                         }
-                        Text(
-                            text = "$age yrs",
-                            color = Black,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.weight(0.25f)
-                        )
+                        Row(
+                            modifier = Modifier
+                                .weight(0.25f),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            val gender = if (profile.gender == "MALE") {
+                                "M"
+                            } else {
+                                "F"
+                            }
+                            Text(
+                                text = gender,
+                                color = Black,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Spacer(Modifier.height(5.dp))
+                            VerticalDivider()
+                            Spacer(Modifier.height(5.dp))
+                            Text(
+                                text = "$age yrs",
+                                color = Black,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(15.dp))

@@ -159,7 +159,7 @@ class MatchesViewModel @Inject constructor(
         }
     }
 
-    fun resetState() {
+    fun resetSendInterestState() {
         _uiStateSendInterest.value = SendInterestsUIState.Idle
     }
 }

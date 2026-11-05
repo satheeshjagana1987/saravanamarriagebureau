@@ -37,7 +37,6 @@ import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.ToastUtils
-import timber.log.Timber
 
 @Composable
 fun MatchesScreen(
@@ -113,46 +112,48 @@ fun MatchesScreen(
             }
         }
     }
+    LaunchedEffect(uiStatePast) {
+        when (val state = uiStatePast) {
 
-    when (val state = uiStatePast) {
+            is MatchesUiState.Loading -> {
+                isLoading = true
+            }
 
-        is MatchesUiState.Loading -> {
-            isLoading = true
-        }
+            is MatchesUiState.Success -> {
+                isLoading = false
+                pastMatchesData = state.data
+            }
 
-        is MatchesUiState.Success -> {
-            isLoading = false
-            pastMatchesData = state.data
-        }
+            is MatchesUiState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
 
-        is MatchesUiState.Error -> {
-            isLoading = false
-            ToastUtils.error(context, state.message)
-        }
-
-        else -> {
-            isLoading = false
+            else -> {
+                isLoading = false
+            }
         }
     }
+    LaunchedEffect(uiStateRecommended) {
+        when (val state = uiStateRecommended) {
 
-    when (val state = uiStateRecommended) {
+            is MatchesUiState.Loading -> {
+                isLoading = true
+            }
 
-        is MatchesUiState.Loading -> {
-            isLoading = true
-        }
+            is MatchesUiState.Success -> {
+                isLoading = false
+                recommendedMatchesData = state.data
+            }
 
-        is MatchesUiState.Success -> {
-            isLoading = false
-            recommendedMatchesData = state.data
-        }
+            is MatchesUiState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
 
-        is MatchesUiState.Error -> {
-            isLoading = false
-            ToastUtils.error(context, state.message)
-        }
-
-        else -> {
-            isLoading = false
+            else -> {
+                isLoading = false
+            }
         }
     }
 
@@ -171,6 +172,7 @@ fun MatchesScreen(
                     text = "Recent",
                     selected = selectedTab == MatchTab.TODAY,
                     onClick = {
+                        if (selectedTab == MatchTab.TODAY) return@MatchTabButton
                         selectedTab = MatchTab.TODAY
                         viewModel.getTodayMatches()
                     },
@@ -181,6 +183,7 @@ fun MatchesScreen(
                     text = "Past",
                     selected = selectedTab == MatchTab.PAST,
                     onClick = {
+                        if (selectedTab == MatchTab.PAST) return@MatchTabButton
                         selectedTab = MatchTab.PAST
                         viewModel.getPastMatches()
                     },
@@ -191,6 +194,7 @@ fun MatchesScreen(
                     text = "Recommended",
                     selected = selectedTab == MatchTab.RECOMMENDED,
                     onClick = {
+                        if (selectedTab == MatchTab.RECOMMENDED) return@MatchTabButton
                         selectedTab = MatchTab.RECOMMENDED
                         viewModel.getRecommendedMatches()
                     },
@@ -239,34 +243,37 @@ fun MatchesScreen(
 
             }
 
-            when (val state = uiStateSendInterest) {
+            LaunchedEffect(uiStateSendInterest) {
 
-                is SendInterestsUIState.Loading -> {
-                }
+                when (val state = uiStateSendInterest) {
 
-                is SendInterestsUIState.Success -> {
+                    is SendInterestsUIState.Success -> {
 
-                    when (selectedTab) {
-                        MatchTab.TODAY -> {
-                            viewModel.getTodayMatches()
+                        when (selectedTab) {
+
+                            MatchTab.TODAY -> {
+                                viewModel.getTodayMatches()
+                            }
+
+                            MatchTab.PAST -> {
+                                viewModel.getPastMatches()
+                            }
+
+                            MatchTab.RECOMMENDED -> {
+                                viewModel.getRecommendedMatches()
+                            }
                         }
 
-                        MatchTab.PAST -> {
-                            viewModel.getPastMatches()
-                        }
-
-                        else -> {
-                            viewModel.getRecommendedMatches()
-                        }
+                        viewModel.resetSendInterestState()
                     }
 
-                }
+                    is SendInterestsUIState.Error -> {
+                        ToastUtils.error(context, state.message)
+                        viewModel.resetSendInterestState()
+                    }
 
-                is SendInterestsUIState.Error -> {
-                    ToastUtils.error(context, state.message)
+                    else -> Unit
                 }
-
-                else -> Unit
             }
         }
     }
