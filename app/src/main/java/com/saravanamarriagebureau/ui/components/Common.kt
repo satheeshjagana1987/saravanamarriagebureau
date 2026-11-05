@@ -317,7 +317,7 @@ fun ProfileImagePager(
         Box(
             modifier = modifier
                 .fillMaxWidth()
-                .height(300.dp)
+                .height(200.dp)
                 .background(Color.LightGray),
             contentAlignment = Alignment.Center
         ) {
@@ -339,7 +339,7 @@ fun ProfileImagePager(
             state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(350.dp)
+                .height(200.dp)
         ) { page ->
 
             SubcomposeAsyncImage(
@@ -366,7 +366,11 @@ fun ProfileImagePager(
                             .background(Color.LightGray),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Image not available")
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_image_placholder),
+                            contentDescription = "placeholder",
+                            contentScale = ContentScale.Crop,
+                        )
                     }
                 }
             )
@@ -485,7 +489,10 @@ fun ProfileCard(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
             if (profile.isAdminVerified) {
-                NetworkImage(url = profile.profilePhoto ?: "", modifier = Modifier.size(75.dp))
+                NetworkImage(
+                    url = profile.profilePhotos.getOrNull(0).orEmpty(),
+                    modifier = Modifier.size(75.dp)
+                )
             } else {
                 BlurredProfileImage(
                     R.drawable.profile_pic,
@@ -581,7 +588,10 @@ fun AdminUserCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-            NetworkImage(url = profile.profilePhoto ?: "", modifier = Modifier.size(75.dp))
+            NetworkImage(
+                url = profile.profilePhotos.getOrNull(0).orEmpty(),
+                modifier = Modifier.size(75.dp)
+            )
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 LabelName(
@@ -802,7 +812,7 @@ fun InterestCard(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
             NetworkImage(
-                url = interest.party.profilePhoto ?: "",
+                url = interest.party.profilePhotos.getOrNull(0).orEmpty(),
                 modifier = Modifier.size(75.dp)
             )
             Spacer(Modifier.width(10.dp))
@@ -890,6 +900,10 @@ fun InterestStatusContent(
         mutableStateOf(false)
     }
 
+    val isPaidUser = remember {
+        viewModel.isPaidUser()
+    }
+
     when (interest.status) {
         "PENDING" -> {
             if (selectedTab == InterestTab.RECEIVED) {
@@ -897,7 +911,14 @@ fun InterestStatusContent(
                     CustomButton(
                         text = stringResource(R.string.accept),
                         onClick = {
-                            viewModel.acceptReceivedInterest(interest.id)
+                            if (isPaidUser) {
+                                viewModel.acceptReceivedInterest(interest.id)
+                            } else {
+                                ToastUtils.error(
+                                    context = context,
+                                    message = "Please upgrade your plan to access this feature"
+                                )
+                            }
                         },
                         modifier = Modifier,
                         height = 40.dp,
@@ -916,7 +937,14 @@ fun InterestStatusContent(
                     CustomButton(
                         text = stringResource(R.string.reject),
                         onClick = {
-                            viewModel.rejectReceivedInterest(interest.id)
+                            if (isPaidUser) {
+                                viewModel.rejectReceivedInterest(interest.id)
+                            } else {
+                                ToastUtils.error(
+                                    context = context,
+                                    message = "Please upgrade your plan to access this feature"
+                                )
+                            }
                         },
                         modifier = Modifier,
                         height = 40.dp,
@@ -1030,7 +1058,10 @@ fun AdminInterestCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
-            NetworkImage(url = interest.sender.profilePhoto ?: "", modifier = Modifier.size(75.dp))
+            NetworkImage(
+                url = interest.sender.profilePhotos.getOrNull(0).orEmpty(),
+                modifier = Modifier.size(75.dp)
+            )
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 LabelName(

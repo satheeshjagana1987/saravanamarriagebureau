@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.UserInterestsRepository
 import com.saravanamarriagebureau.ui.screens.matches.DeleteInterestsUIState
 import com.saravanamarriagebureau.util.ApiResult
+import com.saravanamarriagebureau.util.AppPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserInterestsViewModel @Inject constructor(
-    private val userInterestsRepository: UserInterestsRepository
+    private val userInterestsRepository: UserInterestsRepository,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val _uiStateReceived =
@@ -41,6 +43,9 @@ class UserInterestsViewModel @Inject constructor(
 
     val uiStateDeleteInterest = _uiStateDeleteInterest.asStateFlow()
 
+    fun isPaidUser(): Boolean {
+        return appPreferences.isPaidUser()
+    }
 
     fun getSentInterests() {
         viewModelScope.launch {

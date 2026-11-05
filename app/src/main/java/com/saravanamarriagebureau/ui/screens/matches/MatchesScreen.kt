@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -198,7 +199,9 @@ fun MatchesScreen(
 
             }
             LazyColumn(
-                modifier = Modifier.padding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 16.dp),
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -207,7 +210,8 @@ fun MatchesScreen(
                         Text(
                             text = "No matches found",
                             modifier = Modifier.padding(16.dp),
-                            color = Black
+                            color = Black,
+                            textAlign = TextAlign.Center
                         )
                     }
                 } else {
@@ -218,7 +222,6 @@ fun MatchesScreen(
                         ProfileCard(
                             profile = profile,
                             onInterest = { matchId ->
-                                Timber.e("isPaidUser==>$isPaidUser")
                                 if (isPaidUser) {
                                     viewModel.sendInterest(profileId = matchId)
                                 } else {

@@ -7,6 +7,7 @@ import com.saravanamarriagebureau.data.model.DeleteMediaResponse
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.AppPreferences
 import com.saravanamarriagebureau.util.ImageCompressor
+import com.saravanamarriagebureau.util.checkImageUri
 import com.saravanamarriagebureau.util.safeApiCall
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
@@ -28,69 +30,73 @@ class ImageRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    suspend fun uploadImage(uri: Uri): String =
-        withContext(Dispatchers.IO) {
+    suspend fun uploadImage(
+        uri: Uri,
+        mediaType: String
+    ): String = withContext(Dispatchers.IO) {
+        Timber.e("uriRepositoryuploadImageuri====>$uri")
+        Timber.e("uriRepositoryuploadmediaType====>$mediaType")
+        var compressedFile: File? = null
+        checkImageUri(context, uri)
+        val tempFile = File.createTempFile(
+            "upload_",
+            ".jpg",
+            context.cacheDir
+        )
+        try {
+            val input = context.contentResolver
+                .openInputStream(uri)
+                ?: throw IOException("Cannot open image")
 
-            val tempFile = File.createTempFile(
-                "upload_",
-                ".jpg",
-                context.cacheDir
-            )
-
-            val compressedFile = ImageCompressor.compress(
-                context = context,
-                uri = uri,
-                maxDimension = 1600,
-                quality = 75
-            )
-
-
-            try {
-                val input = context.contentResolver
-                    .openInputStream(uri)
-                    ?: throw IOException("Cannot open image")
-
-                input.use { source ->
-                    tempFile.outputStream().use { target ->
-                        source.copyTo(target)
-                    }
+            input.use { source ->
+                tempFile.outputStream().use { target ->
+                    source.copyTo(target)
                 }
-
-//                val requestBody = tempFile.asRequestBody(
-//                    "image/jpeg".toMediaType()
-//                )
-
-                val requestBody = compressedFile.asRequestBody(
-                    "image/jpeg".toMediaType()
-                )
-
-                val imagePart = MultipartBody.Part.createFormData(
-                    name = "media",
-                    filename = "image.jpg",
-                    body = requestBody
-                )
-
-                val response =
-                    api.uploadImage(media = imagePart, mediaType = createTextPart("PRIMARY_PHOTO"))
-
-                if (response.isSuccessful) {
-                    val body = response.body()
-                        ?: throw IOException("Empty upload response")
-
-                    val mediaId = body.data.mediaId
-                        ?: throw IOException("Media ID missing in response")
-
-                    appPreferences.saveMediaId(mediaId)
-
-                    body.message ?: "Image uploaded successfully"
-                } else {
-                    throw HttpException(response)
-                }
-
-            } finally {
-                compressedFile.delete()
             }
+
+//            compressedFile = ImageCompressor.compress(
+//                context = context,
+//                uri = uri,
+//                maxDimension = 1600,
+//                quality = 75
+//            )
+
+//            if (!compressedFile.exists() || compressedFile.length() == 0L) {
+//                throw IOException("Compressed image is empty")
+//            }
+
+            val requestBody = tempFile.asRequestBody(
+                "image/jpeg".toMediaType()
+            )
+
+            val imagePart = MultipartBody.Part.createFormData(
+                name = "media",
+                filename = "image.jpg",
+                body = requestBody
+            )
+
+            val response = api.uploadImage(
+                media = imagePart,
+                mediaType = createTextPart(mediaType)
+            )
+
+            if (response.isSuccessful) {
+
+                val body = response.body()
+                    ?: throw IOException("Empty upload response")
+
+                body.data.mediaId
+                    ?: throw IOException("Media ID missing in response")
+
+            } else {
+                throw HttpException(response)
+            }
+
+        } finally {
+            tempFile?.delete()
+//            compressedFile?.delete()
         }
+    }
 
     fun createTextPart(value: String): RequestBody {
         return value.toRequestBody("text/plain".toMediaTypeOrNull())

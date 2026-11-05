@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -109,10 +110,13 @@ fun AdminMembershipPlanScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(Modifier.padding(horizontal = 16.dp).weight(1f)) {
+        Column( modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)
+            .padding(horizontal = 16.dp)) {
 
             LazyColumn(
-                modifier = Modifier.padding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 16.dp),
+                modifier = Modifier.padding(vertical = 16.dp).fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
@@ -145,7 +149,7 @@ fun AdminMembershipPlanScreen(
 
         PrimaryButton(
             text = stringResource(id = R.string.add_plan),
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp).fillMaxWidth(),
             onClick = {
                 onNext()
             }

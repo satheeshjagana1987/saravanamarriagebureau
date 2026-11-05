@@ -55,7 +55,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.canhub.cropper.CropImageContract
@@ -67,13 +66,11 @@ import com.saravanamarriagebureau.data.enums.ProfileTab
 import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingDialog
-import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.NetworkImage
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ProfilePhoto
 import com.saravanamarriagebureau.ui.components.TimePickerTextField
 import com.saravanamarriagebureau.ui.screens.media.MediaUploadCompleteViewModel
-import com.saravanamarriagebureau.ui.screens.media.MediaUploadInitiatedUIState
 import com.saravanamarriagebureau.ui.screens.media.MediaUploadInitiatedViewModel
 import com.saravanamarriagebureau.ui.screens.media.getFileInfo
 import com.saravanamarriagebureau.ui.theme.Black
@@ -85,7 +82,8 @@ import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
 import com.saravanamarriagebureau.util.VoiceRecorder
-import kotlinx.coroutines.launch
+import androidx.core.content.FileProvider
+import timber.log.Timber
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -170,6 +168,10 @@ fun ProfileCreationScreen(
         mutableStateOf("")
     }
 
+    var selectedIndex by remember {
+        mutableStateOf(0)
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiStateProfileUpdate by viewModel.uiStateProfileUpdate.collectAsStateWithLifecycle()
 
@@ -189,6 +191,7 @@ fun ProfileCreationScreen(
     val mediaInitiatedUploadUiState by mediaInitiatedUploadViewModel.uiState.collectAsState()
     val mediaUploadCompleteUiState by mediaUploadCompleteViewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val imageStates by imageViewModel.imageStates.collectAsStateWithLifecycle()
 
     var pendingCameraUri by remember {
         mutableStateOf<Uri?>(null)
@@ -281,7 +284,7 @@ fun ProfileCreationScreen(
     ) { result ->
         if (result.isSuccessful) {
             result.uriContent?.let { croppedUri ->
-                imageViewModel.setImage(croppedUri)
+//                imageViewModel.setImage(croppedUri)
             }
         } else {
             result.error?.let { error ->
@@ -311,7 +314,9 @@ fun ProfileCreationScreen(
             val info = it.getFileInfo(context)
             imageFileName = info.name ?: NA
             imageFileSize = info.size ?: 0
-            imageViewModel.setImage(it)
+            Timber.e("urigalleryuri====>$it")
+            Timber.e("urigalleryindex====>$selectedIndex")
+            imageViewModel.setImage(index = selectedIndex, uri = it)
         }
     }
 
@@ -321,7 +326,9 @@ fun ProfileCreationScreen(
     ) { success ->
         if (success) {
             pendingCameraUri?.let {
-                imageViewModel.setImage(it)
+                Timber.e("uricamerauri====>$it")
+                Timber.e("uricameraindex====>$selectedIndex")
+                imageViewModel.setImage(index = selectedIndex, uri = it)
             }
         }
     }
@@ -717,7 +724,6 @@ fun ProfileCreationScreen(
                         )
                         Spacer(Modifier.height(5.dp))
                         TimePickerTextField(
-                            label = "Birth Time",
                             selectedTime = birthTime,
                             onTimeSelected = { birthTime = it }
                         )
@@ -909,7 +915,7 @@ fun ProfileCreationScreen(
 
                             placeholder = {
                                 Text(
-                                    text = "Place of Profession",
+                                    text = "Place of work",
                                     color = Color(0xFFB5B5BD),
                                     fontSize = 14.sp
                                 )
@@ -1072,12 +1078,7 @@ fun ProfileCreationScreen(
                                 color = Maroon,
                                 fontWeight = FontWeight.Normal
                             )
-//                            RadioButton(
-//                                selected = selectedGender == stringResource(R.string.male).uppercase(),
-//                                onClick = {
-//                                    selectedGender = "MALE"
-//                                }
-//                            )
+
                             Spacer(Modifier.width(10.dp))
                             LabelName(
                                 labelName = gender,
@@ -1085,20 +1086,6 @@ fun ProfileCreationScreen(
                                 color = Black,
                                 fontWeight = FontWeight.Normal
                             )
-//                            Spacer(Modifier.width(10.dp))
-//                            RadioButton(
-//                                selected = selectedGender == stringResource(R.string.female).uppercase(),
-//                                onClick = {
-//                                    selectedGender = "FEMALE"
-//                                }
-//                            )
-//
-//                            LabelName(
-//                                labelName = stringResource(id = R.string.female),
-//                                fontSize = 14.sp,
-//                                color = Black,
-//                                fontWeight = FontWeight.Normal
-//                            )
                         }
 
                         Spacer(Modifier.height(5.dp))
@@ -1169,35 +1156,35 @@ fun ProfileCreationScreen(
                     }
                 }
                 if (selectedTab == ProfileTab.PHOTO) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(White)
-                    ) {
+                    repeat(3) { index ->
+
+                        val imageState = imageStates[index] ?: ImageUiState()
+
+                        val selectedUri = imageState.imageUri
+
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(White)
+                                .background(Color.White)
                                 .padding(16.dp)
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                state.imageUri?.let { uri ->
-                                    ProfilePhoto(uri, Modifier.size(120.dp))
-                                } ?: run {
+
+                                if (selectedUri != null) {
+                                    ProfilePhoto(
+                                        selectedUri,
+                                        Modifier.size(120.dp)
+                                    )
+                                } else {
                                     NetworkImage(
-                                        url = profilePhotos[0] ?: "",
-                                        modifier = Modifier.size(120.dp)
+                                        url = profilePhotos.getOrNull(index).orEmpty(),
+                                        modifier = Modifier.size(110.dp)
                                     )
                                 }
                                 Spacer(Modifier.weight(1f))
-//                            CustomButtonForUpload(
-//                                text = stringResource(id = R.string.upload),
-//                                onClick = {},
-//                                modifier = Modifier.weight(1f),
-//                            )
                                 Column(
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -1205,11 +1192,12 @@ fun ProfileCreationScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.spacedBy(16.dp)
                                 ) {
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                    ) {
+
+                                    Row( horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                                         Button(
                                             onClick = {
+                                                selectedIndex = index
+
                                                 galleryLauncher.launch(
                                                     PickVisualMediaRequest(
                                                         ActivityResultContracts.PickVisualMedia.ImageOnly
@@ -1219,9 +1207,10 @@ fun ProfileCreationScreen(
                                         ) {
                                             Text("Gallery")
                                         }
-
                                         Button(
                                             onClick = {
+                                                selectedIndex = index
+
                                                 val file = File.createTempFile(
                                                     "camera_",
                                                     ".jpg",
@@ -1241,280 +1230,28 @@ fun ProfileCreationScreen(
                                         }
                                     }
 
+                                    Spacer(Modifier.height(15.dp))
                                     Button(
                                         onClick = {
-
-                                            imageViewModel.uploadImage()
-//                                        mediaInitiatedUploadViewModel.mediaUploadInitiated(
-//                                            mediaType = PRIMARY_PHOTO,
-//                                            fileSize = imageFileSize,
-//                                            originalFileName = imageFileName
-//                                        )
+                                            imageViewModel.uploadImage(index)
                                         },
-                                        enabled = state.imageUri != null &&
-                                                !state.isLoading && !state.success,
-                                        modifier = Modifier.fillMaxWidth()
+                                        enabled = selectedUri != null &&
+                                                !imageState.isLoading &&
+                                                !imageState.success
                                     ) {
                                         Text(
-                                            if (state.isLoading) "Uploading..."
+                                            if (imageState.isLoading) "Uploading..."
                                             else "Upload Image"
                                         )
                                     }
 
-                                    if (state.isLoading) {
-                                        LoadingView()
-                                    }
-
-                                    if (state.success) {
-                                        ToastUtils.success(
-                                            context = context,
-                                            message = state.message.toString()
-                                        )
-//                                    mediaUploadCompleteViewModel.mediaUploadComplete()
-                                    }
-
-                                    state.error?.let {
-                                        ToastUtils.error(context = context, message = it)
-                                    }
-
-                                    when (val state = mediaInitiatedUploadUiState) {
-
-                                        MediaUploadInitiatedUIState.Idle -> {
-                                            // Nothing
-                                        }
-
-                                        MediaUploadInitiatedUIState.Loading -> {
-                                            LoadingView()
-                                        }
-
-                                        is MediaUploadInitiatedUIState.Success -> {
-                                            Text(
-                                                text = state.message ?: "Media initiated"
-                                            )
-                                        }
-
-                                        is MediaUploadInitiatedUIState.Error -> {
-                                            Text(
-                                                text = state.message,
-                                                color = Color.Red
-                                            )
-                                        }
-                                    }
                                 }
                             }
-                        }
-                        Spacer(Modifier.height(10.dp))
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(White)
-                                .padding(16.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                state.imageUri?.let { uri ->
-                                    ProfilePhoto(uri, Modifier.size(120.dp))
-                                } ?: run {
-                                    NetworkImage(
-                                        url = profilePhotos[1] ?: "",
-                                        modifier = Modifier.size(120.dp)
-                                    )
-                                }
-                                Spacer(Modifier.weight(1f))
-//                            CustomButtonForUpload(
-//                                text = stringResource(id = R.string.upload),
-//                                onClick = {},
-//                                modifier = Modifier.weight(1f),
-//                            )
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(10.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                    ) {
-                                        Button(
-                                            onClick = {
-                                                galleryLauncher.launch(
-                                                    PickVisualMediaRequest(
-                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
-                                                    )
-                                                )
-                                            }
-                                        ) {
-                                            Text("Gallery")
-                                        }
 
-                                        Button(
-                                            onClick = {
-                                                val file = File.createTempFile(
-                                                    "camera_",
-                                                    ".jpg",
-                                                    context.cacheDir
-                                                )
-
-                                                pendingCameraUri = FileProvider.getUriForFile(
-                                                    context,
-                                                    "${context.packageName}.fileprovider",
-                                                    file
-                                                )
-
-                                                cameraLauncher.launch(pendingCameraUri!!)
-                                            }
-                                        ) {
-                                            Text("Camera")
-                                        }
-                                    }
-
-                                    Button(
-                                        onClick = {
-
-                                            imageViewModel.uploadImage()
-//                                        mediaInitiatedUploadViewModel.mediaUploadInitiated(
-//                                            mediaType = PRIMARY_PHOTO,
-//                                            fileSize = imageFileSize,
-//                                            originalFileName = imageFileName
-//                                        )
-                                        },
-                                        enabled = state.imageUri != null &&
-                                                !state.isLoading && !state.success,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Text(
-                                            if (state.isLoading) "Uploading..."
-                                            else "Upload Image"
-                                        )
-                                    }
-
-                                    if (state.isLoading) {
-                                        LoadingView()
-                                    }
-
-                                    if (state.success) {
-                                        ToastUtils.success(
-                                            context = context,
-                                            message = state.message.toString()
-                                        )
-                                    }
-
-                                    state.error?.let {
-                                        ToastUtils.error(context = context, message = it)
-                                    }
-                                }
+                            imageState.error?.let {
+                                Text(it, color = Color.Red)
                             }
                         }
-                        Spacer(Modifier.padding(10.dp))
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(White)
-                                .padding(16.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                state.imageUri?.let { uri ->
-                                    ProfilePhoto(uri, Modifier.size(120.dp))
-                                } ?: run {
-                                    NetworkImage(
-                                        url = profilePhotos[2] ?: "",
-                                        modifier = Modifier.size(120.dp)
-                                    )
-                                }
-                                Spacer(Modifier.weight(1f))
-//                            CustomButtonForUpload(
-//                                text = stringResource(id = R.string.upload),
-//                                onClick = {},
-//                                modifier = Modifier.weight(1f),
-//                            )
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(10.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                    ) {
-                                        Button(
-                                            onClick = {
-                                                galleryLauncher.launch(
-                                                    PickVisualMediaRequest(
-                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
-                                                    )
-                                                )
-                                            }
-                                        ) {
-                                            Text("Gallery")
-                                        }
-
-                                        Button(
-                                            onClick = {
-                                                val file = File.createTempFile(
-                                                    "camera_",
-                                                    ".jpg",
-                                                    context.cacheDir
-                                                )
-
-                                                pendingCameraUri = FileProvider.getUriForFile(
-                                                    context,
-                                                    "${context.packageName}.fileprovider",
-                                                    file
-                                                )
-
-                                                cameraLauncher.launch(pendingCameraUri!!)
-                                            }
-                                        ) {
-                                            Text("Camera")
-                                        }
-                                    }
-
-                                    Button(
-                                        onClick = {
-
-                                            imageViewModel.uploadImage()
-//                                        mediaInitiatedUploadViewModel.mediaUploadInitiated(
-//                                            mediaType = PRIMARY_PHOTO,
-//                                            fileSize = imageFileSize,
-//                                            originalFileName = imageFileName
-//                                        )
-                                        },
-                                        enabled = state.imageUri != null &&
-                                                !state.isLoading && !state.success,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Text(
-                                            if (state.isLoading) "Uploading..."
-                                            else "Upload Image"
-                                        )
-                                    }
-
-                                    if (state.isLoading) {
-                                        LoadingView()
-                                    }
-
-                                    if (state.success) {
-                                        ToastUtils.success(
-                                            context = context,
-                                            message = state.message.toString()
-                                        )
-                                    }
-
-                                    state.error?.let {
-                                        ToastUtils.error(context = context, message = it)
-                                    }
-                                }
-                            }
-                        }
-
                     }
                 }
             }

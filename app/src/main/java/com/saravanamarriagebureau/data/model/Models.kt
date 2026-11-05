@@ -240,9 +240,8 @@ data class InterestProfile(
     val isPaidUser: Boolean,
     val profession: String?,
     val city: String?,
-    val image: String?,
     val dateOfBirth: String?,
-    val profilePhoto: String?,
+    val profilePhotos: List<String?> = emptyList(),
 )
 
 data class Pagination(
@@ -398,8 +397,7 @@ data class MatchesData(
 
     val status: String,
 
-    val image: String?,
-    val profilePhoto: String?
+    val profilePhotos: List<String?> = emptyList(),
 )
 
 data class Family(
@@ -437,7 +435,7 @@ data class PendingApprovalUser(
     val city: String?,
     val status: String,
     val createdAt: String,
-    val profilePhoto: String?,
+    val profilePhotos: List<String?> = emptyList(),
 )
 
 data class AdminUserDetailsResponse(
@@ -461,7 +459,7 @@ data class AdminUserDetails(
     val approvedAt: String?,
     val rejectionReason: String?,
     val createdAt: String,
-    val profilePhoto: String?,
+    val profilePhotos: List<String?> = emptyList(),
     val profile: AdminUserProfile
 )
 
@@ -599,7 +597,7 @@ data class AdminInterestsDetails(
     val education: String?,
     val isAdminVerified: Boolean,
     val isPaidUser: Boolean,
-    val profilePhoto: String?,
+    val profilePhotos: List<String?> = emptyList(),
     val matchRejectRemarks: String?,
     val isMatchFixed: Boolean,
     val mobile: String?,

@@ -1,7 +1,6 @@
 package com.saravanamarriagebureau.ui.screens.admin.interests
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
-import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.ui.components.DividerLine
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingDialog
@@ -48,7 +46,6 @@ import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
-import timber.log.Timber
 
 @Composable
 fun AdminInterestDetailsScreen(
@@ -292,7 +289,6 @@ fun AdminInterestDetailsScreen(
                     )
                 }
             }
-            Timber.e("interest==>$interestData")
             if (interestData?.status == "ACCEPTED" && !interestData.isMatchFixed) {
                 Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 20.dp)) {
                     LabelName(
@@ -327,9 +323,10 @@ fun AdminInterestDetailsScreen(
                                     isMatchFixed = true,
                                     matchRejectionReason = ""
                                 )
-                            }
+                            },
+                            modifier = Modifier.weight(1f)
                         )
-                        Spacer(Modifier.width(15.dp))
+                        Spacer(Modifier.width(10.dp))
                         PrimaryButton(
                             text = "Match Reject",
                             onClick = {
@@ -351,7 +348,8 @@ fun AdminInterestDetailsScreen(
                                     matchRejectionReason = reason.trim()
                                 )
 
-                            }
+                            },
+                            modifier = Modifier.weight(1f)
                         )
 
                     }

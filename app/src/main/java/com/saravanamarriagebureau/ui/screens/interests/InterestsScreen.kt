@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -160,15 +161,18 @@ fun InterestsScreen(
 
             }
             LazyColumn(
-                modifier = Modifier.padding(start = 0.dp, top = 16.dp, end = 0.dp, bottom = 16.dp),
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (displayedInterests.isEmpty()) {
                     item {
                         Text(
-                            text = "No Interests found",
+                            text = "No interests found",
                             modifier = Modifier.padding(16.dp),
-                            color = Black
+                            color = Black,
+                            textAlign = TextAlign.Center
                         )
                     }
                 } else {

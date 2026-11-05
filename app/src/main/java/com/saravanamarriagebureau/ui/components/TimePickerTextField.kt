@@ -23,13 +23,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.saravanamarriagebureau.R
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerTextField(
-    label: String,
     selectedTime: String,
     onTimeSelected: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -44,8 +46,13 @@ fun TimePickerTextField(
         value = selectedTime,
         onValueChange = {},
         readOnly = true,
-        label = { Text(label) },
-        placeholder = { Text("Birth time") },
+        placeholder = {
+            Text(
+                text = stringResource(id = R.string.birth_time),
+                color = Color(0xFFB5B5BD),
+                fontSize = 14.sp
+            )
+        },
         trailingIcon = {
             IconButton(onClick = { showTimePicker = true }) {
                 Icon(

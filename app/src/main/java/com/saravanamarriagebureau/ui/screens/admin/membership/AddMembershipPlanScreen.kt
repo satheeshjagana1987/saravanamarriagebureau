@@ -273,69 +273,66 @@ fun AddMembershipPlanScreen(
                         }
                     )
 
-                    Spacer(Modifier.height(10.dp))
+                    Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 10.dp, top = 20.dp)) {
+                        PrimaryButton(
+                            text = stringResource(id = R.string.submit),
+                            modifier = Modifier.padding(16.dp),
+                            onClick = {
+
+                                planCodeError =
+                                    ValidationUtils.validateField(field = planCode.trim(), fieldName = "Plan Code")
+                                planNameError = ValidationUtils.validateField(
+                                    field = planName.trim(),
+                                    fieldName = "Plan Name"
+                                )
+                                descriptionError = ValidationUtils.validateField(
+                                    field = description.trim(),
+                                    fieldName = "Description"
+                                )
+                                durationError = ValidationUtils.validateField(
+                                    field = duration.trim(),
+                                    fieldName = "Duration"
+                                )
+
+                                priceError = ValidationUtils.validateField(
+                                    field = price.trim(),
+                                    fieldName = "Price"
+                                )
+
+                                if (planCodeError != null) {
+                                    ToastUtils.error(context = context, message = planCodeError.toString())
+                                    return@PrimaryButton
+                                }
+                                if (planNameError != null) {
+                                    ToastUtils.error(context = context, message = planNameError.toString())
+                                    return@PrimaryButton
+                                }
+                                if (descriptionError != null) {
+                                    ToastUtils.error(context = context, message = descriptionError.toString())
+                                    return@PrimaryButton
+                                }
+                                if (durationError != null) {
+                                    ToastUtils.error(context = context, message = durationError.toString())
+                                    return@PrimaryButton
+                                }
+                                if (priceError != null) {
+                                    ToastUtils.error(context = context, message = priceError.toString())
+                                    return@PrimaryButton
+                                }
+
+                                viewModel.addAdminMemberShipPlan(
+                                    code = planCode.trim(),
+                                    name = planName.trim(),
+                                    description = description.trim(),
+                                    durationDays = duration.toInt(),
+                                    priceMinorUnits = price.toInt(),
+                                )
+
+                            }
+                        )
+                    }
                 }
             }
-        }
-
-        Spacer(Modifier.weight(1f))
-        Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp)) {
-            PrimaryButton(
-                text = stringResource(id = R.string.submit),
-                modifier = Modifier.padding(16.dp),
-                onClick = {
-
-                    planCodeError =
-                        ValidationUtils.validateField(field = planCode.trim(), fieldName = "Plan Code")
-                    planNameError = ValidationUtils.validateField(
-                        field = planName.trim(),
-                        fieldName = "Plan Name"
-                    )
-                    descriptionError = ValidationUtils.validateField(
-                        field = description.trim(),
-                        fieldName = "Description"
-                    )
-                    durationError = ValidationUtils.validateField(
-                        field = duration.trim(),
-                        fieldName = "Duration"
-                    )
-
-                    priceError = ValidationUtils.validateField(
-                        field = price.trim(),
-                        fieldName = "Price"
-                    )
-
-                    if (planCodeError != null) {
-                        ToastUtils.error(context = context, message = planCodeError.toString())
-                        return@PrimaryButton
-                    }
-                    if (planNameError != null) {
-                        ToastUtils.error(context = context, message = planNameError.toString())
-                        return@PrimaryButton
-                    }
-                    if (descriptionError != null) {
-                        ToastUtils.error(context = context, message = descriptionError.toString())
-                        return@PrimaryButton
-                    }
-                    if (durationError != null) {
-                        ToastUtils.error(context = context, message = durationError.toString())
-                        return@PrimaryButton
-                    }
-                    if (priceError != null) {
-                        ToastUtils.error(context = context, message = priceError.toString())
-                        return@PrimaryButton
-                    }
-
-                    viewModel.addAdminMemberShipPlan(
-                        code = planCode.trim(),
-                        name = planName.trim(),
-                        description = description.trim(),
-                        durationDays = duration.toInt(),
-                        priceMinorUnits = price.toInt(),
-                    )
-
-                }
-            )
         }
 
         when (val state = uiStateAddAdminMembershipPlan) {

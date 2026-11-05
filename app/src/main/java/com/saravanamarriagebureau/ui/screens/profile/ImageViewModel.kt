@@ -1,24 +1,17 @@
 package com.saravanamarriagebureau.ui.screens.profile
 
-import android.app.Application
 import android.content.Context
 import android.net.Uri
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.ImageRepository
-import com.saravanamarriagebureau.ui.screens.forgetpassword.ForgetPasswordUIState
-import com.saravanamarriagebureau.ui.screens.registration.RegisterUIState
 import com.saravanamarriagebureau.util.ApiResult
-import dagger.hilt.android.HiltAndroidApp
-import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
@@ -35,6 +28,11 @@ class ImageViewModel @Inject constructor(
 
     val uiStateDeleteImage = _uiStateDeleteImage.asStateFlow()
 
+    private val _imageStates =
+        MutableStateFlow<Map<Int, ImageUiState>>(emptyMap())
+
+    val imageStates = _imageStates.asStateFlow()
+
     private val _uploadVideoState = MutableStateFlow(ImageUiState())
     val uploadVideoState = _uploadVideoState.asStateFlow()
 
@@ -43,48 +41,73 @@ class ImageViewModel @Inject constructor(
 
     val uploadGroomBrideUIState = _uploadGroomBrideUIState.asStateFlow()
 
-    fun setImage(uri: Uri) {
-        _uiState.update {
-            it.copy(
-                imageUri = uri,
-                message = null,
-                error = null
-            )
+    fun setImage(index: Int, uri: Uri) {
+        Timber.e("uriviewmodelsetImageuri====>$uri")
+        _imageStates.update { current ->
+            current + (
+                    index to ImageUiState(
+                        imageUri = uri
+                    )
+                    )
         }
     }
 
-    fun uploadImage() {
-        // Prevent duplicate uploads
-        if (_uiState.value.isLoading) return
-        val uri = _uiState.value.imageUri ?: return
+    fun uploadImage(index: Int) {
+        Timber.e("uriviewmodelUploadImageIndex====>$index")
+        val currentState = _imageStates.value[index]
+            ?: return
+
+        if (currentState.isLoading) return
+
+        val uri = currentState.imageUri ?: return
+
+        Timber.e("uriviewmodeluploadImageuri====>$uri")
+
+        val mediaType = when (index) {
+            0, 1, 2 -> "PRIMARY_PHOTO"
+            else -> return
+        }
 
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    message = null,
-                    error = null,
-                    success = false
-                )
+            _imageStates.update { states ->
+                states + (
+                        index to currentState.copy(
+                            isLoading = true,
+                            success = false,
+                            message = null,
+                            error = null
+                        )
+                        )
             }
 
             try {
-                val result = repository.uploadImage(uri)
+                val result = repository.uploadImage(
+                    uri = uri,
+                    mediaType = mediaType
+                )
 
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        message = result,
-                        success = true
-                    )
+                _imageStates.update { states ->
+                    val latest = states[index] ?: currentState
+
+                    states + (
+                            index to latest.copy(
+                                isLoading = false,
+                                success = true,
+                                message = result
+                            )
+                            )
                 }
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        success = false,
-                        error = e.message ?: "Upload failed"
-                    )
+                _imageStates.update { states ->
+                    val latest = states[index] ?: currentState
+
+                    states + (
+                            index to latest.copy(
+                                isLoading = false,
+                                success = false,
+                                error = e.message ?: "Upload failed"
+                            )
+                            )
                 }
             }
         }

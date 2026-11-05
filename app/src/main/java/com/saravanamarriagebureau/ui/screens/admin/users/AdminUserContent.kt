@@ -39,6 +39,7 @@ import com.saravanamarriagebureau.ui.components.DividerLine
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.NetworkImage
 import com.saravanamarriagebureau.ui.components.PrimaryButton
+import com.saravanamarriagebureau.ui.components.ProfileImagePager
 import com.saravanamarriagebureau.ui.components.ProfileInfoRow
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
@@ -129,7 +130,6 @@ fun AdminUserContent(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(Modifier.height(10.dp))
             Card(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -148,15 +148,9 @@ fun AdminUserContent(
                     // ---------------------------------------------------------
                     // Profile image section
                     // ---------------------------------------------------------
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        NetworkImage(
-                            url = profile.profilePhoto ?: "",
-                            modifier = Modifier.size(120.dp)
-                        )
-                    }
+                    ProfileImagePager(
+                        profilePhotos = profile.profilePhotos
+                    )
 
 
                     // ---------------------------------------------------------
@@ -289,7 +283,7 @@ fun AdminUserContent(
                         minLines = 1,
                         maxLines = 5
                     )
-                    Spacer(Modifier.width(15.dp))
+                    Spacer(Modifier.height(15.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -301,9 +295,10 @@ fun AdminUserContent(
 
                             onClick = {
                                 viewModel.approveUser(userId = profile.id)
-                            }
+                            },
+                            modifier = Modifier.weight(1f)
                         )
-                        Spacer(Modifier.width(15.dp))
+                        Spacer(Modifier.width(20.dp))
                         PrimaryButton(
                             text = stringResource(id = R.string.reject),
                             onClick = {
@@ -322,7 +317,8 @@ fun AdminUserContent(
                                     userId = profile.id,
                                     reason = reason.trim()
                                 )
-                            }
+                            },
+                            modifier = Modifier.weight(1f)
                         )
 
                     }

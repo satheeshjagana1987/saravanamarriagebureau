@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -255,7 +256,6 @@ fun ChooseYourPlanScreen(
             .background(Cream)
     ) {
         ScreenHeader(title = "Choose Your Plan", onBack)
-        Spacer(Modifier.height(30.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -279,9 +279,10 @@ fun ChooseYourPlanScreen(
                     if (planData.isEmpty()) {
                         item {
                             Text(
-                                text = "No matches found",
+                                text = "No plans found",
                                 modifier = Modifier.padding(16.dp),
-                                color = Black
+                                color = Black,
+                                textAlign = TextAlign.Center
                             )
                         }
                     } else {
@@ -316,7 +317,7 @@ fun ChooseYourPlanScreen(
                         .padding(
                             start = 16.dp,
                             end = 16.dp,
-                            bottom = 50.dp
+                            bottom = 30.dp
                         ),
                     enabled = selectedPlan != null &&
                             uiStateMemberShipPlanPurchase !is

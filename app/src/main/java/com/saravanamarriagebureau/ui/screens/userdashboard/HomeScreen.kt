@@ -2,9 +2,11 @@ package com.saravanamarriagebureau.ui.screens.userdashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -95,10 +97,11 @@ fun HomeScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .background(Cream)
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
 
         Card(
@@ -223,14 +226,14 @@ private fun MembershipDetailsCard(
                 fontWeight = FontWeight.Bold,
                 color = Maroon
             )
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(20.dp))
             LabelName(
                 labelName = "Upgrade your plan to get more benefits ",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Success
             )
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(20.dp))
             PrimaryButton(text = stringResource(id = R.string.upgrade_plan), onClick = {
                 onClick()
             })
