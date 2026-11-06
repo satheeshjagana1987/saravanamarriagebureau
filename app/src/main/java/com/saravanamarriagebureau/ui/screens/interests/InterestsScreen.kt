@@ -152,14 +152,6 @@ fun InterestsScreen(
                     },
                     modifier = Modifier.weight(1f)
                 )
-//                InterestTabButton(
-//                    text = "Match Fixed",
-//                    selected = selectedTab == InterestTab.MATCH_FIXED,
-//                    onClick = {
-//                        selectedTab = InterestTab.MATCH_FIXED
-//                    },
-//                    modifier = Modifier.weight(1f)
-//                )
 
             }
             LazyColumn(

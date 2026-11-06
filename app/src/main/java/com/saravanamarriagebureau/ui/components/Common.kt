@@ -1189,20 +1189,21 @@ fun ProfileInfoRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Text(
-            text = label,
-            color = TextSecondary,
+        LabelName(
+            labelName = label,
             fontSize = 14.sp,
+            color = TextSecondary,
             modifier = Modifier.weight(0.4f)
         )
 
-        Text(
-            text = value,
-            color = Black,
+        LabelName(
+            labelName = value,
             fontSize = 16.sp,
+            color = Black,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.weight(0.6f)
         )
+
     }
 }
 

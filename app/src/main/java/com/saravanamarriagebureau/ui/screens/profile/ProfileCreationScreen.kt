@@ -314,9 +314,10 @@ fun ProfileCreationScreen(
             val info = it.getFileInfo(context)
             imageFileName = info.name ?: NA
             imageFileSize = info.size ?: 0
-            val imageSizeInMB = imageFileSize / (1024.0 * 1024.0)
             Timber.e("sizegalleryimageFileSize318====>$imageFileSize")
             Timber.e("sizegalleryimageFileName319====>$imageFileName")
+            val imageSizeInMB = imageFileSize / (1024.0 * 1024.0)
+
             Timber.e("sizegalleryimageSizeInMB320====>$imageSizeInMB")
             val maxSize = 5L * 1024 * 1024
             if (imageSizeInMB > maxSize) {
@@ -337,9 +338,11 @@ fun ProfileCreationScreen(
                 val info = it.getFileInfo(context)
                 imageFileName = info.name ?: NA
                 imageFileSize = info.size ?: 0L
-                val imageSizeInMB = imageFileSize / (1024.0 * 1024.0)
+
                 Timber.e("sizecameraimageFileSize341====>$imageFileSize")
                 Timber.e("sizecameraimageFileName342====>$imageFileName")
+                val imageSizeInMB = imageFileSize / (1024.0 * 1024.0)
+
                 Timber.e("sizecameraimageSizeInMB343====>$imageSizeInMB")
                 val maxSize = 5L * 1024 * 1024
                 if (imageSizeInMB > maxSize) {

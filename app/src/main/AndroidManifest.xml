@@ -47,4 +47,26 @@
 
     </application>
 
+    <queries>
+        <!-- For dialing capability -->
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel" />
+        </intent>
+
+        <!-- For Email capability -->
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+        </intent>
+
+        <!-- For WhatsApp link opening capability -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" android:host="://whatsapp.com" />
+        </intent>
+    </queries>
+
+
 </manifest>
