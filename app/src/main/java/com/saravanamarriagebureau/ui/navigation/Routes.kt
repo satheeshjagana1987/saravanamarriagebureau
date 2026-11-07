@@ -39,8 +39,12 @@ object Routes {
     const val MutualInterests = "mutual_interests"
     const val AdminDashboard = "admin_dashboard"
     const val AdminInterestDetails = "admin_interest_details/{interestId}"
+    const val AdminEnquiryDetails = "admin_enquiry_details/{enquiryId}"
     const val AdminAddMembershipPlan = "admin_add_membership_plan"
     const val AdminEditMembershipPlan = "admin_edit_membership_plan/{planId}"
+    const val ContactUs = "contact_us"
+    const val EnquiryForm = "enquiry_form"
+    const val MyEnquiries = "my_enquiries"
 
 
 }
@@ -51,6 +55,10 @@ fun profileRoute(profileId: String,isMatchFixed: Boolean): String {
 
 fun adminInterestDetailsRoute(interestId: String): String {
     return "admin_interest_details/${Uri.encode(interestId)}"
+}
+
+fun adminEnquiryDetailsRoute(enquiryId: String): String {
+    return "admin_enquiry_details/${Uri.encode(enquiryId)}"
 }
 
 fun adminUserDetailsRoute(userId: String,isFromPending: Boolean): String {

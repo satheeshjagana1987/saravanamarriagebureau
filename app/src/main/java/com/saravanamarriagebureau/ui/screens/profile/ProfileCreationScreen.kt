@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Height
@@ -32,6 +33,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
@@ -187,6 +190,7 @@ fun ProfileCreationScreen(
 
     // Image
     val state by imageViewModel.uiState.collectAsState()
+    val uiStateDeleteImage by imageViewModel.uiStateDeleteImage.collectAsState()
     val videoState by imageViewModel.uploadVideoState.collectAsState()
     val mediaInitiatedUploadUiState by mediaInitiatedUploadViewModel.uiState.collectAsState()
     val mediaUploadCompleteUiState by mediaUploadCompleteViewModel.uiState.collectAsState()
@@ -268,6 +272,30 @@ fun ProfileCreationScreen(
             }
 
             is ProfileUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> {
+                isLoading = false
+            }
+        }
+    }
+
+    LaunchedEffect(uiStateDeleteImage) {
+
+        when (val state = uiStateDeleteImage) {
+
+            is DeleteMediaUIState.Loading -> {
+                isLoading = true
+            }
+
+            is DeleteMediaUIState.Success -> {
+                isLoading = false
+                ToastUtils.success(context = context, message = "Image deleted successfully")
+            }
+
+            is DeleteMediaUIState.Error -> {
                 isLoading = false
                 ToastUtils.error(context, state.message)
             }
@@ -1193,18 +1221,47 @@ fun ProfileCreationScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                ) {
+                                    if (selectedUri != null) {
+                                        ProfilePhoto(
+                                            selectedUri,
+                                            Modifier.size(110.dp)
+                                        )
+                                    } else {
+                                        NetworkImage(
+                                            url = profilePhotos.getOrNull(index).orEmpty(),
+                                            modifier = Modifier.size(110.dp)
+                                        )
+                                    }
+                                    if(profilePhotos.isNotEmpty()&& profilePhotos[index] !=null) {
+                                        Spacer(modifier = Modifier.height(15.dp))
+                                        IconButton(
+                                            onClick = {
+                                                Timber.e("mediaIndex===>$index--->url==>${profilePhotos[index]}")
+                                                val mediaId = getMediaIdFromUrl(profilePhotos[index]?:"")
+                                                Timber.e("media==>$mediaId")
+                                                if(mediaId!=null) {
+                                                    imageViewModel.deleteImage(mediaId = mediaId)
+                                                }
+                                            },
+                                            modifier = Modifier.weight(1f),
+                                            colors = IconButtonDefaults.iconButtonColors(
+                                                containerColor = Color.Red,      // Sets the background color
+                                                contentColor = Color.White       // Sets the default tint color for the icon inside
+                                            )
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                tint = White,
+                                                contentDescription = "Delete image"
+                                            )
 
-                                if (selectedUri != null) {
-                                    ProfilePhoto(
-                                        selectedUri,
-                                        Modifier.size(110.dp)
-                                    )
-                                } else {
-                                    NetworkImage(
-                                        url = profilePhotos.getOrNull(index).orEmpty(),
-                                        modifier = Modifier.size(110.dp)
-                                    )
+                                        }
+                                    }
                                 }
+
                                 Spacer(Modifier.weight(1f))
                                 Column(
                                     modifier = Modifier
@@ -1452,6 +1509,23 @@ fun ProfileCreationScreen(
                 }
             )
         }
+    }
+}
+
+fun getMediaIdFromUrl(url: String): String? {
+    return try {
+        val uri = Uri.parse(url)
+        val segments = uri.pathSegments
+
+        val mediaIndex = segments.indexOf("media")
+
+        if (mediaIndex != -1 && mediaIndex + 1 < segments.size) {
+            segments[mediaIndex + 1]
+        } else {
+            null
+        }
+    } catch (e: Exception) {
+        null
     }
 }
 

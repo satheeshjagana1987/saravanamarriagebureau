@@ -43,6 +43,8 @@ import com.saravanamarriagebureau.ui.screens.AdminVoiceScreen
 import com.saravanamarriagebureau.ui.screens.ContactsLockedScreen
 import com.saravanamarriagebureau.ui.screens.PrivacyScreen
 import com.saravanamarriagebureau.ui.screens.changepassword.ChangePasswordScreen
+import com.saravanamarriagebureau.ui.screens.contactus.ContactUsScreen
+import com.saravanamarriagebureau.ui.screens.contactus.EnquiryFormScreen
 import com.saravanamarriagebureau.ui.screens.interests.InterestSentDialogScreen
 import com.saravanamarriagebureau.ui.screens.interests.InterestsScreen
 import com.saravanamarriagebureau.ui.screens.invoice.InvoiceScreen
@@ -51,6 +53,7 @@ import com.saravanamarriagebureau.ui.screens.matches.MatchesScreen
 import com.saravanamarriagebureau.ui.screens.membership.ChooseYourPlanScreen
 import com.saravanamarriagebureau.ui.screens.profile.ProfileCreationScreen
 import com.saravanamarriagebureau.ui.screens.profile.ProfileViewScreen
+import com.saravanamarriagebureau.ui.screens.userdashboard.myenquiries.MyEnquiriesScreen
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -92,19 +95,9 @@ fun MainScreenWithHamburger(
 
     val drawerItems = listOf(
         DrawerScreen.ChangePassword,
-        DrawerScreen.ChangeLanguage,
+//        DrawerScreen.ChangeLanguage,
+        DrawerScreen.MyEnquiries,
         DrawerScreen.Logout,
-    )
-
-    // -----------------------------------------
-    // Screens WITHOUT drawer / bottom bar
-    // -----------------------------------------
-
-    val screensWithoutNavigation = setOf(
-        Routes.Profile,
-        DrawerScreen.ChangeLanguage.route,
-        DrawerScreen.ChangePassword.route,
-        Routes.InterestSent
     )
 
     val isProfileScreen =
@@ -116,6 +109,7 @@ fun MainScreenWithHamburger(
         currentRoute !in setOf(
             DrawerScreen.ChangeLanguage.route,
             DrawerScreen.ChangePassword.route,
+            DrawerScreen.MyEnquiries.route,
             Routes.InterestSent,
             Routes.ChoosePlan,
             Routes.ChangeLanguage,
@@ -153,6 +147,9 @@ fun MainScreenWithHamburger(
 
         DrawerScreen.ChangePassword.route ->
             "Change Password"
+
+        DrawerScreen.MyEnquiries.route ->
+            "My Enquiries"
 
         Routes.InterestSent ->
             ""
@@ -478,6 +475,18 @@ fun MainScreenWithHamburger(
                 }
 
                 composable(
+                    DrawerScreen.MyEnquiries.route
+                ) {
+
+                    MyEnquiriesScreen(
+
+                        onBack = {
+                            navController.popBackStack()
+                        },
+                    )
+                }
+
+                composable(
                     DrawerScreen.Logout.route
                 ) {
                     LogoutDialog(
@@ -485,6 +494,25 @@ fun MainScreenWithHamburger(
                         onDismiss = {
                             navController.navigate(Routes.Home)
                         }
+                    )
+                }
+
+                composable(Routes.ContactUs) {
+                    ContactUsScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        },
+                        onNext = {
+                            navController.navigate(Routes.EnquiryForm)
+                        }
+                    )
+                }
+
+                composable(Routes.EnquiryForm) {
+                    EnquiryFormScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        },
                     )
                 }
 

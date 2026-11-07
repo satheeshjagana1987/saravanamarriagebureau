@@ -4,12 +4,14 @@ import com.saravanamarriagebureau.data.model.AcceptRequest
 import com.saravanamarriagebureau.data.model.AddMembershipPlanData
 import com.saravanamarriagebureau.data.model.AddMembershipPlanRequest
 import com.saravanamarriagebureau.data.model.AdminApproveOrRejectMatchRequest
+import com.saravanamarriagebureau.data.model.AdminEnquiryStatusUpdateRequest
 import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.data.model.AdminUserDetails
 import com.saravanamarriagebureau.data.model.ApiResponse
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
 import com.saravanamarriagebureau.data.model.DeleteMediaResponse
 import com.saravanamarriagebureau.data.model.DeleteMembershipPlanData
+import com.saravanamarriagebureau.data.model.EnquiryItem
 import com.saravanamarriagebureau.data.model.ForgetPasswordRequest
 import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
 import com.saravanamarriagebureau.data.model.Invoice
@@ -52,6 +54,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface SmbApi {
 
@@ -81,6 +84,19 @@ interface SmbApi {
         @Body request: ProfileRequest
     ): Response<ApiResponse<ProfileData>>
 
+    @Multipart
+    @POST("profile/media/upload-file")
+    suspend fun uploadImage(
+        @Part media: MultipartBody.Part,
+        @Part("mediaType") mediaType: RequestBody,
+    ): Response<UploadResponse>
+
+    @DELETE("profile/media/{mediaId}")
+    suspend fun deleteImage(
+        @Path("mediaId") mediaId: String
+    ): Response<ApiResponse<DeleteMediaResponse>>
+
+
     @POST("auth/forgot-password")
     suspend fun forgetPassword(@Body request: ForgetPasswordRequest): Response<ApiResponse<ForgetPasswordResponse>>
 
@@ -95,18 +111,6 @@ interface SmbApi {
 
     @POST("profile/media/upload")
     suspend fun mediaUploadInitiated(@Body request: MediaUploadInitiatedRequest): Response<ApiResponse<MediaUploadInitiatedResponse>>
-
-    @Multipart
-    @POST("profile/media/upload-file")
-    suspend fun uploadImage(
-        @Part media: MultipartBody.Part,
-        @Part("mediaType") mediaType: RequestBody,
-    ): Response<UploadResponse>
-
-    @DELETE("profile/media/{mediaId}")
-    suspend fun deleteImage(
-        @Path("mediaId") mediaId: String
-    ): Response<ApiResponse<DeleteMediaResponse>>
 
     @POST("profile/media/{mediaId}/complete")
     suspend fun mediaUploadCompleted(
@@ -148,8 +152,11 @@ interface SmbApi {
         @Path("interestId") interestId: String
     ): Response<ApiResponse<UserInterestsResponse>>
 
-    @GET("invoices/{id}")
-    suspend fun getInvoice(@Path("id") id: String): Invoice
+    @GET("enquiries/open")
+    suspend fun getOpenEnquiries(): Response<ApiResponse<List<MatchesData>>>
+
+    @GET("enquiries/closed")
+    suspend fun getClosedEnquiries(): Response<ApiResponse<List<MatchesData>>>
 
     //Admin
 
@@ -242,5 +249,22 @@ interface SmbApi {
     suspend fun deleteAdminMemberShipPlanDetails(
         @Path("planId") planId: String
     ): Response<ApiResponse<DeleteMembershipPlanData>>
+
+    // Admin Enquiries
+
+    @GET("admin/enquiries")
+    suspend fun getAdminEnquiries(
+    ): Response<ApiResponse<List<EnquiryItem>>>
+
+    @GET("admin/enquiries/{enquiryId}")
+    suspend fun getAdminEnquiryById(
+        @Path("enquiryId") enquiryId: String
+    ): Response<ApiResponse<EnquiryItem>>
+
+    @PATCH("admin/enquiries/{enquiryId}")
+    suspend fun updateAdminEnquiryById(
+        @Path("enquiryId") enquiryId: String,
+        @Body request: AdminEnquiryStatusUpdateRequest
+    ): Response<ApiResponse<EnquiryItem>>
 
 }

@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.PrimaryButton
@@ -40,28 +41,38 @@ import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
+import com.saravanamarriagebureau.util.Constants
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
 
 @Composable
 fun EnquiryFormScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: ContactUsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var mobileNumber by remember { mutableStateOf("") }
+
+    var name = remember {
+        viewModel.profileName()
+    }
+
+    var mobileNumber = remember {
+        viewModel.profileMobileNumber()
+    }
+
+    var email = remember {
+        viewModel.profileName()
+    }
+
     var subject by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    var message by remember { mutableStateOf("") }
 
     var isLoading by remember {
         mutableStateOf(false)
     }
-    var emailError by remember { mutableStateOf<String?>(null) }
-    var nameError by remember { mutableStateOf<String?>(null) }
-    var mobileNumberError by remember { mutableStateOf<String?>(null) }
+
     var subjectError by remember { mutableStateOf<String?>(null) }
-    var descriptionError by remember { mutableStateOf<String?>(null) }
+    var messageError by remember { mutableStateOf<String?>(null) }
 
     Column(
         Modifier
@@ -97,7 +108,7 @@ fun EnquiryFormScreen(
                     )
                     Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
-                        value = name,
+                        value = name ?: "NA",
                         onValueChange = {
                             name = it
                         },
@@ -142,7 +153,7 @@ fun EnquiryFormScreen(
                     )
                     Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
-                        value = mobileNumber,
+                        value = mobileNumber ?: "NA",
                         onValueChange = {
                             if (it.length <= 10 && it.all(Char::isDigit)) {
                                 mobileNumber = it
@@ -187,10 +198,11 @@ fun EnquiryFormScreen(
                     )
                     Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
-                        value = email,
+                        value = email ?: "NA",
                         onValueChange = {
                             email = it
                         },
+                        readOnly = true,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(52.dp),
@@ -262,9 +274,9 @@ fun EnquiryFormScreen(
                     )
                     Spacer(Modifier.height(5.dp))
                     OutlinedTextField(
-                        value = description,
+                        value = message,
                         onValueChange = {
-                            description = it
+                            message = it
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -294,48 +306,27 @@ fun EnquiryFormScreen(
                         text = stringResource(id = R.string.submit),
                         modifier = Modifier.padding(16.dp),
                         onClick = {
-
-                            nameError = ValidationUtils.validateName(name = name.trim())
-                            emailError = ValidationUtils.validateEmail(email = email.trim())
-                            mobileNumberError =
-                                ValidationUtils.validateMobile(mobile = mobileNumber.trim())
                             subjectError = ValidationUtils.validateField(
                                 field = subject.trim(),
                                 fieldName = "Subject"
                             )
-                            descriptionError = ValidationUtils.validateField(
-                                field = description.trim(),
-                                fieldName = "Description"
-                            )
-
-                            if (nameError != null) {
-                                ToastUtils.error(
-                                    context = context,
-                                    message = nameError.toString()
-                                )
-                                return@PrimaryButton
-                            }
-
-                            if (emailError != null) {
-                                ToastUtils.error(context = context, message = emailError.toString())
-                                return@PrimaryButton
-                            }
-
-                            if (mobileNumberError != null) {
-                                ToastUtils.error(
-                                    context = context,
-                                    message = mobileNumberError.toString()
-                                )
-                                return@PrimaryButton
-                            }
-
                             if (subjectError != null) {
-                                ToastUtils.error(context = context, message = subjectError.toString())
+                                ToastUtils.error(
+                                    context = context,
+                                    message = subjectError.toString()
+                                )
                                 return@PrimaryButton
                             }
 
-                            if (descriptionError != null) {
-                                ToastUtils.error(context = context, message = descriptionError.toString())
+                            messageError = ValidationUtils.validateField(
+                                field = message.trim(),
+                                fieldName = "Message"
+                            )
+                            if (messageError != null) {
+                                ToastUtils.error(
+                                    context = context,
+                                    message = messageError.toString()
+                                )
                                 return@PrimaryButton
                             }
                         }

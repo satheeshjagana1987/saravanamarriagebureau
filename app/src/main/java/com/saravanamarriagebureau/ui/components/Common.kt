@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -83,6 +84,7 @@ import com.saravanamarriagebureau.data.enums.Gender
 import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.AddMembershipPlanData
 import com.saravanamarriagebureau.data.model.AdminInterestsData
+import com.saravanamarriagebureau.data.model.EnquiryItem
 import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.data.model.UserInterestsData
@@ -787,6 +789,64 @@ fun AdminMembershipCard(
     }
 }
 
+
+@Composable
+fun EnquiryCard(
+    enquiry: EnquiryItem,
+    onOpen: () -> Unit,
+) {
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onOpen()
+            },
+        shape = RoundedCornerShape(5.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
+
+            Column(Modifier.weight(0.8f)) {
+                LabelName(
+                    labelName = enquiry.fullName ?: NA,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Maroon,
+                    modifier = Modifier.padding(0.dp)
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                LabelName(
+                    labelName = enquiry.subject ?: NA,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Black,
+                    modifier = Modifier.padding(0.dp)
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+
+                LabelName(
+                    labelName = enquiry.status,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (enquiry.status == "NEW") Warning else Red,
+                    modifier = Modifier.padding(0.dp)
+                )
+            }
+
+            Icon(
+                Icons.Default.ArrowForwardIos,
+                null, tint = Black,
+                modifier = Modifier
+                    .size(30.dp)
+                    .weight(0.2f)
+            )
+
+        }
+    }
+}
+
 fun formatPaiseToRupees(paise: Long): String {
     return NumberFormat.getCurrencyInstance(
         Locale("en", "IN")
@@ -1244,7 +1304,8 @@ fun LabelName(
         fontWeight = fontWeight,
         modifier = modifier,
         textDecoration = textDecoration,
-        textAlign = textAlign
+        textAlign = textAlign,
+        maxLines = 2
     )
 }
 

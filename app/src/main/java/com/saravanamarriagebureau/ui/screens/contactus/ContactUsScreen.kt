@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -45,6 +46,7 @@ import com.saravanamarriagebureau.ui.theme.White
 @Composable
 fun ContactUsScreen(
     onBack: () -> Unit,
+    onNext: () -> Unit,
     viewModel: ContactUsViewModel = hiltViewModel()
 ) {
 
@@ -180,7 +182,9 @@ fun ContactUsScreen(
                     PrimaryButton(
                         text = stringResource(id = R.string.send_your_enquiry),
                         modifier = Modifier.padding(16.dp),
-                        onClick = {}
+                        onClick = {
+                            onNext()
+                        }
                     )
                 }
             }
@@ -191,5 +195,5 @@ fun ContactUsScreen(
 @Preview
 @Composable
 fun ContactUsScreenPreview() {
-    ContactUsScreen(onBack = {})
+    ContactUsScreen(onBack = {}, onNext = {})
 }

@@ -145,7 +145,7 @@ fun SmbNavigationApp(
             MainScreenWithHamburger(
                 onLogout = {
                     navController.navigate(Routes.Login) {
-                        clearPreferences(appPreferences)
+                        appPreferences.clearPreferences()
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
@@ -159,7 +159,7 @@ fun SmbNavigationApp(
             AdminLandingScreen(
                 onLogout = {
                     navController.navigate(Routes.Login) {
-                        clearPreferences(appPreferences)
+                        appPreferences.clearPreferences()
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
@@ -273,7 +273,5 @@ fun SmbNavigationApp(
 }
 
 fun clearPreferences(appPreferences: AppPreferences){
-    appPreferences.saveLoginStatus(isLoggedIn = false)
-    appPreferences.saveUserStaus(isAdmin = false)
-    appPreferences.savePaidUser(isPaidUser = false)
+    appPreferences.clearPreferences()
 }

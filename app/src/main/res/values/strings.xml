@@ -5,7 +5,6 @@
     <string name="mobile_number">Mobile Number</string>
     <string name="email">Email</string>
     <string name="subject">Subject</string>
-    <string name="description">Description</string>
     <string name="date_of_birth">Date of Birth</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
@@ -112,4 +111,7 @@
     <string name="head_office">Head Office</string>
     <string name="branches">Branches</string>
     <string name="send_your_enquiry">Send Your Enquiry</string>
+    <string name="message">Message</string>
+    <string name="admin_reply">Admin Reply</string>
+    <string name="status">Status</string>
 </resources>

@@ -17,8 +17,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.saravanamarriagebureau.ui.navigation.Routes
 import com.saravanamarriagebureau.ui.navigation.adminEditMembershipDetailsRoute
+import com.saravanamarriagebureau.ui.navigation.adminEnquiryDetailsRoute
 import com.saravanamarriagebureau.ui.navigation.adminInterestDetailsRoute
 import com.saravanamarriagebureau.ui.navigation.adminUserDetailsRoute
+import com.saravanamarriagebureau.ui.screens.admin.enquiries.AdminEnquiriesScreen
+import com.saravanamarriagebureau.ui.screens.admin.enquiries.AdminEnquiryDetailsScreen
 import com.saravanamarriagebureau.ui.screens.admin.interests.AdminInterestDetailsScreen
 import com.saravanamarriagebureau.ui.screens.admin.interests.AdminInterestsScreen
 import com.saravanamarriagebureau.ui.screens.admin.membership.AddMembershipPlanScreen
@@ -44,6 +47,7 @@ fun AdminLandingScreen(
         AdminDestination.Users,
         AdminDestination.Interests,
         AdminDestination.Memberships,
+        AdminDestination.Enquiries,
         AdminDestination.Settings
     )
 
@@ -135,7 +139,7 @@ fun AdminLandingScreen(
 
             composable(Routes.Users) {
                 AdminUsersScreen(
-                    onProfile = { profileId, isFromPending->
+                    onProfile = { profileId, isFromPending ->
                         adminNavController.navigate(
                             adminUserDetailsRoute(userId = profileId, isFromPending = isFromPending)
                         )
@@ -153,7 +157,7 @@ fun AdminLandingScreen(
                         type = NavType.BoolType
                     }
 
-                    )
+                )
             ) { backStackEntry ->
 
                 val userId =
@@ -213,6 +217,35 @@ fun AdminLandingScreen(
                         adminNavController.popBackStack()
                     },
                     interestId = interestId
+                )
+            }
+
+            composable(AdminDestination.Enquiries.route) {
+                AdminEnquiriesScreen(
+                    onEnquiryItemClicked = { enquiry ->
+                        adminNavController.navigate(
+                            adminEnquiryDetailsRoute(enquiryId = enquiry.id)
+                        )
+                    },
+                )
+            }
+
+            composable(
+                route = Routes.AdminEnquiryDetails,
+                arguments = listOf(
+                    navArgument("enquiryId") {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+
+                val enquiryId =
+                    backStackEntry.arguments?.getString("enquiryId").orEmpty()
+                AdminEnquiryDetailsScreen(
+                    onBack = {
+                        adminNavController.popBackStack()
+                    },
+                    enquiryId = enquiryId
                 )
             }
         }

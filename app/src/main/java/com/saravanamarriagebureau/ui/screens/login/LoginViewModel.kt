@@ -66,6 +66,18 @@ class LoginViewModel @Inject constructor(
                         isPaidUser = result.data.user.isPaidUser
                     )
 
+                    appPreferences.saveProfileName(
+                        name = result.data.user.fullName
+                    )
+
+                    appPreferences.saveProfileMobile(
+                        mobileNumber = result.data.user.mobile
+                    )
+
+                    appPreferences.saveProfileMail(
+                        email = result.data.user.email
+                    )
+
                     appPreferences.saveUserType(
                         result.data.userType ?: KEY_USER_TYPE
                     )

@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Interests
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.saravanamarriagebureau.ui.navigation.Routes
@@ -40,10 +41,10 @@ sealed class AdminDestination (
         icon = Icons.Default.Interests
     )
 
-    data object Payments : AdminDestination(
-        route = "payments",
-        label = "Payments",
-        icon = Icons.Default.Payments
+    data object Enquiries : AdminDestination(
+        route = "enquiries",
+        label = "Enquiries",
+        icon = Icons.Default.QueryStats
     )
 
     data object Settings : AdminDestination(

@@ -8,6 +8,9 @@ import com.saravanamarriagebureau.util.Constants.KEY_IS_LOGGED_IN
 import com.saravanamarriagebureau.util.Constants.KEY_IS_PAID_USER
 import com.saravanamarriagebureau.util.Constants.KEY_MEDIA_ID
 import com.saravanamarriagebureau.util.Constants.KEY_MEDIA_URL
+import com.saravanamarriagebureau.util.Constants.KEY_PROFILE_MAIL
+import com.saravanamarriagebureau.util.Constants.KEY_PROFILE_MOBILE
+import com.saravanamarriagebureau.util.Constants.KEY_PROFILE_NAME
 import com.saravanamarriagebureau.util.Constants.KEY_REFRESH_TOKEN
 import com.saravanamarriagebureau.util.Constants.KEY_REMEMBER_ME
 import com.saravanamarriagebureau.util.Constants.KEY_RESET_TOKEN
@@ -140,14 +143,34 @@ class AppPreferences @Inject constructor(
         return preferences.getString(KEY_MEDIA_ID, null)
     }
 
-    fun saveUserName(name: String) {
+    fun saveProfileName(name: String) {
         preferences.edit()
-            .putString(KEY_USER_NAME, name)
+            .putString(KEY_PROFILE_NAME, name)
             .apply()
     }
 
-    fun getUserName(): String? {
-        return preferences.getString(KEY_USER_NAME, null)
+    fun getProfileName(): String? {
+        return preferences.getString(KEY_PROFILE_NAME, null)
+    }
+
+    fun saveProfileMobile(mobileNumber: String) {
+        preferences.edit()
+            .putString(KEY_PROFILE_MOBILE, mobileNumber)
+            .apply()
+    }
+
+    fun getProfileMobile(): String? {
+        return preferences.getString(KEY_PROFILE_MOBILE, null)
+    }
+
+    fun saveProfileMail(email: String) {
+        preferences.edit()
+            .putString(KEY_PROFILE_MAIL, email)
+            .apply()
+    }
+
+    fun getProfileMail(): String? {
+        return preferences.getString(KEY_PROFILE_MAIL, null)
     }
 
     fun clearPreferences() {

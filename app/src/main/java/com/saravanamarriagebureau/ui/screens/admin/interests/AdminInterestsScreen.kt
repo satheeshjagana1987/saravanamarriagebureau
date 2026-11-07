@@ -28,24 +28,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.saravanamarriagebureau.data.enums.InterestTab
-import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.model.AdminInterestsData
-import com.saravanamarriagebureau.data.model.Interest
-import com.saravanamarriagebureau.data.model.MatchesData
-import com.saravanamarriagebureau.data.model.demoInterests
 import com.saravanamarriagebureau.ui.components.AdminInterestCard
 import com.saravanamarriagebureau.ui.components.CustomButton
-import com.saravanamarriagebureau.ui.components.InterestCard
 import com.saravanamarriagebureau.ui.components.LoadingDialog
-import com.saravanamarriagebureau.ui.screens.matches.MatchesUiState
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.ToastUtils
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AdminInterestsScreen(
     onInterestItemClick: (AdminInterestsData) -> Unit,
@@ -184,7 +176,7 @@ fun AdminInterestsScreen(
                     ) { interest ->
                         AdminInterestCard(
                             interest,
-                            onOpen = {onInterestItemClick(interest)},
+                            onOpen = { onInterestItemClick(interest) },
                         )
                     }
                 }
@@ -224,6 +216,6 @@ fun InterestTabButton(
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
-fun AdminInterestsScreenPreview(){
+fun AdminInterestsScreenPreview() {
     AdminInterestsScreen(onInterestItemClick = {})
 }
