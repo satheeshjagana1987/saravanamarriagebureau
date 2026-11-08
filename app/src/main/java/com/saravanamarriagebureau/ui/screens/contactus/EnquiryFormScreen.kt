@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,10 +35,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.ui.components.LabelName
+import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.ScreenHeader
+import com.saravanamarriagebureau.ui.screens.admin.enquiries.AdminEnquiriesUIState
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
@@ -61,7 +65,7 @@ fun EnquiryFormScreen(
     }
 
     var email = remember {
-        viewModel.profileName()
+        viewModel.profileMail()
     }
 
     var subject by remember { mutableStateOf("") }
@@ -70,6 +74,8 @@ fun EnquiryFormScreen(
     var isLoading by remember {
         mutableStateOf(false)
     }
+
+    val uiStateSubmitEnquiry by viewModel.uiStateSubmitEnquiry.collectAsStateWithLifecycle()
 
     var subjectError by remember { mutableStateOf<String?>(null) }
     var messageError by remember { mutableStateOf<String?>(null) }
@@ -329,8 +335,42 @@ fun EnquiryFormScreen(
                                 )
                                 return@PrimaryButton
                             }
+                            viewModel.submitEnquiry(
+                                fullName = name ?: "NA",
+                                mobileNumber = mobileNumber ?: "NA",
+                                email = email ?: "NA",
+                                subject = subject.trim(),
+                                message = message.trim()
+                            )
                         }
                     )
+
+                    LoadingDialog(isLoading = isLoading)
+
+                    LaunchedEffect(uiStateSubmitEnquiry) {
+
+                        when (val state = uiStateSubmitEnquiry) {
+
+                            is SubmitEnquiryUIState.Loading -> {
+                                isLoading = true
+                            }
+
+                            is SubmitEnquiryUIState.Success -> {
+                                isLoading = false
+                                ToastUtils.error(context, state.data.confirmationMessage)
+                                onBack()
+                            }
+
+                            is SubmitEnquiryUIState.Error -> {
+                                isLoading = false
+                                ToastUtils.error(context, state.message)
+                            }
+
+                            else -> {
+                                isLoading = false
+                            }
+                        }
+                    }
                 }
             }
         }

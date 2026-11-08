@@ -37,13 +37,17 @@ import androidx.navigation.navArgument
 import com.saravanamarriagebureau.data.model.BottomBarScreen
 import com.saravanamarriagebureau.data.model.DrawerScreen
 import com.saravanamarriagebureau.ui.navigation.Routes
+import com.saravanamarriagebureau.ui.navigation.enquiryDetailsRoute
 import com.saravanamarriagebureau.ui.navigation.paymentRoute
 import com.saravanamarriagebureau.ui.navigation.profileRoute
 import com.saravanamarriagebureau.ui.screens.AdminVoiceScreen
 import com.saravanamarriagebureau.ui.screens.ContactsLockedScreen
 import com.saravanamarriagebureau.ui.screens.PrivacyScreen
+import com.saravanamarriagebureau.ui.screens.admin.enquiries.AdminEnquiryDetailsScreen
 import com.saravanamarriagebureau.ui.screens.changepassword.ChangePasswordScreen
 import com.saravanamarriagebureau.ui.screens.contactus.ContactUsScreen
+import com.saravanamarriagebureau.ui.screens.contactus.EnquiriesScreen
+import com.saravanamarriagebureau.ui.screens.contactus.EnquiryDetailsScreen
 import com.saravanamarriagebureau.ui.screens.contactus.EnquiryFormScreen
 import com.saravanamarriagebureau.ui.screens.interests.InterestSentDialogScreen
 import com.saravanamarriagebureau.ui.screens.interests.InterestsScreen
@@ -53,7 +57,6 @@ import com.saravanamarriagebureau.ui.screens.matches.MatchesScreen
 import com.saravanamarriagebureau.ui.screens.membership.ChooseYourPlanScreen
 import com.saravanamarriagebureau.ui.screens.profile.ProfileCreationScreen
 import com.saravanamarriagebureau.ui.screens.profile.ProfileViewScreen
-import com.saravanamarriagebureau.ui.screens.userdashboard.myenquiries.MyEnquiriesScreen
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -377,9 +380,9 @@ fun MainScreenWithHamburger(
                 composable(BottomBarScreen.Interests.route) {
 
                     InterestsScreen(
-                        onInterestItemClick = { profileId,isMatchFixed ->
+                        onInterestItemClick = { profileId, isMatchFixed ->
                             navController.navigate(
-                                 profileRoute(profileId = profileId, isMatchFixed = isMatchFixed)
+                                profileRoute(profileId = profileId, isMatchFixed = isMatchFixed)
                             )
                         },
                     )
@@ -478,11 +481,32 @@ fun MainScreenWithHamburger(
                     DrawerScreen.MyEnquiries.route
                 ) {
 
-                    MyEnquiriesScreen(
+                    EnquiriesScreen(
 
+                        onEnquiryItemClicked = { enquiry ->
+                            navController.navigate(
+                                enquiryDetailsRoute(enquiryId = enquiry.id)
+                            )
+                        },
+                    )
+                }
+
+                composable(
+                    route = Routes.EnquiryDetails,
+                    arguments = listOf(
+                        navArgument("enquiryId") {
+                            type = NavType.StringType
+                        }
+                    )
+                ) { backStackEntry ->
+
+                    val enquiryId =
+                        backStackEntry.arguments?.getString("enquiryId").orEmpty()
+                    EnquiryDetailsScreen(
                         onBack = {
                             navController.popBackStack()
                         },
+                        enquiryId = enquiryId
                     )
                 }
 
@@ -515,6 +539,7 @@ fun MainScreenWithHamburger(
                         },
                     )
                 }
+
 
                 // =================================================
                 // INTEREST SENT

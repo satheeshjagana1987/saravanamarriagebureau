@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.repository.ProfileRepository
 import com.saravanamarriagebureau.util.ApiResult
+import com.saravanamarriagebureau.util.AppPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val _uiState =
@@ -138,6 +140,10 @@ class ProfileViewModel @Inject constructor(
                         ProfileUpdateUIState.Success(
                             message = result.message
                         )
+
+                    appPreferences.saveProfileMail(
+                        email = email
+                    )
                 }
 
                 is ApiResult.Error -> {

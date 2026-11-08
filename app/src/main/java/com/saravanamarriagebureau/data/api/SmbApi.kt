@@ -38,6 +38,8 @@ import com.saravanamarriagebureau.data.model.RegistrationRejectionData
 import com.saravanamarriagebureau.data.model.RejectRequest
 import com.saravanamarriagebureau.data.model.ResetPasswordRequest
 import com.saravanamarriagebureau.data.model.ResetPasswordResponse
+import com.saravanamarriagebureau.data.model.SubmitEnquiryRequest
+import com.saravanamarriagebureau.data.model.SubmitEnquiryResponseData
 import com.saravanamarriagebureau.data.model.UploadResponse
 import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.data.model.UserInterestsResponse
@@ -266,5 +268,21 @@ interface SmbApi {
         @Path("enquiryId") enquiryId: String,
         @Body request: AdminEnquiryStatusUpdateRequest
     ): Response<ApiResponse<EnquiryItem>>
+
+    //  User Enquiries
+
+    @GET("enquiries")
+    suspend fun getEnquiries(
+    ): Response<ApiResponse<List<EnquiryItem>>>
+
+    @GET("enquiries/{enquiryId}")
+    suspend fun getEnquiryById(
+        @Path("enquiryId") enquiryId: String
+    ): Response<ApiResponse<EnquiryItem>>
+
+    @POST("enquiries")
+    suspend fun submitEnquiry(
+        @Body request: SubmitEnquiryRequest
+    ): Response<ApiResponse<SubmitEnquiryResponseData>>
 
 }

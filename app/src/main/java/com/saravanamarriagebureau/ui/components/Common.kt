@@ -116,17 +116,17 @@ fun AppLogo(compact: Boolean = false) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
-                .size(if (compact) 48.dp else 70.dp)
+                .size(if (compact) 48.dp else 80.dp)
                 .clip(CircleShape)
                 .background(SoftRose),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                Icons.Default.Favorite,
-                contentDescription = null,
-                tint = Maroon,
-                modifier = Modifier.size(if (compact) 30.dp else 48.dp)
+            Image(
+                painter = painterResource(id = R.drawable.app_logo),
+                contentDescription = "placeholder",
+                contentScale = ContentScale.Crop,
             )
+
         }
         if (!compact) {
             Text("Saravana Bhava", color = Maroon, fontWeight = FontWeight.Bold, fontSize = 28.sp)

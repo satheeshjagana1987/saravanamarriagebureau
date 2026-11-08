@@ -735,6 +735,21 @@ data class AdminEnquiryStatusUpdateRequest(
     val comment: String
 )
 
+data class SubmitEnquiryRequest(
+    val fullName: String,
+    val mobileNumber: String,
+    val emailAddress: String,
+    val subject: String,
+    val message: String,
+)
+
+data class SubmitEnquiryResponseData(
+    val status: String,
+    val submittedAt: String,
+    val id: String,
+    val confirmationMessage: String,
+)
+
 // Primary Bottom Bar Destinations
 sealed class BottomBarScreen(val route: String, val title: String, val icon: ImageVector) {
     object Home : BottomBarScreen(Routes.Home, "Home", Icons.Default.Home)

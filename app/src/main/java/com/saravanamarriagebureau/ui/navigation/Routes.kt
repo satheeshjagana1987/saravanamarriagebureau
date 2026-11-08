@@ -45,6 +45,7 @@ object Routes {
     const val ContactUs = "contact_us"
     const val EnquiryForm = "enquiry_form"
     const val MyEnquiries = "my_enquiries"
+    const val EnquiryDetails = "enquiry_details/{enquiryId}"
 
 
 }
@@ -59,6 +60,10 @@ fun adminInterestDetailsRoute(interestId: String): String {
 
 fun adminEnquiryDetailsRoute(enquiryId: String): String {
     return "admin_enquiry_details/${Uri.encode(enquiryId)}"
+}
+
+fun enquiryDetailsRoute(enquiryId: String): String {
+    return "enquiry_details/${Uri.encode(enquiryId)}"
 }
 
 fun adminUserDetailsRoute(userId: String,isFromPending: Boolean): String {
