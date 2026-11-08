@@ -114,6 +114,7 @@ fun MainScreenWithHamburger(
             DrawerScreen.ChangeLanguage.route,
             DrawerScreen.ChangePassword.route,
             DrawerScreen.MyEnquiries.route,
+            DrawerScreen.ContactUs.route,
             Routes.InterestSent,
             Routes.ChoosePlan,
             Routes.ChangeLanguage,

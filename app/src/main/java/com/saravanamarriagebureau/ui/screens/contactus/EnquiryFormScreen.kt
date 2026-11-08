@@ -237,7 +237,7 @@ fun EnquiryFormScreen(
                             )
                         }
                     )
-
+                    Spacer(Modifier.height(10.dp))
                     LabelName(
                         labelName = stringResource(id = R.string.subject),
                         fontSize = 14.sp,
@@ -271,9 +271,9 @@ fun EnquiryFormScreen(
                             )
                         }
                     )
-
+                    Spacer(Modifier.height(10.dp))
                     LabelName(
-                        labelName = stringResource(id = R.string.description),
+                        labelName = stringResource(id = R.string.message),
                         fontSize = 14.sp,
                         color = Maroon,
                         fontWeight = FontWeight.Normal
@@ -300,7 +300,7 @@ fun EnquiryFormScreen(
 
                         placeholder = {
                             Text(
-                                text = "Enter Description",
+                                text = "Enter Message",
                                 color = Color(0xFFB5B5BD),
                                 fontSize = 14.sp
                             )

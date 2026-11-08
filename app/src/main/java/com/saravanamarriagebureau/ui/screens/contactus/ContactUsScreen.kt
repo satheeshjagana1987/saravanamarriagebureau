@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Whatsapp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -41,6 +42,7 @@ import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.ui.theme.Success
 import com.saravanamarriagebureau.ui.theme.White
 
 @Composable
@@ -129,13 +131,13 @@ fun ContactUsScreen(
                         Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        IconButton(
+                        FilledIconButton(
                             onClick = {
                                 viewModel.onCallClick(phoneNumber = samplePhone)
                             },
                             modifier = Modifier.weight(1f),
                             colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color.Red,      // Sets the background color
+                                containerColor = Black,      // Sets the background color
                                 contentColor = Color.White       // Sets the default tint color for the icon inside
                             )
                         ) {
@@ -145,13 +147,13 @@ fun ContactUsScreen(
                                 contentDescription = "open Dialer"
                             )
                         }
-                        IconButton(
+                        FilledIconButton(
                             onClick = {
                                 viewModel.onWhatsAppClick(phoneNumber = samplePhone)
                             },
                             modifier = Modifier.weight(1f),
                             colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color.Red,      // Sets the background color
+                                containerColor = Success,      // Sets the background color
                                 contentColor = Color.White       // Sets the default tint color for the icon inside
                             )
                         ) {
@@ -161,7 +163,7 @@ fun ContactUsScreen(
                                 contentDescription = "whatsapp"
                             )
                         }
-                        IconButton(
+                        FilledIconButton(
                             onClick = {
                                 viewModel.onEmailClick(email = sampleEmail)
                             },
