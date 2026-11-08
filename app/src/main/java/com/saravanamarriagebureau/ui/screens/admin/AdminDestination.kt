@@ -31,7 +31,7 @@ sealed class AdminDestination (
 
     data object Memberships : AdminDestination(
         route = "memberships",
-        label = "Memberships",
+        label = "Plans",
         icon = Icons.Default.CardMembership
     )
 

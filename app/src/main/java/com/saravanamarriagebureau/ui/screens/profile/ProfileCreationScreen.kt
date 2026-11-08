@@ -163,10 +163,6 @@ fun ProfileCreationScreen(
         mutableStateOf(true)
     }
 
-    var selectedGender by remember {
-        mutableStateOf("")
-    }
-
     var selectedMaritalStatus by remember {
         mutableStateOf("")
     }
@@ -298,6 +294,9 @@ fun ProfileCreationScreen(
             is DeleteMediaUIState.Error -> {
                 isLoading = false
                 ToastUtils.error(context, state.message)
+                profilePhotos = profilePhotos.toMutableList().also {
+                    it[selectedIndex] = null
+                }
             }
 
             else -> {
@@ -1223,7 +1222,9 @@ fun ProfileCreationScreen(
                             ) {
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
+
                                     if (selectedUri != null) {
                                         ProfilePhoto(
                                             selectedUri,
@@ -1235,37 +1236,43 @@ fun ProfileCreationScreen(
                                             modifier = Modifier.size(110.dp)
                                         )
                                     }
-                                    if(profilePhotos.isNotEmpty()&& profilePhotos[index] !=null) {
-                                        Spacer(modifier = Modifier.height(15.dp))
+
+                                    // Show delete icon only if an uploaded image exists
+                                    val uploadedImageUrl = profilePhotos.getOrNull(index)
+
+                                    if (!uploadedImageUrl.isNullOrBlank()) {
+
                                         IconButton(
                                             onClick = {
-                                                Timber.e("mediaIndex===>$index--->url==>${profilePhotos[index]}")
-                                                val mediaId = getMediaIdFromUrl(profilePhotos[index]?:"")
-                                                Timber.e("media==>$mediaId")
-                                                if(mediaId!=null) {
+                                                val mediaId = getMediaIdFromUrl(uploadedImageUrl)
+
+                                                Timber.e("mediaId ===> $mediaId")
+
+                                                if (mediaId != null) {
                                                     imageViewModel.deleteImage(mediaId = mediaId)
+                                                } else {
+                                                    ToastUtils.error(
+                                                        context = context,
+                                                        message = "Invalid image URL"
+                                                    )
                                                 }
                                             },
-                                            modifier = Modifier.weight(1f),
+                                            modifier = Modifier.size(40.dp),
                                             colors = IconButtonDefaults.iconButtonColors(
-                                                containerColor = Color.Red,      // Sets the background color
-                                                contentColor = Color.White       // Sets the default tint color for the icon inside
+                                                containerColor = Red,
+                                                contentColor = White
                                             )
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.Delete,
-                                                tint = White,
                                                 contentDescription = "Delete image"
                                             )
-
                                         }
                                     }
                                 }
 
-                                Spacer(Modifier.weight(1f))
                                 Column(
-                                    modifier = Modifier
-                                        .fillMaxSize(),
+                                    modifier = Modifier.weight(1f),
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
@@ -1326,7 +1333,7 @@ fun ProfileCreationScreen(
                             }
 
                             imageState.error?.let {
-                                Text(it, color = Color.Red)
+                                ToastUtils.error(context = context, message = "Maximum of 3 profile photos reached")
                             }
                         }
                     }

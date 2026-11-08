@@ -1,4 +1,4 @@
-package com.saravanamarriagebureau.ui.interfaces
+package com.saravanamarriagebureau.util
 
 interface ExternalAppNavigator {
     fun openDialer(phoneNumber: String)

@@ -97,7 +97,8 @@ fun AdminEnquiriesScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(Modifier.padding(horizontal = 16.dp)) {
+
+        Column(Modifier.padding(all = 16.dp)) {
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)

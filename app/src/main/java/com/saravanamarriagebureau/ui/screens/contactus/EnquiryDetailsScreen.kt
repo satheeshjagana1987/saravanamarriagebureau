@@ -105,7 +105,7 @@ fun EnquiryDetailsScreen(
         ScreenHeader("Enquiry Details", onBack)
         Column(
             Modifier
-                .padding(16.dp)
+                .padding(16.dp).fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
             Card(
@@ -117,12 +117,10 @@ fun EnquiryDetailsScreen(
             ) {
                 Column(
                     Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .padding(16.dp)
                         .background(White),
                 ) {
-
-                    Spacer(Modifier.height(15.dp))
 
                     ProfileInfoRow(
                         label = stringResource(id = R.string.full_name),

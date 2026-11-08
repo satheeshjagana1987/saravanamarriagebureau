@@ -608,7 +608,7 @@ fun AdminUserCard(
                     labelName = profile.gender,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = TextSecondary,
+                    color = Black,
                     modifier = Modifier.padding(0.dp)
                 )
                 Spacer(Modifier.height(5.dp))
@@ -616,7 +616,7 @@ fun AdminUserCard(
                     labelName = profile.city ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = TextSecondary,
+                    color = Black,
                     modifier = Modifier.padding(0.dp)
                 )
             }
@@ -836,10 +836,9 @@ fun EnquiryCard(
             }
 
             Icon(
-                Icons.Default.ArrowForwardIos,
-                null, tint = Black,
+                Icons.Default.KeyboardArrowRight,
+                null, tint = TextSecondary,
                 modifier = Modifier
-                    .size(30.dp)
                     .weight(0.2f)
             )
 
@@ -1140,14 +1139,14 @@ fun AdminInterestCard(
                     labelName = "$age yrs",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = TextSecondary,
+                    color = Black,
                     modifier = Modifier.padding(0.dp)
                 )
                 LabelName(
                     labelName = interest.sender.education ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = TextSecondary,
+                    color = Black,
                     modifier = Modifier.padding(0.dp)
                 )
 
@@ -1282,8 +1281,8 @@ fun VerticalDivider() {
     Box(
         modifier = Modifier
             .width(1.dp)
-            .height(20.dp)
-            .background(color = Gray)
+            .height(15.dp)
+            .background(color = Maroon)
     )
 }
 

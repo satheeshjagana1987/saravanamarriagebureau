@@ -3,7 +3,7 @@ package com.saravanamarriagebureau.data.repository
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.saravanamarriagebureau.ui.interfaces.ExternalAppNavigator
+import com.saravanamarriagebureau.util.ExternalAppNavigator
 import com.saravanamarriagebureau.util.ToastUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

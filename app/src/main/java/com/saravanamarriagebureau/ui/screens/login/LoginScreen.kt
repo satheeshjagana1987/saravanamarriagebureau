@@ -153,13 +153,14 @@ fun LoginScreen(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(Modifier.height(20.dp))
         LabelName(
             labelName = stringResource(id = R.string.login),
-            fontSize = 16.sp,
+            fontSize = 18.sp,
             color = Maroon,
             fontWeight = FontWeight.SemiBold
         )
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(30.dp))
 
         Card(
             modifier = Modifier

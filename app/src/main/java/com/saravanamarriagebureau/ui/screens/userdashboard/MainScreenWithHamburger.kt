@@ -100,6 +100,7 @@ fun MainScreenWithHamburger(
         DrawerScreen.ChangePassword,
 //        DrawerScreen.ChangeLanguage,
         DrawerScreen.MyEnquiries,
+        DrawerScreen.ContactUs,
         DrawerScreen.Logout,
     )
 
@@ -119,6 +120,8 @@ fun MainScreenWithHamburger(
             Routes.MatchFixed,
             Routes.Invoice,
             Routes.Profile,
+            Routes.EnquiryDetails,
+            Routes.EnquiryForm,
         ) && !isProfileScreen
 
     // -----------------------------------------
@@ -153,6 +156,9 @@ fun MainScreenWithHamburger(
 
         DrawerScreen.MyEnquiries.route ->
             "My Enquiries"
+
+        DrawerScreen.ContactUs.route ->
+            "Contact Us"
 
         Routes.InterestSent ->
             ""
@@ -482,7 +488,9 @@ fun MainScreenWithHamburger(
                 ) {
 
                     EnquiriesScreen(
-
+                        onBack = {
+                            navController.popBackStack()
+                        },
                         onEnquiryItemClicked = { enquiry ->
                             navController.navigate(
                                 enquiryDetailsRoute(enquiryId = enquiry.id)

@@ -1,7 +1,9 @@
 package com.saravanamarriagebureau.data.model
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ContactSupport
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.ContactSupport
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Interests
@@ -770,6 +772,9 @@ sealed class DrawerScreen(val route: String, val title: String, val icon: ImageV
 
     object MyEnquiries :
         DrawerScreen(Routes.MyEnquiries, "My Enquiries", Icons.Default.QueryStats)
+
+    object ContactUs :
+        DrawerScreen(Routes.ContactUs, "Contact Us", Icons.AutoMirrored.Filled.ContactSupport)
 
     object Logout : DrawerScreen(Routes.Logout, "Logout", Icons.AutoMirrored.Filled.ExitToApp)
 }

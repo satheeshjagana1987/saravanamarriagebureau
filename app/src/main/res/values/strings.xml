@@ -111,6 +111,7 @@
     <string name="head_office">Head Office</string>
     <string name="branches">Branches</string>
     <string name="send_your_enquiry">Send Your Enquiry</string>
+    <string name="my_enquiries">My Enquiries</string>
     <string name="message">Message</string>
     <string name="admin_reply">Admin Reply</string>
     <string name="status">Status</string>

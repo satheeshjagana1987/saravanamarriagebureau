@@ -34,7 +34,6 @@ fun ProfileViewScreen(
     profileType: String,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    Timber.e("profileId  => $profileId")
     val uiState by viewModel.uiStateById
         .collectAsStateWithLifecycle()
 

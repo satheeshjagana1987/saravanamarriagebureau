@@ -117,7 +117,7 @@ fun AdminEnquiryDetailsScreen(
         ScreenHeader("Enquiry Details", onBack)
         Column(
             Modifier
-                .padding(16.dp)
+                .padding(16.dp).fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
             Card(
@@ -129,12 +129,9 @@ fun AdminEnquiryDetailsScreen(
             ) {
                 Column(
                     Modifier
-                        .fillMaxWidth()
                         .padding(16.dp)
                         .background(White),
                 ) {
-
-                    Spacer(Modifier.height(15.dp))
 
                     ProfileInfoRow(
                         label = stringResource(id = R.string.full_name),
@@ -187,7 +184,7 @@ fun AdminEnquiryDetailsScreen(
                 }
             }
             if (status == "NEW") {
-                Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 20.dp)) {
+                Column(Modifier.padding(bottom = 30.dp, top = 20.dp)) {
                     LabelName(
                         labelName = "Reason",
                         fontSize = 14.sp,
@@ -205,7 +202,7 @@ fun AdminEnquiryDetailsScreen(
                         minLines = 1,
                         maxLines = 5
                     )
-                    Spacer(Modifier.height(15.dp))
+                    Spacer(Modifier.height(10.dp))
 
                     PrimaryButton(
                         text = "Resolve",
@@ -228,7 +225,6 @@ fun AdminEnquiryDetailsScreen(
                             )
 
                         },
-                        modifier = Modifier.weight(1f)
                     )
                 }
             }

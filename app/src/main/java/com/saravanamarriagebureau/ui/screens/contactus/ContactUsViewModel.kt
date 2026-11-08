@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.model.EnquiryItem
 import com.saravanamarriagebureau.data.repository.ContactUsRepository
-import com.saravanamarriagebureau.ui.interfaces.ExternalAppNavigator
+import com.saravanamarriagebureau.util.ExternalAppNavigator
 import com.saravanamarriagebureau.ui.screens.admin.enquiries.AdminEnquiriesUIState
 import com.saravanamarriagebureau.ui.screens.admin.enquiries.AdminEnquiryUIState
 import com.saravanamarriagebureau.util.ApiResult
