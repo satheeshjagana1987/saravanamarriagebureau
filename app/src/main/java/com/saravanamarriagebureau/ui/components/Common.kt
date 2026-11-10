@@ -1169,14 +1169,19 @@ fun AdminInterestStatusContent(
                 text = stringResource(id = R.string.pending),
                 color = Warning
             )
-
         }
 
         "ACCEPTED" -> {
-
             AdminStatusText(
-                text = stringResource(R.string.accepted),
-                color = Success
+                text =  if(interest.isMatchFixed) stringResource(R.string.approved) else stringResource(R.string.accepted),
+                color = if(interest.isMatchFixed) Success else Color.Blue
+            )
+        }
+
+        "CANCELLED" -> {
+            AdminStatusText(
+                text = stringResource(R.string.rejected),
+                color = Red
             )
         }
 

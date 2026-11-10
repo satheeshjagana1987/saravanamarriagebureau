@@ -61,12 +61,29 @@ fun AdminInterestsScreen(
         mutableStateOf<List<AdminInterestsData>>(emptyList())
     }
 
+    var matchFixedData by remember {
+        mutableStateOf<List<AdminInterestsData>>(emptyList())
+    }
+
+    var pendingCount by remember {
+        mutableStateOf("0")
+    }
+
+    var acceptedCount by remember {
+        mutableStateOf("0")
+    }
+
+    var matchCount by remember {
+        mutableStateOf("0")
+    }
+
     val uiStateAdminPendingInterests by viewModel.uiStateAdminPendingInterests.collectAsStateWithLifecycle()
     val uiStateAdminAcceptedInterests by viewModel.uiStateAdminAcceptedInterests.collectAsStateWithLifecycle()
 
     val displayedInterests = when (selectedTab) {
         "PENDING" -> pendingData
         "ACCEPTED" -> acceptedData
+        "MATCH" -> matchFixedData
         else -> pendingData
     }
 
@@ -87,6 +104,7 @@ fun AdminInterestsScreen(
             is AdminInterestsUIState.Success -> {
                 isLoading = false
                 pendingData = state.data
+                pendingCount = state.data.size.toString()
             }
 
             is AdminInterestsUIState.Error -> {
@@ -109,6 +127,15 @@ fun AdminInterestsScreen(
         is AdminInterestsUIState.Success -> {
             isLoading = false
             acceptedData = state.data
+            matchFixedData = state.data
+            acceptedData = acceptedData.filter {
+                it.status == "ACCEPTED" && !it.isMatchFixed
+            }
+            acceptedCount = acceptedData.size.toString()
+            matchFixedData = matchFixedData.filter {
+                (it.status == "ACCEPTED" && it.isMatchFixed) || (it.status == "CANCELLED")
+            }
+            matchCount = matchFixedData.size.toString()
         }
 
         is AdminInterestsUIState.Error -> {
@@ -134,8 +161,10 @@ fun AdminInterestsScreen(
             ) {
                 InterestTabButton(
                     text = "Pending",
+                    count = pendingCount,
                     selected = selectedTab == "PENDING",
                     onClick = {
+                        if (selectedTab == "PENDING") return@InterestTabButton
                         selectedTab = "PENDING"
                         viewModel.getAdminPendingInterests()
                     },
@@ -144,14 +173,27 @@ fun AdminInterestsScreen(
 
                 InterestTabButton(
                     text = "Accepted",
+                    count = acceptedCount,
                     selected = selectedTab == "ACCEPTED",
                     onClick = {
+                        if (selectedTab == "ACCEPTED") return@InterestTabButton
                         selectedTab = "ACCEPTED"
                         viewModel.getAdminAcceptedInterests()
                     },
                     modifier = Modifier.weight(1f)
                 )
 
+                InterestTabButton(
+                    text = "Match Fix",
+                    count = matchCount,
+                    selected = selectedTab == "MATCH",
+                    onClick = {
+                        if (selectedTab == "MATCH") return@InterestTabButton
+                        selectedTab = "MATCH"
+                        viewModel.getAdminAcceptedInterests()
+                    },
+                    modifier = Modifier.weight(1f)
+                )
             }
             LazyColumn(
                 modifier = Modifier
@@ -188,12 +230,13 @@ fun AdminInterestsScreen(
 @Composable
 fun InterestTabButton(
     text: String,
+    count:String,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     CustomButton(
-        text = text,
+        text = "$text( $count )",
         onClick = onClick,
         modifier = modifier,
         height = 40.dp,

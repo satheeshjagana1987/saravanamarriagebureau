@@ -171,6 +171,10 @@ fun ProfileCreationScreen(
         mutableStateOf(0)
     }
 
+    var imageSize by remember {
+        mutableStateOf(0)
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiStateProfileUpdate by viewModel.uiStateProfileUpdate.collectAsStateWithLifecycle()
 
@@ -289,14 +293,15 @@ fun ProfileCreationScreen(
             is DeleteMediaUIState.Success -> {
                 isLoading = false
                 ToastUtils.success(context = context, message = "Image deleted successfully")
+                viewModel.loadProfile()
             }
 
             is DeleteMediaUIState.Error -> {
                 isLoading = false
                 ToastUtils.error(context, state.message)
-                profilePhotos = profilePhotos.toMutableList().also {
-                    it[selectedIndex] = null
-                }
+//                profilePhotos = profilePhotos.toMutableList().also {
+//                    it[selectedIndex] = null
+//                }
             }
 
             else -> {
@@ -343,15 +348,6 @@ fun ProfileCreationScreen(
             imageFileSize = info.size ?: 0
             Timber.e("sizegalleryimageFileSize318====>$imageFileSize")
             Timber.e("sizegalleryimageFileName319====>$imageFileName")
-            val imageSizeInMB = imageFileSize / (1024.0 * 1024.0)
-
-            Timber.e("sizegalleryimageSizeInMB320====>$imageSizeInMB")
-            val maxSize = 5L * 1024 * 1024
-            if (imageSizeInMB > maxSize) {
-                ToastUtils.error(context = context, message = "Image size should not exceed 5 MB")
-                return@let
-            }
-
             imageViewModel.setImage(index = selectedIndex, uri = it)
         }
     }
@@ -366,16 +362,6 @@ fun ProfileCreationScreen(
                 imageFileName = info.name ?: NA
                 imageFileSize = info.size ?: 0L
 
-                Timber.e("sizecameraimageFileSize341====>$imageFileSize")
-                Timber.e("sizecameraimageFileName342====>$imageFileName")
-                val imageSizeInMB = imageFileSize / (1024.0 * 1024.0)
-
-                Timber.e("sizecameraimageSizeInMB343====>$imageSizeInMB")
-                val maxSize = 5L * 1024 * 1024
-                if (imageSizeInMB > maxSize) {
-                    ToastUtils.error(context = context, message = "Image size should not exceed 5 MB")
-                    return@let
-                }
                 imageViewModel.setImage(index = selectedIndex, uri = it)
             }
         }
@@ -1317,6 +1303,11 @@ fun ProfileCreationScreen(
                                     Spacer(Modifier.height(15.dp))
                                     Button(
                                         onClick = {
+                                            val maxSize = 5L * 1024 * 1024
+                                            if (imageFileSize > maxSize) {
+                                                ToastUtils.error(context = context, message = "Image size should not exceed 5 MB")
+                                                return@Button
+                                            }
                                             imageViewModel.uploadImage(index)
                                         },
                                         enabled = selectedUri != null &&

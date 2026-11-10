@@ -98,6 +98,7 @@ class ImageViewModel @Inject constructor(
                             )
                 }
             } catch (e: Exception) {
+                Timber.e("size  catch====>${e.message}  code==>$e")
                 _imageStates.update { states ->
                     val latest = states[index] ?: currentState
 

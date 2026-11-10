@@ -4,11 +4,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,6 +73,18 @@ fun AdminUsersScreen(
         mutableStateOf(UsersTab.PENDING)
     }
 
+    var pendingCount by remember {
+        mutableStateOf("0")
+    }
+
+    var approvedCount by remember {
+        mutableStateOf("0")
+    }
+
+    var rejectedCount by remember {
+        mutableStateOf("0")
+    }
+
     val displayedUsers = when (selectedTab) {
         UsersTab.PENDING -> adminPendingUsersData
         UsersTab.APPROVED -> adminApprovedUsersData
@@ -73,6 +94,33 @@ fun AdminUsersScreen(
     val uiStatePending by viewModel.uiStateAdminPendingUsers.collectAsStateWithLifecycle()
     val uiStateApproved by viewModel.uiStateAdminApprovedUsers.collectAsStateWithLifecycle()
     val uiStateRejected by viewModel.uiStateAdminRejectedUsers.collectAsStateWithLifecycle()
+
+    var searchQuery by remember {
+        mutableStateOf("")
+    }
+
+    val filteredUsers = remember(displayedUsers, searchQuery) {
+
+        if (searchQuery.isBlank()) {
+            displayedUsers
+        } else {
+            displayedUsers.filter { user ->
+
+                user.fullName.contains(
+                    searchQuery,
+                    ignoreCase = true
+                ) ||
+                        user.mobile.contains(
+                            searchQuery,
+                            ignoreCase = true
+                        ) ||
+                        user.id.contains(
+                            searchQuery,
+                            ignoreCase = true
+                        )
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getAdminPendingUsers()
@@ -91,6 +139,7 @@ fun AdminUsersScreen(
             is AdminUsersUIState.Success -> {
                 isLoading = false
                 adminPendingUsersData = state.data
+                pendingCount = state.data.size.toString()
 
             }
 
@@ -116,7 +165,8 @@ fun AdminUsersScreen(
             is AdminUsersUIState.Success -> {
                 isLoading = false
                 adminApprovedUsersData = state.data
-                ToastUtils.success(context = context, message = "Users data fetched successfully")
+                approvedCount = state.data.size.toString()
+
             }
 
             is AdminUsersUIState.Error -> {
@@ -141,7 +191,7 @@ fun AdminUsersScreen(
             is AdminUsersUIState.Success -> {
                 isLoading = false
                 adminRejectedUsersData = state.data
-                ToastUtils.success(context = context, message = "Users data fetched successfully")
+                rejectedCount = state.data.size.toString()
             }
 
             is AdminUsersUIState.Error -> {
@@ -168,6 +218,7 @@ fun AdminUsersScreen(
             ) {
                 UserTabButton(
                     text = "Pending",
+                    count = pendingCount,
                     selected = selectedTab == UsersTab.PENDING,
                     onClick = {
                         selectedTab = UsersTab.PENDING
@@ -178,6 +229,7 @@ fun AdminUsersScreen(
 
                 UserTabButton(
                     text = "Approved",
+                    count = approvedCount,
                     selected = selectedTab == UsersTab.APPROVED,
                     onClick = {
                         selectedTab = UsersTab.APPROVED
@@ -188,6 +240,7 @@ fun AdminUsersScreen(
 
                 UserTabButton(
                     text = "Rejected",
+                    count = rejectedCount,
                     selected = selectedTab == UsersTab.REJECTED,
                     onClick = {
                         selectedTab = UsersTab.REJECTED
@@ -195,8 +248,42 @@ fun AdminUsersScreen(
                     },
                     modifier = Modifier.weight(1f)
                 )
-
             }
+            Spacer(modifier = Modifier.height(10.dp))
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = {
+                    searchQuery = it
+                },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                placeholder = {
+                    Text("Search by name or mobile")
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search"
+                    )
+                },
+                trailingIcon = {
+                    if (searchQuery.isNotEmpty()) {
+                        IconButton(
+                            onClick = {
+                                searchQuery = ""
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Clear search"
+                            )
+                        }
+                    }
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp)
+            )
+
             LazyColumn(
                 modifier = Modifier
                     .padding(vertical = 16.dp)
@@ -204,18 +291,24 @@ fun AdminUsersScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
-                if (displayedUsers.isEmpty()) {
+                if (filteredUsers.isEmpty()) {
                     item {
                         Text(
-                            text = "No users found",
-                            modifier = Modifier.padding(16.dp),
+                            text = if (searchQuery.isNotBlank()) {
+                                "No matching users found"
+                            } else {
+                                "No users found"
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                             color = Black,
                             textAlign = TextAlign.Center
                         )
                     }
                 } else {
                     items(
-                        items = displayedUsers,
+                        items = filteredUsers,
                         key = { profile -> profile.id }
                     ) { profile ->
                         AdminUserCard(
@@ -244,12 +337,13 @@ fun AdminUsersScreen(
 @Composable
 fun UserTabButton(
     text: String,
+    count: String,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     CustomButton(
-        text = text,
+        text = "$text( $count )",
         onClick = onClick,
         modifier = modifier,
         height = 40.dp,
