@@ -343,7 +343,7 @@ fun UserTabButton(
     modifier: Modifier = Modifier
 ) {
     CustomButton(
-        text = "$text( $count )",
+        text = "$text  $count",
         onClick = onClick,
         modifier = modifier,
         height = 40.dp,

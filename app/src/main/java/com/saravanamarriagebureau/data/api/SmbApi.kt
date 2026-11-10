@@ -200,6 +200,9 @@ interface SmbApi {
     @GET("admin/interests?status=ACCEPTED")
     suspend fun getAdminAcceptedInterests(): Response<ApiResponse<List<AdminInterestsData>>>
 
+    @GET("admin/interests?status=CANCELLED")
+    suspend fun getAdminRejectedInterests(): Response<ApiResponse<List<AdminInterestsData>>>
+
 
     @GET("admin/interests/{interestId}")
     suspend fun getAdminInterestById(

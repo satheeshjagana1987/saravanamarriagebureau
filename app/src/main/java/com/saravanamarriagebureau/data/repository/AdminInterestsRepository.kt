@@ -23,6 +23,12 @@ class AdminInterestsRepository @Inject constructor(
         }
     }
 
+    suspend fun getAdminRejectedInterests(): ApiResult<List<AdminInterestsData>> {
+        return safeApiCall {
+            api.getAdminRejectedInterests()
+        }
+    }
+
     suspend fun getAdminInterestById(
         interestId: String
     ): ApiResult<AdminInterestsData> {

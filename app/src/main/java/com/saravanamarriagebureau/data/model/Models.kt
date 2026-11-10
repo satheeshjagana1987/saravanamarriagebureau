@@ -604,7 +604,7 @@ data class AdminInterestsDetails(
     val matchRejectRemarks: String?,
     val isMatchFixed: Boolean,
     val mobile: String?,
-    val fullAddress: String,
+    val fullAddress: String?,
 )
 
 //Membership Plans

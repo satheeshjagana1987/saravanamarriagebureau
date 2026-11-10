@@ -25,12 +25,20 @@ class ExternalAppNavigatorImpl @Inject constructor(
 
     override fun openWhatsApp(phoneNumber: String, message: String) {
 
-        // Format phone number with country code without spaces/special characters (e.g., 911234567890)
-        val url = "https://whatsapp.com{Uri.encode(message)}"
-        val intent = Intent(Intent.ACTION_VIEW).apply { //
-            data = url.toUri()
+        // Remove spaces and special characters
+        val formattedNumber = phoneNumber.filter { it.isDigit() }
+
+        // Encode message
+        val encodedMessage = Uri.encode(message)
+
+        // Create WhatsApp URL
+        val url = "https://wa.me/$formattedNumber?text=$encodedMessage"
+
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(url)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
+
         safelyStartActivity(intent, "WhatsApp is not installed")
     }
 

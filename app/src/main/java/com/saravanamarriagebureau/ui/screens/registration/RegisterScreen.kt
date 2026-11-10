@@ -3,6 +3,7 @@ package com.saravanamarriagebureau.ui.screens.registration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -287,9 +288,13 @@ fun RegisterScreen(
                         onValueChange = {
                             dob = it
                         },
+                        readOnly = true,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(52.dp),
+                            .height(52.dp)
+                            .clickable {
+                                showDatePicker = true
+                            },
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -314,9 +319,7 @@ fun RegisterScreen(
                             }
 
                         },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Date
-                        ),
+
                         placeholder = {
                             Text(
                                 text = "YYYY-MM-DD",
@@ -363,7 +366,15 @@ fun RegisterScreen(
                         ) {
                             DatePicker(
                                 state = datePickerState,
-                                title = { Text("Select Date of Birth") },
+                                title = {
+                                    Text(
+                                        text = "Select Date of Birth",
+                                        modifier = Modifier.padding(
+                                            start = 24.dp,
+                                            top = 16.dp,
+                                        )
+                                    )
+                                },
                                 showModeToggle = false
                             )
                         }

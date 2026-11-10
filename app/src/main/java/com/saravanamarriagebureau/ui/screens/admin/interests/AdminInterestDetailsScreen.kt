@@ -71,6 +71,7 @@ fun AdminInterestDetailsScreen(
     var senderProfession by remember { mutableStateOf("") }
     var senderMobileNumber by remember { mutableStateOf("") }
     var senderMaritalStatus by remember { mutableStateOf("") }
+    var senderFullAddress by remember { mutableStateOf("") }
 
     var receiverName by remember { mutableStateOf("") }
     var receiverDob by remember { mutableStateOf("") }
@@ -81,6 +82,7 @@ fun AdminInterestDetailsScreen(
     var receiverProfession by remember { mutableStateOf("") }
     var receiverMobileNumber by remember { mutableStateOf("") }
     var receiverMaritalStatus by remember { mutableStateOf("") }
+    var receiverFullAddress by remember { mutableStateOf("") }
 
     val uiStateAdminInterestsById by viewModel.uiStateAdminInterestsById.collectAsStateWithLifecycle()
     val uiStateAdminInterestsApproveOrRejectMatch by viewModel.uiStateAdminInterestsApproveOrRejectMatch.collectAsStateWithLifecycle()
@@ -113,6 +115,7 @@ fun AdminInterestDetailsScreen(
                 senderMaritalStatus = state.data.sender.maritalStatus ?: NA
                 senderProfession = state.data.sender.profession ?: NA
                 senderMobileNumber = state.data.sender.mobile ?: NA
+                senderFullAddress = state.data.sender.fullAddress ?: NA
 
                 receiverName = state.data.receiver.fullName
                 receiverDob = state.data.receiver.dateOfBirth ?: NA
@@ -122,6 +125,7 @@ fun AdminInterestDetailsScreen(
                 receiverMaritalStatus = state.data.receiver.maritalStatus ?: NA
                 receiverProfession = state.data.receiver.profession ?: NA
                 receiverMobileNumber = state.data.receiver.mobile ?: NA
+                receiverFullAddress = state.data.receiver.fullAddress ?: NA
 
             }
 
@@ -223,6 +227,13 @@ fun AdminInterestDetailsScreen(
                         value = senderCity
                     )
 
+                    DividerLine()
+
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.full_address),
+                        value = senderFullAddress
+                    )
+
                     Spacer(Modifier.height(15.dp))
 
                     Text(
@@ -286,6 +297,13 @@ fun AdminInterestDetailsScreen(
                     ProfileInfoRow(
                         label = stringResource(id = R.string.city),
                         value = receiverCity
+                    )
+
+                    DividerLine()
+
+                    ProfileInfoRow(
+                        label = stringResource(id = R.string.full_address),
+                        value = receiverFullAddress
                     )
                 }
             }

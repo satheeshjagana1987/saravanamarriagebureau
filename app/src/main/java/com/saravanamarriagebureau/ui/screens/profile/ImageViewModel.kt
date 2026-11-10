@@ -70,8 +70,9 @@ class ImageViewModel @Inject constructor(
 
         viewModelScope.launch {
             _imageStates.update { states ->
+                val latest = states[index] ?: currentState
                 states + (
-                        index to currentState.copy(
+                        index to latest.copy(
                             isLoading = true,
                             success = false,
                             message = null,
@@ -206,6 +207,20 @@ class ImageViewModel @Inject constructor(
                     e.message ?: "Voice upload failed"
                 )
             }
+        }
+    }
+
+    fun resetImageState(index: Int) {
+        _imageStates.update { states ->
+            val current = states[index] ?: return@update states
+
+            states + (
+                    index to current.copy(
+                        success = false,
+                        error = null,
+                        message = null
+                    )
+                    )
         }
     }
 }

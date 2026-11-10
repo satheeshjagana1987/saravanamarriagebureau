@@ -209,8 +209,8 @@ fun AdminUserContent(
                     DividerLine()
 
                     ProfileInfoRow(
-                        label = stringResource(id = R.string.district),
-                        value = profile.profile.district ?: NA
+                        label = stringResource(id = R.string.full_address),
+                        value = profile.profile.fullAddress ?: NA
                     )
 
                     DividerLine()

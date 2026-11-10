@@ -150,6 +150,7 @@ fun ProfileCreationScreen(
     var incomeError by remember { mutableStateOf<String?>(null) }
     var placeOfProfessionError by remember { mutableStateOf<String?>(null) }
     var familyDetailsError by remember { mutableStateOf<String?>(null) }
+    var fullAddressError by remember { mutableStateOf<String?>(null) }
 
     var profilePhotos by remember {
         mutableStateOf<List<String?>>(emptyList())
@@ -183,7 +184,6 @@ fun ProfileCreationScreen(
     }
 
     var imageFileSize: Long = 0
-    var imageFileName = ""
 
     // Video
     var videoUri by remember { mutableStateOf<Uri?>(null) }
@@ -265,6 +265,7 @@ fun ProfileCreationScreen(
                 placeOfProfession = profile.workLocation.orEmpty()
                 income = profile.income.orEmpty()
                 familyDetails = profile.familyDetails.orEmpty()
+                fullAddress = profile.fullAddress.orEmpty()
                 rejectionReason = profile.rejectionReason ?: ""
                 profilePhotos = profile.profilePhotos
 
@@ -344,10 +345,7 @@ fun ProfileCreationScreen(
     ) { uri ->
         uri?.let {
             val info = it.getFileInfo(context)
-            imageFileName = info.name ?: NA
             imageFileSize = info.size ?: 0
-            Timber.e("sizegalleryimageFileSize318====>$imageFileSize")
-            Timber.e("sizegalleryimageFileName319====>$imageFileName")
             imageViewModel.setImage(index = selectedIndex, uri = it)
         }
     }
@@ -359,7 +357,6 @@ fun ProfileCreationScreen(
         if (success) {
             pendingCameraUri?.let {
                 val info = it.getFileInfo(context)
-                imageFileName = info.name ?: NA
                 imageFileSize = info.size ?: 0L
 
                 imageViewModel.setImage(index = selectedIndex, uri = it)
@@ -796,6 +793,214 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
+                        Spacer(Modifier.height(15.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.full_address),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = fullAddress,
+                            onValueChange = {
+                                fullAddress = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp),
+                            minLines = 1,
+                            maxLines = 5,
+                            shape = RoundedCornerShape(12.dp),
+
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.full_address),
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        )
+                        Spacer(Modifier.height(15.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.family_details),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = familyDetails,
+                            onValueChange = {
+                                familyDetails = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp),
+                            minLines = 1,
+                            maxLines = 5,
+                            shape = RoundedCornerShape(12.dp),
+
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.family_details),
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        )
+
+                        Spacer(Modifier.height(15.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.star),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = star,
+                            onValueChange = {
+                                star = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.star),
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        )
+
+                        Spacer(Modifier.height(15.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.rasi),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = rasi,
+                            onValueChange = {
+                                rasi = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.rasi),
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            LabelName(
+                                labelName = stringResource(id = R.string.marital_status),
+                                fontSize = 14.sp,
+                                color = Maroon,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Spacer(Modifier.height(5.dp))
+                            maritalStatusOptions.forEach { status ->
+                                Column(horizontalAlignment = Alignment.Start) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        RadioButton(
+                                            selected = selectedMaritalStatus == status,
+                                            onClick = {
+                                                selectedMaritalStatus = status
+                                            }
+                                        )
+
+                                        Text(
+                                            text = status,
+                                            fontSize = 14.sp,
+                                            color = Black
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Spacer(Modifier.height(10.dp))
+                        LabelName(
+                            labelName = stringResource(id = R.string.religion),
+                            fontSize = 14.sp,
+                            color = Maroon,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        OutlinedTextField(
+                            value = religion,
+                            onValueChange = {
+                                religion = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFFE2E2E8),
+                                unfocusedBorderColor = Color(0xFFE2E2E8),
+                                cursorColor = Color(0xFF555555),
+                                focusedTextColor = Color(0xFF333333),
+                                unfocusedTextColor = Color(0xFF333333)
+                            ),
+
+                            placeholder = {
+                                Text(
+                                    text = "Enter Religion",
+                                    color = Color(0xFFB5B5BD),
+                                    fontSize = 14.sp
+                                )
+                            }
+                        )
 
                     }
                 }
@@ -840,51 +1045,7 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-                        Spacer(Modifier.height(15.dp))
-                        LabelName(
-                            labelName = stringResource(id = R.string.height),
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(Modifier.height(5.dp))
-                        OutlinedTextField(
-                            value = height,
-                            onValueChange = {
-                                height = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
 
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Height,
-                                    contentDescription = null,
-                                    tint = Color(0xFF9A9AA5),
-                                    modifier = Modifier.size(19.dp)
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Decimal
-                            ),
-                            placeholder = {
-                                Text(
-                                    text = "Enter Height",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        )
                         Spacer(Modifier.height(15.dp))
                         LabelName(
                             labelName = stringResource(id = R.string.profession),
@@ -983,10 +1144,6 @@ fun ProfileCreationScreen(
                                 unfocusedTextColor = Color(0xFF333333)
                             ),
 
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            ),
-
                             placeholder = {
                                 Text(
                                     text = stringResource(id = R.string.salary),
@@ -995,19 +1152,18 @@ fun ProfileCreationScreen(
                                 )
                             }
                         )
-
                         Spacer(Modifier.height(15.dp))
                         LabelName(
-                            labelName = stringResource(id = R.string.family_details),
+                            labelName = stringResource(id = R.string.height),
                             fontSize = 14.sp,
                             color = Maroon,
                             fontWeight = FontWeight.Normal
                         )
                         Spacer(Modifier.height(5.dp))
                         OutlinedTextField(
-                            value = familyDetails,
+                            value = height,
                             onValueChange = {
-                                familyDetails = it
+                                height = it
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -1022,82 +1178,20 @@ fun ProfileCreationScreen(
                                 focusedTextColor = Color(0xFF333333),
                                 unfocusedTextColor = Color(0xFF333333)
                             ),
-
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.family_details),
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Height,
+                                    contentDescription = null,
+                                    tint = Color(0xFF9A9AA5),
+                                    modifier = Modifier.size(19.dp)
                                 )
-                            }
-                        )
-
-                        Spacer(Modifier.height(15.dp))
-                        LabelName(
-                            labelName = stringResource(id = R.string.star),
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(Modifier.height(5.dp))
-                        OutlinedTextField(
-                            value = star,
-                            onValueChange = {
-                                star = it
                             },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Decimal
                             ),
-
                             placeholder = {
                                 Text(
-                                    text = stringResource(id = R.string.star),
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        )
-
-                        Spacer(Modifier.height(15.dp))
-                        LabelName(
-                            labelName = stringResource(id = R.string.rasi),
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(Modifier.height(5.dp))
-                        OutlinedTextField(
-                            value = rasi,
-                            onValueChange = {
-                                rasi = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.rasi),
+                                    text = "Enter Height",
                                     color = Color(0xFFB5B5BD),
                                     fontSize = 14.sp
                                 )
@@ -1121,72 +1215,6 @@ fun ProfileCreationScreen(
                                 fontWeight = FontWeight.Normal
                             )
                         }
-
-                        Spacer(Modifier.height(5.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            LabelName(
-                                labelName = stringResource(id = R.string.marital_status),
-                                fontSize = 14.sp,
-                                color = Maroon,
-                                fontWeight = FontWeight.Normal
-                            )
-                            Spacer(Modifier.height(5.dp))
-                            maritalStatusOptions.forEach { status ->
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    RadioButton(
-                                        selected = selectedMaritalStatus == status,
-                                        onClick = {
-                                            selectedMaritalStatus = status
-                                        }
-                                    )
-
-                                    Text(
-                                        text = status,
-                                        fontSize = 14.sp,
-                                        color = Black
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(Modifier.height(10.dp))
-                        LabelName(
-                            labelName = stringResource(id = R.string.religion),
-                            fontSize = 14.sp,
-                            color = Maroon,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(Modifier.height(5.dp))
-                        OutlinedTextField(
-                            value = religion,
-                            onValueChange = {
-                                religion = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
-
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFFE2E2E8),
-                                unfocusedBorderColor = Color(0xFFE2E2E8),
-                                cursorColor = Color(0xFF555555),
-                                focusedTextColor = Color(0xFF333333),
-                                unfocusedTextColor = Color(0xFF333333)
-                            ),
-
-                            placeholder = {
-                                Text(
-                                    text = "Enter Religion",
-                                    color = Color(0xFFB5B5BD),
-                                    fontSize = 14.sp
-                                )
-                            }
-                        )
-
                     }
                 }
                 if (selectedTab == ProfileTab.PHOTO) {
@@ -1305,7 +1333,10 @@ fun ProfileCreationScreen(
                                         onClick = {
                                             val maxSize = 5L * 1024 * 1024
                                             if (imageFileSize > maxSize) {
-                                                ToastUtils.error(context = context, message = "Image size should not exceed 5 MB")
+                                                ToastUtils.error(
+                                                    context = context,
+                                                    message = "Image size should not exceed 5 MB"
+                                                )
                                                 return@Button
                                             }
                                             imageViewModel.uploadImage(index)
@@ -1322,9 +1353,26 @@ fun ProfileCreationScreen(
 
                                 }
                             }
+                        }
+                    }
 
-                            imageState.error?.let {
-                                ToastUtils.error(context = context, message = "Maximum of 3 profile photos reached")
+                    LaunchedEffect(imageStates) {
+                        imageStates.forEach { (index, imageState) ->
+
+                            if (imageState.success) {
+                                ToastUtils.success(
+                                    context = context,
+                                    message = "Image uploaded successfully"
+                                )
+                                imageViewModel.resetImageState(index)
+                            }
+
+                            imageState.error?.let { error ->
+                                ToastUtils.error(
+                                    context = context,
+                                    message = "Maximum of 3 profile photos reached"
+                                )
+                                imageViewModel.resetImageState(index)
                             }
                         }
                     }
@@ -1420,6 +1468,11 @@ fun ProfileCreationScreen(
                         fieldName = "Family Details"
                     )
 
+                    fullAddressError = ValidationUtils.validateField(
+                        field = fullAddress.trim(),
+                        fieldName = "Full Address"
+                    )
+
                     if (emailError != null) {
                         ToastUtils.error(context = context, message = emailError.toString())
                         return@PrimaryButton
@@ -1461,6 +1514,10 @@ fun ProfileCreationScreen(
                         ToastUtils.error(context = context, message = nativePlaceError.toString())
                         return@PrimaryButton
                     }
+                    if (fullAddressError != null) {
+                        ToastUtils.error(context = context, message = fullAddressError.toString())
+                        return@PrimaryButton
+                    }
                     if (starError != null) {
                         ToastUtils.error(context = context, message = starError.toString())
                         return@PrimaryButton
@@ -1490,7 +1547,7 @@ fun ProfileCreationScreen(
                         education = education.trim(),
                         profession = profession.trim(),
                         religion = religion.trim(),
-                        fullAddress = "",
+                        fullAddress = fullAddress.trim(),
                         email = email.trim(),
                         city = city.trim(),
                         district = district.trim(),

@@ -25,6 +25,11 @@ class AdminInterestsViewModel @Inject constructor(
 
     val uiStateAdminAcceptedInterests = _uiStateAdminAcceptedInterests.asStateFlow()
 
+    private val _uiStateAdminRejectedInterests =
+        MutableStateFlow<AdminInterestsUIState>(AdminInterestsUIState.Idle)
+
+    val uiStateAdminRejectedInterests = _uiStateAdminRejectedInterests.asStateFlow()
+
     private val _uiStateAdminInterestsById =
         MutableStateFlow<AdminInterestsByIdUIState>(AdminInterestsByIdUIState.Idle)
 
@@ -86,6 +91,36 @@ class AdminInterestsViewModel @Inject constructor(
 
                 is ApiResult.Error -> {
                     _uiStateAdminAcceptedInterests.value =
+                        AdminInterestsUIState.Error(
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Loading -> Unit
+            }
+        }
+    }
+
+    fun getAdminRejectedInterests() {
+
+        viewModelScope.launch {
+
+            _uiStateAdminRejectedInterests.value = AdminInterestsUIState.Loading
+
+            when (
+                val result = adminInterestsRepository.getAdminRejectedInterests()
+            ) {
+
+                is ApiResult.Success -> {
+                    _uiStateAdminRejectedInterests.value =
+                        AdminInterestsUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateAdminRejectedInterests.value =
                         AdminInterestsUIState.Error(
                             message = result.message
                         )

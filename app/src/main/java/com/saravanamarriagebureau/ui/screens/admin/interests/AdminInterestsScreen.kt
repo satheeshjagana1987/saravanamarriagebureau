@@ -65,6 +65,10 @@ fun AdminInterestsScreen(
         mutableStateOf<List<AdminInterestsData>>(emptyList())
     }
 
+    var matchRejectedData by remember {
+        mutableStateOf<List<AdminInterestsData>>(emptyList())
+    }
+
     var pendingCount by remember {
         mutableStateOf("0")
     }
@@ -77,13 +81,19 @@ fun AdminInterestsScreen(
         mutableStateOf("0")
     }
 
+    var matchRejectedCount by remember {
+        mutableStateOf("0")
+    }
+
     val uiStateAdminPendingInterests by viewModel.uiStateAdminPendingInterests.collectAsStateWithLifecycle()
     val uiStateAdminAcceptedInterests by viewModel.uiStateAdminAcceptedInterests.collectAsStateWithLifecycle()
+    val uiStateAdminRejectedInterests by viewModel.uiStateAdminRejectedInterests.collectAsStateWithLifecycle()
 
     val displayedInterests = when (selectedTab) {
         "PENDING" -> pendingData
         "ACCEPTED" -> acceptedData
         "MATCH" -> matchFixedData
+        "REJECTED" -> matchRejectedData
         else -> pendingData
     }
 
@@ -93,8 +103,7 @@ fun AdminInterestsScreen(
 
     LoadingDialog(isLoading = isLoading)
 
-    LaunchedEffect(uiStateAdminPendingInterests) {
-
+    LaunchedEffect(uiStateAdminPendingInterests){
         when (val state = uiStateAdminPendingInterests) {
 
             is AdminInterestsUIState.Loading -> {
@@ -118,33 +127,61 @@ fun AdminInterestsScreen(
         }
     }
 
-    when (val state = uiStateAdminAcceptedInterests) {
+    LaunchedEffect(uiStateAdminAcceptedInterests) {
 
-        is AdminInterestsUIState.Loading -> {
-            isLoading = true
-        }
+        when (val state = uiStateAdminAcceptedInterests) {
 
-        is AdminInterestsUIState.Success -> {
-            isLoading = false
-            acceptedData = state.data
-            matchFixedData = state.data
-            acceptedData = acceptedData.filter {
-                it.status == "ACCEPTED" && !it.isMatchFixed
+            is AdminInterestsUIState.Loading -> {
+                isLoading = true
             }
-            acceptedCount = acceptedData.size.toString()
-            matchFixedData = matchFixedData.filter {
-                (it.status == "ACCEPTED" && it.isMatchFixed) || (it.status == "CANCELLED")
+
+            is AdminInterestsUIState.Success -> {
+                isLoading = false
+                acceptedData = state.data
+                matchFixedData = state.data
+                acceptedData = acceptedData.filter {
+                    it.status == "ACCEPTED" && !it.isMatchFixed
+                }
+                acceptedCount = acceptedData.size.toString()
+                matchFixedData = matchFixedData.filter {
+                    (it.status == "ACCEPTED" && it.isMatchFixed)
+                }
+                matchCount = matchFixedData.size.toString()
             }
-            matchCount = matchFixedData.size.toString()
-        }
 
-        is AdminInterestsUIState.Error -> {
-            isLoading = false
-            ToastUtils.error(context, state.message)
-        }
+            is AdminInterestsUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
 
-        else -> {
-            isLoading = false
+            else -> {
+                isLoading = false
+            }
+        }
+    }
+
+    LaunchedEffect(uiStateAdminRejectedInterests) {
+
+        when (val state = uiStateAdminRejectedInterests) {
+
+            is AdminInterestsUIState.Loading -> {
+                isLoading = true
+            }
+
+            is AdminInterestsUIState.Success -> {
+                isLoading = false
+                matchRejectedData = state.data
+                matchRejectedCount = state.data.size.toString()
+            }
+
+            is AdminInterestsUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> {
+                isLoading = false
+            }
         }
     }
 
@@ -184,13 +221,24 @@ fun AdminInterestsScreen(
                 )
 
                 InterestTabButton(
-                    text = "Match Fix",
+                    text = "Match",
                     count = matchCount,
                     selected = selectedTab == "MATCH",
                     onClick = {
                         if (selectedTab == "MATCH") return@InterestTabButton
                         selectedTab = "MATCH"
                         viewModel.getAdminAcceptedInterests()
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+                InterestTabButton(
+                    text = "Rejected",
+                    count = matchCount,
+                    selected = selectedTab == "REJECTED",
+                    onClick = {
+                        if (selectedTab == "REJECTED") return@InterestTabButton
+                        selectedTab = "REJECTED"
+                        viewModel.getAdminRejectedInterests()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -236,7 +284,7 @@ fun InterestTabButton(
     modifier: Modifier = Modifier
 ) {
     CustomButton(
-        text = "$text( $count )",
+        text = "$text  $count",
         onClick = onClick,
         modifier = modifier,
         height = 40.dp,
