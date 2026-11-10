@@ -244,10 +244,10 @@ fun ProfileCreationScreen(
 
                 val profile = state.data
 
-                name = profile.fullName
-                email = profile.email
-                mobileNumber = profile.mobile
-                dob = profile.dateOfBirth
+                name = profile.fullName.orEmpty()
+                email = profile.email.orEmpty()
+                mobileNumber = profile.mobile.orEmpty()
+                dob = profile.dateOfBirth.orEmpty()
                 city = profile.city.orEmpty()
                 district = profile.district.orEmpty()
 

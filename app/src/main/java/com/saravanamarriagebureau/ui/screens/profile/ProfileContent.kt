@@ -88,7 +88,7 @@ fun ProfileContent(
                     ) {
 
                         Text(
-                            text = profile.fullName,
+                            text = profile.fullName ?: NA,
                             color = Maroon,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
