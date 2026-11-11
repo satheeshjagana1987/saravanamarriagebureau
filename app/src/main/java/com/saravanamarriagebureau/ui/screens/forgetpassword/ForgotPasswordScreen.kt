@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -197,26 +198,29 @@ fun ForgotPasswordScreen(
                             )
                         }
                     )
+                    LaunchedEffect(uiState) {
+                        when (val state = uiState) {
 
-                    when (val state = uiState) {
+                            VerifyResetOTPPasswordUIState.Idle -> {
+                                // Nothing
+                            }
 
-                        VerifyResetOTPPasswordUIState.Idle -> {
-                            // Nothing
+                            VerifyResetOTPPasswordUIState.Loading -> {
+                            }
+
+                            is VerifyResetOTPPasswordUIState.Success -> {
+                                ToastUtils.success(
+                                    context = context,
+                                    message = "OTP verified successfully"
+                                )
+                            }
+
+                            is VerifyResetOTPPasswordUIState.Error -> {
+                                ToastUtils.error(context = context, message = state.message)
+                            }
+
+                            else -> {}
                         }
-
-                        VerifyResetOTPPasswordUIState.Loading -> {
-                            LoadingView()
-                        }
-
-                        is VerifyResetOTPPasswordUIState.Success -> {
-                            ToastUtils.success(context = context, message = "OTP verified successfully")
-                        }
-
-                        is VerifyResetOTPPasswordUIState.Error -> {
-                            ToastUtils.error(context = context, message = state.message)
-                        }
-
-                        else -> {}
                     }
 
                     Spacer(Modifier.height(25.dp))

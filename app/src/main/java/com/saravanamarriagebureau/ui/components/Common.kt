@@ -465,15 +465,6 @@ fun ProfileCard(
     viewModel: MatchesViewModel,
 ) {
     val context = LocalContext.current
-    val uiStateSendInterest by viewModel.uiStateSendInterest.collectAsStateWithLifecycle()
-    var isLoading by remember {
-        mutableStateOf(false)
-    }
-
-    var notInterested by remember {
-        mutableStateOf(false)
-    }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -481,8 +472,7 @@ fun ProfileCard(
                 if (profile.isAdminVerified) {
                     onOpen()
                 } else {
-                    Toast.makeText(context, "Profile is not verified by admin", Toast.LENGTH_SHORT)
-                        .show()
+                    ToastUtils.error(context = context, message = "Profile is under review")
                 }
             },
         shape = RoundedCornerShape(5.dp),
@@ -647,10 +637,16 @@ fun AdminUserStatusContent(
             )
         }
 
-        else -> {
+        "REJECTED" -> {
 
             AdminStatusText(
                 text = stringResource(R.string.rejected),
+                color = Red
+            )
+        }
+        else -> {
+            AdminStatusText(
+                text = stringResource(R.string.blocked),
                 color = Red
             )
         }

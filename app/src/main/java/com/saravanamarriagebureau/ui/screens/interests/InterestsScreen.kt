@@ -70,6 +70,14 @@ fun InterestsScreen(
         mutableStateOf(false)
     }
 
+    var receivedCount by remember {
+        mutableStateOf("0")
+    }
+
+    var sentCount by remember {
+        mutableStateOf("0")
+    }
+
     val uiStateReceived by viewModel.uiStateReceived.collectAsStateWithLifecycle()
     val uiStateSentInterest by viewModel.uiStateSentInterest.collectAsStateWithLifecycle()
 
@@ -133,6 +141,7 @@ fun InterestsScreen(
             ) {
                 InterestTabButton(
                     text = "Received",
+                    count = receivedCount,
                     selected = selectedTab == InterestTab.RECEIVED,
                     onClick = {
                         if (selectedTab == InterestTab.RECEIVED) return@InterestTabButton
@@ -144,6 +153,7 @@ fun InterestsScreen(
 
                 InterestTabButton(
                     text = "Sent",
+                    count = sentCount,
                     selected = selectedTab == InterestTab.SENT,
                     onClick = {
                         if (selectedTab == InterestTab.SENT) return@InterestTabButton
@@ -210,6 +220,7 @@ fun InterestsScreen(
                 is UserInterestsUIState.Success -> {
                     isLoading = false
                     receivedInterests = state.data
+                    receivedCount = state.data.size.toString()
                 }
 
                 is UserInterestsUIState.Error -> {
@@ -235,6 +246,7 @@ fun InterestsScreen(
                     sentInterests = sentInterests.filterNot {
                         it.status == "CANCELLED"
                     }
+                    sentCount = sentInterests.size.toString()
                 }
 
                 is UserInterestsUIState.Error -> {
@@ -253,12 +265,13 @@ fun InterestsScreen(
 @Composable
 fun InterestTabButton(
     text: String,
+    count:String,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     CustomButton(
-        text = text,
+        text = "$text $count",
         onClick = onClick,
         modifier = modifier,
         height = 40.dp,

@@ -54,7 +54,7 @@ class ProfileRepository @Inject constructor(
                     education = education,
                     profession = profession,
                     religion = religion,
-                    fullAddress = "",
+                    fullAddress = fullAddress,
                     email = email,
                     city = city,
                     district = district,

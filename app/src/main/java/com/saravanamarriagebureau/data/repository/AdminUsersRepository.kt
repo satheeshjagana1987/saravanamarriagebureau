@@ -4,6 +4,8 @@ import com.saravanamarriagebureau.data.api.SmbApi
 import com.saravanamarriagebureau.data.model.AcceptRequest
 import com.saravanamarriagebureau.data.model.AdminUserDetails
 import com.saravanamarriagebureau.data.model.AdminUserDetailsResponse
+import com.saravanamarriagebureau.data.model.BlockedUserRequest
+import com.saravanamarriagebureau.data.model.BlockedUserResponseData
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.data.model.ProfileData
 import com.saravanamarriagebureau.data.model.RegistrationApprovalData
@@ -31,6 +33,12 @@ class AdminUsersRepository @Inject constructor(
     suspend fun getAdminRejectedUsers(): ApiResult<List<PendingApprovalUser>> {
         return safeApiCall {
             api.getAdminRejectedUsers()
+        }
+    }
+
+    suspend fun getAdminBlockedUsers(): ApiResult<List<PendingApprovalUser>> {
+        return safeApiCall {
+            api.getAdminBlockedUsers()
         }
     }
 
@@ -64,6 +72,28 @@ class AdminUsersRepository @Inject constructor(
             api.rejectAdminUser(
                 userId = userId,
                 request = request
+            )
+        }
+    }
+
+    suspend fun blockAdminUser(
+        userId: String,
+        request: BlockedUserRequest
+    ): ApiResult<BlockedUserResponseData> {
+        return safeApiCall {
+            api.blockAdminUser(
+                userId = userId,
+                request = request
+            )
+        }
+    }
+
+    suspend fun unBlockAdminUser(
+        userId: String,
+    ): ApiResult<BlockedUserResponseData> {
+        return safeApiCall {
+            api.unBlockAdminUser(
+                userId = userId,
             )
         }
     }

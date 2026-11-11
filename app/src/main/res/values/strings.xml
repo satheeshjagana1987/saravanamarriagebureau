@@ -19,6 +19,9 @@
     <string name="pending">Pending</string>
     <string name="reject">Reject</string>
     <string name="rejected">Rejected</string>
+    <string name="block_user">Block User</string>
+    <string name="un_block_user">Un Block User</string>
+    <string name="blocked">Blocked</string>
     <string name="payment_completed">Payment Completed</string>
     <string name="payment_pending">Payment Pending</string>
     <string name="cancel">Cancel</string>
@@ -115,4 +118,6 @@
     <string name="message">Message</string>
     <string name="admin_reply">Admin Reply</string>
     <string name="status">Status</string>
+    <string name="rejection_reason">Rejection Reason</string>
+    <string name="block_reason">Block Reason</string>
 </resources>

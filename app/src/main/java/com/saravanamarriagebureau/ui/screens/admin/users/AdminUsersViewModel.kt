@@ -3,6 +3,7 @@ package com.saravanamarriagebureau.ui.screens.admin.users
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.model.AcceptRequest
+import com.saravanamarriagebureau.data.model.BlockedUserRequest
 import com.saravanamarriagebureau.data.model.RejectRequest
 import com.saravanamarriagebureau.data.repository.AdminUsersRepository
 import com.saravanamarriagebureau.util.ApiResult
@@ -32,6 +33,11 @@ class AdminUsersViewModel  @Inject constructor(
 
     val uiStateAdminRejectedUsers = _uiStateAdminRejectedUsers.asStateFlow()
 
+    private val _uiStateAdminBlockedUsers =
+        MutableStateFlow<AdminUsersUIState>(AdminUsersUIState.Idle)
+
+    val uiStateAdminBlockedUsers = _uiStateAdminBlockedUsers.asStateFlow()
+
     private val _uiStateById =
         MutableStateFlow<AdminUserByIdUIState>(AdminUserByIdUIState.Idle)
 
@@ -46,6 +52,17 @@ class AdminUsersViewModel  @Inject constructor(
         MutableStateFlow<AdminUserRejectUIState>(AdminUserRejectUIState.Idle)
 
     val uiStateByRejectUser = _uiStateByRejectUser.asStateFlow()
+
+    private val _uiStateByBlockUser =
+        MutableStateFlow<AdminUserBlockedUIState>(AdminUserBlockedUIState.Idle)
+
+    val uiStateByBlockUser = _uiStateByBlockUser.asStateFlow()
+
+    private val _uiStateByUnBlockUser =
+        MutableStateFlow<AdminUserBlockedUIState>(AdminUserBlockedUIState.Idle)
+
+    val uiStateByUnBlockUser = _uiStateByUnBlockUser.asStateFlow()
+
 
     fun getAdminPendingUsers() {
 
@@ -127,6 +144,36 @@ class AdminUsersViewModel  @Inject constructor(
 
                 is ApiResult.Error -> {
                     _uiStateAdminRejectedUsers.value =
+                        AdminUsersUIState.Error(
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Loading -> Unit
+            }
+        }
+    }
+
+    fun getAdminBlockedUsers() {
+
+        viewModelScope.launch {
+
+            _uiStateAdminBlockedUsers.value = AdminUsersUIState.Loading
+
+            when (
+                val result = adminUsersRepository.getAdminBlockedUsers()
+            ) {
+
+                is ApiResult.Success -> {
+                    _uiStateAdminBlockedUsers.value =
+                        AdminUsersUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateAdminBlockedUsers.value =
                         AdminUsersUIState.Error(
                             message = result.message
                         )
@@ -227,6 +274,70 @@ class AdminUsersViewModel  @Inject constructor(
                 is ApiResult.Error -> {
                     _uiStateByRejectUser.value =
                         AdminUserRejectUIState.Error(
+                            result.message
+                        )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun blockAdminUser(
+        userId: String,
+        reason: String,
+    ) {
+        viewModelScope.launch {
+            _uiStateByBlockUser.value = AdminUserBlockedUIState.Loading
+
+            val request = BlockedUserRequest(
+                reason = reason
+            )
+
+            when (val result = adminUsersRepository.blockAdminUser(
+                userId = userId,
+                request = request
+            )) {
+                is ApiResult.Success -> {
+                    _uiStateByBlockUser.value =
+                        AdminUserBlockedUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateByBlockUser.value =
+                        AdminUserBlockedUIState.Error(
+                            result.message
+                        )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun unBlockAdminUser(
+        userId: String,
+    ) {
+        viewModelScope.launch {
+            _uiStateByUnBlockUser.value = AdminUserBlockedUIState.Loading
+
+            when (val result = adminUsersRepository.unBlockAdminUser(
+                userId = userId,
+            )) {
+                is ApiResult.Success -> {
+                    _uiStateByUnBlockUser.value =
+                        AdminUserBlockedUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateByUnBlockUser.value =
+                        AdminUserBlockedUIState.Error(
                             result.message
                         )
                 }

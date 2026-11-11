@@ -457,10 +457,12 @@ data class AdminUserDetails(
     val gender: String,
     val dateOfBirth: String?,
     val registeringFor: String?,
-    val status: String,
+    val status: String?,
     val isAdminVerified: Boolean,
     val approvedAt: String?,
     val rejectionReason: String?,
+    val blockReason: String?,
+    val blockedAt: String?,
     val createdAt: String,
     val profilePhotos: List<String?> = emptyList(),
     val profile: AdminUserProfile
@@ -500,6 +502,18 @@ data class RejectRequest(
     val reason: String
 )
 
+data class BlockedUserRequest(
+    val reason: String
+)
+
+data class BlockedUserResponseData(
+    val userId: String,
+    val status: String,
+    val action: String,
+    val idempotent: Boolean,
+    val blockReason: String,
+    val blockedAt: String,
+)
 data class AdminApproveOrRejectMatchRequest(
     val isMatchFixed: Boolean,
     val matchRejectRemarks: String

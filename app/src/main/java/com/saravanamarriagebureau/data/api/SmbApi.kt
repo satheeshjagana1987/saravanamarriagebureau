@@ -8,6 +8,8 @@ import com.saravanamarriagebureau.data.model.AdminEnquiryStatusUpdateRequest
 import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.data.model.AdminUserDetails
 import com.saravanamarriagebureau.data.model.ApiResponse
+import com.saravanamarriagebureau.data.model.BlockedUserRequest
+import com.saravanamarriagebureau.data.model.BlockedUserResponseData
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
 import com.saravanamarriagebureau.data.model.DeleteMediaResponse
 import com.saravanamarriagebureau.data.model.DeleteMembershipPlanData
@@ -162,14 +164,17 @@ interface SmbApi {
 
     //Admin
 
-    @GET("registration/pending?limit=20&offset=0&status=PENDING_APPROVAL")
+    @GET("registration/pending?status=PENDING_APPROVAL")
     suspend fun getAdminPendingUsers(): Response<ApiResponse<List<PendingApprovalUser>>>
 
-    @GET("registration/pending?limit=20&offset=0&status=APPROVED")
+    @GET("registration/pending?status=APPROVED")
     suspend fun getAdminApprovedUsers(): Response<ApiResponse<List<PendingApprovalUser>>>
 
-    @GET("registration/pending?limit=20&offset=0&status=REJECTED")
+    @GET("registration/pending?status=REJECTED")
     suspend fun getAdminRejectedUsers(): Response<ApiResponse<List<PendingApprovalUser>>>
+
+    @GET("registration/pending?status=BLOCKED")
+    suspend fun getAdminBlockedUsers(): Response<ApiResponse<List<PendingApprovalUser>>>
 
     @GET("registration/{userId}")
     suspend fun getAdminUserById(
@@ -187,6 +192,17 @@ interface SmbApi {
         @Path("userId") userId: String,
         @Body request: RejectRequest
     ): Response<ApiResponse<RegistrationRejectionData>>
+
+    @POST("admin/users/{userId}/block")
+    suspend fun blockAdminUser(
+        @Path("userId") userId: String,
+        @Body request: BlockedUserRequest
+    ): Response<ApiResponse<BlockedUserResponseData>>
+
+    @POST("admin/users/{userId}/unblock")
+    suspend fun unBlockAdminUser(
+        @Path("userId") userId: String,
+    ): Response<ApiResponse<BlockedUserResponseData>>
 
     @PATCH("admin/interests/{interestId}/follow-up")
     suspend fun adminApproveOrRejectMatch(

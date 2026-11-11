@@ -82,7 +82,6 @@ import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.Red
 import com.saravanamarriagebureau.ui.theme.White
-import com.saravanamarriagebureau.util.Constants.NA
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
 import com.saravanamarriagebureau.util.VoiceRecorder
@@ -946,8 +945,9 @@ fun ProfileCreationScreen(
                                 fontWeight = FontWeight.Normal
                             )
                             Spacer(Modifier.height(5.dp))
-                            maritalStatusOptions.forEach { status ->
-                                Column(horizontalAlignment = Alignment.Start) {
+                            Column(horizontalAlignment = Alignment.Start) {
+                                maritalStatusOptions.forEach { status ->
+
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         RadioButton(
                                             selected = selectedMaritalStatus == status,

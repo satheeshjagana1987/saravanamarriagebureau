@@ -69,6 +69,10 @@ fun AdminUsersScreen(
         mutableStateOf<List<PendingApprovalUser>>(emptyList())
     }
 
+    var adminBlockedUsersData by remember {
+        mutableStateOf<List<PendingApprovalUser>>(emptyList())
+    }
+
     var selectedTab by remember {
         mutableStateOf(UsersTab.PENDING)
     }
@@ -85,15 +89,21 @@ fun AdminUsersScreen(
         mutableStateOf("0")
     }
 
+    var blockedCount by remember {
+        mutableStateOf("0")
+    }
+
     val displayedUsers = when (selectedTab) {
         UsersTab.PENDING -> adminPendingUsersData
         UsersTab.APPROVED -> adminApprovedUsersData
         UsersTab.REJECTED -> adminRejectedUsersData
+        UsersTab.BLOCKED -> adminBlockedUsersData
     }
 
     val uiStatePending by viewModel.uiStateAdminPendingUsers.collectAsStateWithLifecycle()
     val uiStateApproved by viewModel.uiStateAdminApprovedUsers.collectAsStateWithLifecycle()
     val uiStateRejected by viewModel.uiStateAdminRejectedUsers.collectAsStateWithLifecycle()
+    val uiStateBlocked by viewModel.uiStateAdminBlockedUsers.collectAsStateWithLifecycle()
 
     var searchQuery by remember {
         mutableStateOf("")
@@ -205,6 +215,31 @@ fun AdminUsersScreen(
         }
     }
 
+    LaunchedEffect(uiStateBlocked) {
+
+        when (val state = uiStateBlocked) {
+
+            is AdminUsersUIState.Loading -> {
+                isLoading = true
+            }
+
+            is AdminUsersUIState.Success -> {
+                isLoading = false
+                adminBlockedUsersData = state.data
+                blockedCount = state.data.size.toString()
+            }
+
+            is AdminUsersUIState.Error -> {
+                isLoading = false
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> {
+                isLoading = false
+            }
+        }
+    }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -245,6 +280,16 @@ fun AdminUsersScreen(
                     onClick = {
                         selectedTab = UsersTab.REJECTED
                         viewModel.getAdminRejectedUsers()
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+                UserTabButton(
+                    text = "Blocked",
+                    count = blockedCount,
+                    selected = selectedTab == UsersTab.BLOCKED,
+                    onClick = {
+                        selectedTab = UsersTab.BLOCKED
+                        viewModel.getAdminBlockedUsers()
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -331,6 +376,7 @@ fun AdminUsersScreen(
         UsersTab.PENDING -> ""
         UsersTab.APPROVED -> ""
         UsersTab.REJECTED -> ""
+        UsersTab.BLOCKED -> ""
     }
 }
 

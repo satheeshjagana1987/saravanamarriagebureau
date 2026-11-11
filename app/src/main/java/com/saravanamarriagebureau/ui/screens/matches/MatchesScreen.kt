@@ -32,16 +32,20 @@ import com.saravanamarriagebureau.ui.components.CustomButton
 import com.saravanamarriagebureau.ui.components.LoadingDialog
 import com.saravanamarriagebureau.ui.components.ProfileCard
 import com.saravanamarriagebureau.ui.screens.interests.SendInterestsUIState
+import com.saravanamarriagebureau.ui.screens.profile.ProfileUIState
+import com.saravanamarriagebureau.ui.screens.profile.ProfileViewModel
 import com.saravanamarriagebureau.ui.theme.Black
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
 import com.saravanamarriagebureau.util.ToastUtils
+import timber.log.Timber
 
 @Composable
 fun MatchesScreen(
     onProfile: (MatchesData) -> Unit,
-    viewModel: MatchesViewModel = hiltViewModel()
+    viewModel: MatchesViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     var isLoading by remember {
@@ -72,9 +76,26 @@ fun MatchesScreen(
     val uiStateSendInterest by
     viewModel.uiStateSendInterest.collectAsStateWithLifecycle()
 
+    val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+
 
     var selectedTab by remember {
         mutableStateOf(MatchTab.TODAY)
+    }
+
+    var todayCount by remember {
+        mutableStateOf("0")
+    }
+
+    var pastCount by remember {
+        mutableStateOf("0")
+    }
+    var recommendedCount by remember {
+        mutableStateOf("0")
+    }
+
+    var matchProfileId by remember {
+        mutableStateOf("")
     }
 
     val displayedMatches = when (selectedTab) {
@@ -100,6 +121,7 @@ fun MatchesScreen(
             is MatchesUiState.Success -> {
                 isLoading = false
                 todayMatchesData = state.data
+                todayCount = state.data.size.toString()
             }
 
             is MatchesUiState.Error -> {
@@ -122,6 +144,7 @@ fun MatchesScreen(
             is MatchesUiState.Success -> {
                 isLoading = false
                 pastMatchesData = state.data
+                pastCount = state.data.size.toString()
             }
 
             is MatchesUiState.Error -> {
@@ -144,6 +167,7 @@ fun MatchesScreen(
             is MatchesUiState.Success -> {
                 isLoading = false
                 recommendedMatchesData = state.data
+                recommendedCount = state.data.size.toString()
             }
 
             is MatchesUiState.Error -> {
@@ -157,6 +181,45 @@ fun MatchesScreen(
         }
     }
 
+
+    LaunchedEffect(uiState) {
+
+        when (val state = uiState) {
+
+            is ProfileUIState.Loading -> {
+            }
+
+            is ProfileUIState.Success -> {
+              val isAdminVerified = state.data.isAdminVerified
+                Timber.e("match===matchProfileId===>$matchProfileId")
+                Timber.e("match===isAdminVerified===>$isAdminVerified")
+                Timber.e("match===isPaidUser===>$isPaidUser")
+                if(isAdminVerified) {
+                    if (isPaidUser) {
+                        viewModel.sendInterest(profileId = matchProfileId)
+                    } else {
+                        ToastUtils.error(
+                            context = context,
+                            message = "Please upgrade your plan to access this feature"
+                        )
+                    }
+                } else {
+                    ToastUtils.error(
+                        context = context,
+                        message = "Your Profile still under validation so you can't access this feature"
+                    )
+                }
+            }
+
+            is ProfileUIState.Error -> {
+                ToastUtils.error(context, state.message)
+            }
+
+            else -> {
+                isLoading = false
+            }
+        }
+    }
     Column(
         Modifier
             .fillMaxSize()
@@ -170,6 +233,7 @@ fun MatchesScreen(
             ) {
                 MatchTabButton(
                     text = "Recent",
+                    count = todayCount,
                     selected = selectedTab == MatchTab.TODAY,
                     onClick = {
                         if (selectedTab == MatchTab.TODAY) return@MatchTabButton
@@ -181,6 +245,7 @@ fun MatchesScreen(
 
                 MatchTabButton(
                     text = "Past",
+                    count = pastCount,
                     selected = selectedTab == MatchTab.PAST,
                     onClick = {
                         if (selectedTab == MatchTab.PAST) return@MatchTabButton
@@ -192,6 +257,7 @@ fun MatchesScreen(
 
                 MatchTabButton(
                     text = "Recommended",
+                    count = recommendedCount,
                     selected = selectedTab == MatchTab.RECOMMENDED,
                     onClick = {
                         if (selectedTab == MatchTab.RECOMMENDED) return@MatchTabButton
@@ -226,14 +292,8 @@ fun MatchesScreen(
                         ProfileCard(
                             profile = profile,
                             onInterest = { matchId ->
-                                if (isPaidUser) {
-                                    viewModel.sendInterest(profileId = matchId)
-                                } else {
-                                    ToastUtils.error(
-                                        context = context,
-                                        message = "Please upgrade your plan to access this feature"
-                                    )
-                                }
+                                matchProfileId = matchId
+                                profileViewModel.loadProfile()
                             },
                             onOpen = { onProfile(profile) },
                             viewModel = viewModel
@@ -288,12 +348,13 @@ fun MatchesScreen(
 @Composable
 fun MatchTabButton(
     text: String,
+    count:String,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     CustomButton(
-        text = text,
+        text = "$text  $count",
         onClick = onClick,
         modifier = modifier,
         height = 40.dp,
