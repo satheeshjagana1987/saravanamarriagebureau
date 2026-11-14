@@ -6,6 +6,7 @@ import com.saravanamarriagebureau.data.model.AdminUserDetails
 import com.saravanamarriagebureau.data.model.AdminUserDetailsResponse
 import com.saravanamarriagebureau.data.model.BlockedUserRequest
 import com.saravanamarriagebureau.data.model.BlockedUserResponseData
+import com.saravanamarriagebureau.data.model.DeleteUserData
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.data.model.ProfileData
 import com.saravanamarriagebureau.data.model.RegistrationApprovalData
@@ -93,6 +94,16 @@ class AdminUsersRepository @Inject constructor(
     ): ApiResult<BlockedUserResponseData> {
         return safeApiCall {
             api.unBlockAdminUser(
+                userId = userId,
+            )
+        }
+    }
+
+    suspend fun deleteAdminUser(
+        userId: String,
+    ): ApiResult<DeleteUserData> {
+        return safeApiCall {
+            api.deleteAdminUser(
                 userId = userId,
             )
         }

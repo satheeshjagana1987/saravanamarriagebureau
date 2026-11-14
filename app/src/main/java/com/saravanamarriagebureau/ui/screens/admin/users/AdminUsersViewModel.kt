@@ -1,5 +1,6 @@
 package com.saravanamarriagebureau.ui.screens.admin.users
 
+import AdminUserDeleteUIState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saravanamarriagebureau.data.model.AcceptRequest
@@ -62,6 +63,11 @@ class AdminUsersViewModel  @Inject constructor(
         MutableStateFlow<AdminUserBlockedUIState>(AdminUserBlockedUIState.Idle)
 
     val uiStateByUnBlockUser = _uiStateByUnBlockUser.asStateFlow()
+
+    private val _uiStateByDeleteUser =
+        MutableStateFlow<AdminUserDeleteUIState>(AdminUserDeleteUIState.Idle)
+
+    val uiStateByDeleteUser = _uiStateByDeleteUser.asStateFlow()
 
 
     fun getAdminPendingUsers() {
@@ -338,6 +344,35 @@ class AdminUsersViewModel  @Inject constructor(
                 is ApiResult.Error -> {
                     _uiStateByUnBlockUser.value =
                         AdminUserBlockedUIState.Error(
+                            result.message
+                        )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun deleteAdminUser(
+        userId: String,
+    ) {
+        viewModelScope.launch {
+            _uiStateByDeleteUser.value = AdminUserDeleteUIState.Loading
+
+            when (val result = adminUsersRepository.deleteAdminUser(
+                userId = userId,
+            )) {
+                is ApiResult.Success -> {
+                    _uiStateByDeleteUser.value =
+                        AdminUserDeleteUIState.Success(
+                            data = result.data,
+                            message = result.message
+                        )
+                }
+
+                is ApiResult.Error -> {
+                    _uiStateByDeleteUser.value =
+                        AdminUserDeleteUIState.Error(
                             result.message
                         )
                 }

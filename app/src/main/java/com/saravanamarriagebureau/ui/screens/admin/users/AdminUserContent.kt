@@ -72,6 +72,9 @@ fun AdminUserContent(
     val uiStateByUnBlockUser by viewModel.uiStateByUnBlockUser
         .collectAsStateWithLifecycle()
 
+    val uiStateByDeleteUser by viewModel.uiStateByDeleteUser
+        .collectAsStateWithLifecycle()
+
     var reason by remember { mutableStateOf("") }
     var reasonError by remember { mutableStateOf<String?>(null) }
 
@@ -323,7 +326,7 @@ fun AdminUserContent(
                             },
                             modifier = Modifier.weight(1f)
                         )
-                        Spacer(Modifier.width(20.dp))
+                        Spacer(Modifier.width(10.dp))
                         PrimaryButton(
                             text = stringResource(id = R.string.reject),
                             onClick = {
@@ -342,6 +345,15 @@ fun AdminUserContent(
                                     userId = profile.id,
                                     reason = reason.trim()
                                 )
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        PrimaryButton(
+                            text = stringResource(id = R.string.delete),
+
+                            onClick = {
+                                viewModel.deleteAdminUser(userId = profile.id)
                             },
                             modifier = Modifier.weight(1f)
                         )
@@ -461,6 +473,30 @@ fun AdminUserContent(
                     }
 
                     is AdminUserBlockedUIState.Error -> {
+                        isLoading = false
+                        ToastUtils.error(context, state.message)
+                    }
+
+                    else -> {
+                        isLoading = false
+                    }
+                }
+            }
+
+            LaunchedEffect(uiStateByDeleteUser) {
+                when (val state = uiStateByDeleteUser) {
+
+                    is AdminUserDeleteUIState.Loading -> {
+                        isLoading = true
+                    }
+
+                    is AdminUserDeleteUIState.Success -> {
+                        isLoading = false
+                        ToastUtils.success(context = context, message = "User Deleted")
+                        onBack()
+                    }
+
+                    is AdminUserDeleteUIState.Error -> {
                         isLoading = false
                         ToastUtils.error(context, state.message)
                     }

@@ -13,6 +13,7 @@ import com.saravanamarriagebureau.data.model.BlockedUserResponseData
 import com.saravanamarriagebureau.data.model.ChangePasswordRequest
 import com.saravanamarriagebureau.data.model.DeleteMediaResponse
 import com.saravanamarriagebureau.data.model.DeleteMembershipPlanData
+import com.saravanamarriagebureau.data.model.DeleteUserData
 import com.saravanamarriagebureau.data.model.EnquiryItem
 import com.saravanamarriagebureau.data.model.ForgetPasswordRequest
 import com.saravanamarriagebureau.data.model.ForgetPasswordResponse
@@ -203,6 +204,11 @@ interface SmbApi {
     suspend fun unBlockAdminUser(
         @Path("userId") userId: String,
     ): Response<ApiResponse<BlockedUserResponseData>>
+
+    @DELETE("admin/users/{userId}")
+    suspend fun deleteAdminUser(
+        @Path("userId") userId: String,
+    ): Response<ApiResponse<DeleteUserData>>
 
     @PATCH("admin/interests/{interestId}/follow-up")
     suspend fun adminApproveOrRejectMatch(

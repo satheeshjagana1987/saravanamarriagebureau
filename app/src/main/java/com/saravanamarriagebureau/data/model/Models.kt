@@ -164,6 +164,14 @@ data class ProfileData(
     val profilePhotos: List<String?> = emptyList(),
 )
 
+data class DeleteUserData(
+    val id: String,
+    val fullName: String,
+    val mobile: String,
+    val email: String,
+    val message: String,
+)
+
 data class ProfileMedia(
     val mediaId: String,
     val mediaType: String,
