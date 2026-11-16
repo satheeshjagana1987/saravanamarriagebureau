@@ -98,7 +98,7 @@ fun MainScreenWithHamburger(
 
     val drawerItems = listOf(
         DrawerScreen.ChangePassword,
-//        DrawerScreen.ChangeLanguage,
+        DrawerScreen.ChangeLanguage,
         DrawerScreen.MyEnquiries,
         DrawerScreen.ContactUs,
         DrawerScreen.Logout,

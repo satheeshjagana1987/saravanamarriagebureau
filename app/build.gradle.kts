@@ -108,4 +108,6 @@ dependencies {
 
     // Razorpay Standard Checkout
     implementation("com.razorpay:checkout:1.6.41")
+
+    implementation("androidx.core:core-ktx:1.17.0")
 }

@@ -121,4 +121,7 @@
     <string name="status">Status</string>
     <string name="rejection_reason">Rejection Reason</string>
     <string name="block_reason">Block Reason</string>
+    <string name="select_language">Select Language</string>
+    <string name="english">English</string>
+    <string name="telugu">Telugu</string>
 </resources>

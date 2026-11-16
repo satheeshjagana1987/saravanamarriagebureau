@@ -2,8 +2,10 @@ package com.saravanamarriagebureau.ui.screens.userdashboard
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,25 +33,16 @@ import com.saravanamarriagebureau.data.model.LanguageOption
 import com.saravanamarriagebureau.ui.components.ScreenHeader
 import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Maroon
+import com.saravanamarriagebureau.util.LanguageManager
 
 @Composable
 fun ChangeLanguageScreen(
     onBack: () -> Unit,
 ) {
-    val languages = listOf(
-        LanguageOption(name = "English", code = "en"),
-        LanguageOption("తెలుగు", "te"),
-    )
 
-    // 1. Get the currently active app language code
-    val currentLocaleCode = remember {
-        AppCompatDelegate.getApplicationLocales()[0]?.language ?: "en"
-    }
+    val currentLanguage =
+        LanguageManager.getCurrentLanguage()
 
-    // 2. Track the selected language option in Compose state
-    var selectedLanguage by remember {
-        mutableStateOf(languages.firstOrNull { it.code == currentLocaleCode } ?: languages[0])
-    }
 
     Column(
         modifier = Modifier
@@ -57,53 +51,62 @@ fun ChangeLanguageScreen(
             .selectableGroup() // Crucial for screen-reader accessibility
     ) {
         ScreenHeader(title = stringResource(id = R.string.change_language), onBack)
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .background(Cream)
-                .selectableGroup() // Crucial for screen-reader accessibility
+                .padding(20.dp)
         ) {
+
             Text(
-                text = "Select Language",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
+                text = stringResource(R.string.select_language),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
             )
-            languages.forEach { language ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        // Make the whole row clickable for better touch target accessibility
-                        .selectable(
-                            selected = (language == selectedLanguage),
-                            onClick = {
-                                selectedLanguage = language
 
-                                // 3. Update the application locale instantly
-                                val localeList = LocaleListCompat.forLanguageTags(language.code)
-                                AppCompatDelegate.setApplicationLocales(localeList)
-                            },
-                            role = Role.RadioButton
-                        )
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = (language == selectedLanguage),
-                        onClick = null // Handled cleanly by the Row's modifier for accessibility
-                    )
+            Spacer(modifier = Modifier.height(20.dp))
 
-                    Text(
-                        text = language.name,
-                        fontSize = 14.sp,
-                        color = Maroon,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                RadioButton(
+                    selected = currentLanguage == "en",
+                    onClick = {
+                        LanguageManager.changeLanguage("en")
+                    }
+                )
+
+                Text(
+                    text = stringResource(R.string.english),
+                    modifier = Modifier.clickable {
+                        LanguageManager.changeLanguage("en")
+                    }
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                RadioButton(
+                    selected = currentLanguage == "te",
+                    onClick = {
+                        LanguageManager.changeLanguage("te")
+                    }
+                )
+
+                Text(
+                    text = stringResource(R.string.telugu),
+                    modifier = Modifier.clickable {
+                        LanguageManager.changeLanguage("te")
+                    }
+                )
             }
         }
+
     }
 }
 
