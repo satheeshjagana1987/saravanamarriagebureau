@@ -1,9 +1,12 @@
 package com.saravanamarriagebureau
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,8 +18,11 @@ import com.saravanamarriagebureau.payment.RazorpayCheckoutHost
 import com.saravanamarriagebureau.ui.SmbNavigationApp
 import com.saravanamarriagebureau.ui.theme.SaravanaMarriageBureauTheme
 import com.saravanamarriagebureau.util.AppPreferences
+import com.saravanamarriagebureau.util.LanguageManager
+import com.saravanamarriagebureau.util.LanguagePreferences
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,8 +38,54 @@ class MainActivity : ComponentActivity(), RazorpayCheckoutHost,
     private var paymentFailureCallback:
             ((String) -> Unit)? = null
 
+    @Inject
+    lateinit var languagePreferences: LanguagePreferences
+
+    override fun attachBaseContext(newBase: Context) {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+
+            val preferences = newBase.getSharedPreferences(
+                "language_preferences",
+                Context.MODE_PRIVATE
+            )
+
+            val language = preferences.getString(
+                "selected_language",
+                "en"
+            ) ?: "en"
+
+            val locale = Locale.forLanguageTag(language)
+
+            Locale.setDefault(locale)
+
+            val configuration = android.content.res.Configuration(
+                newBase.resources.configuration
+            )
+
+            configuration.setLocale(locale)
+
+            super.attachBaseContext(
+                newBase.createConfigurationContext(configuration)
+            )
+
+        } else {
+            super.attachBaseContext(newBase)
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Apply saved language on older Android versions.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            LanguageManager.applyLanguage(
+                this,
+                languagePreferences.getLanguage()
+            )
+        }
+
         Checkout.preload(applicationContext)
         enableEdgeToEdge()
         setContent {

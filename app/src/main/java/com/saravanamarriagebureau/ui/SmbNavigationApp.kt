@@ -94,6 +94,9 @@ fun SmbNavigationApp(
                     navController.navigate(
                         forgotPassword(mobile = mobile)
                     )
+                },
+                onLanguageSelected = {
+                    navController.navigate(Routes.Splash)
                 }
             )
         }
@@ -151,6 +154,9 @@ fun SmbNavigationApp(
                         }
                         launchSingleTop = true
                     }
+                },
+                splash = {
+                    navController.navigate(Routes.Splash)
                 }
             )
         }

@@ -38,10 +38,11 @@ import com.saravanamarriagebureau.util.LanguageManager
 @Composable
 fun ChangeLanguageScreen(
     onBack: () -> Unit,
+    onNext: () -> Unit
 ) {
 
-    val currentLanguage =
-        LanguageManager.getCurrentLanguage()
+    val currentLanguage ="en"
+
 
 
     Column(
@@ -74,14 +75,13 @@ fun ChangeLanguageScreen(
                 RadioButton(
                     selected = currentLanguage == "en",
                     onClick = {
-                        LanguageManager.changeLanguage("en")
+                        onNext()
                     }
                 )
 
                 Text(
                     text = stringResource(R.string.english),
                     modifier = Modifier.clickable {
-                        LanguageManager.changeLanguage("en")
                     }
                 )
             }
@@ -94,14 +94,13 @@ fun ChangeLanguageScreen(
                 RadioButton(
                     selected = currentLanguage == "te",
                     onClick = {
-                        LanguageManager.changeLanguage("te")
+                        onNext()
                     }
                 )
 
                 Text(
                     text = stringResource(R.string.telugu),
                     modifier = Modifier.clickable {
-                        LanguageManager.changeLanguage("te")
                     }
                 )
             }
@@ -113,5 +112,5 @@ fun ChangeLanguageScreen(
 @Preview
 @Composable
 fun ChangeLanguageScreenPreview() {
-    ChangeLanguageScreen(onBack = {})
+    ChangeLanguageScreen(onBack = {}, onNext = {})
 }

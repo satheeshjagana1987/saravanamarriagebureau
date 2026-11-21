@@ -6,6 +6,7 @@ import com.saravanamarriagebureau.data.repository.LoginRepository
 import com.saravanamarriagebureau.util.ApiResult
 import com.saravanamarriagebureau.util.AppPreferences
 import com.saravanamarriagebureau.util.Constants.KEY_USER_TYPE
+import com.saravanamarriagebureau.util.LanguagePreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,13 +17,24 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    val languagePreferences: LanguagePreferences,
 ) : ViewModel() {
 
     private val _uiState =
         MutableStateFlow<LoginUIState>(LoginUIState.Idle)
 
     val uiState = _uiState.asStateFlow()
+
+
+    fun getSelectedLanguage(): String {
+        return languagePreferences.getLanguage()
+    }
+
+    fun saveSelectedLanguage(languageCode: String) {
+        languagePreferences.saveLanguage(languageCode)
+    }
+
 
     fun login(
         mobile: String,

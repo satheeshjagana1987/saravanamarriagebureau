@@ -63,7 +63,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenWithHamburger(
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    splash: () -> Unit
 ) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(
@@ -98,7 +99,7 @@ fun MainScreenWithHamburger(
 
     val drawerItems = listOf(
         DrawerScreen.ChangePassword,
-        DrawerScreen.ChangeLanguage,
+//        DrawerScreen.ChangeLanguage,
         DrawerScreen.MyEnquiries,
         DrawerScreen.ContactUs,
         DrawerScreen.Logout,
@@ -463,6 +464,9 @@ fun MainScreenWithHamburger(
 
                         onBack = {
                             navController.popBackStack()
+                        },
+                        onNext = {
+                            splash()
                         }
                     )
                 }

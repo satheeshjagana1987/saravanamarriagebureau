@@ -1,24 +1,63 @@
 package com.saravanamarriagebureau.util
 
+import android.app.LocaleManager
+import android.content.Context
+import android.content.res.Configuration
+import android.os.Build
+import android.os.LocaleList
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import java.util.Locale
 
 object LanguageManager {
 
-    fun changeLanguage(languageCode: String) {
+    fun applyLanguage(
+        context: Context,
+        languageCode: String
+    ) {
+        val locale = Locale.forLanguageTag(languageCode)
 
-        val localeList =
-            LocaleListCompat.forLanguageTags(languageCode)
+        Locale.setDefault(locale)
 
-        AppCompatDelegate.setApplicationLocales(localeList)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            val localeManager =
+                context.getSystemService(LocaleManager::class.java)
+
+            localeManager.applicationLocales =
+                LocaleList.forLanguageTags(languageCode)
+
+        } else {
+            // Save the language for older Android versions.
+            context.getSharedPreferences(
+                "language_preferences",
+                Context.MODE_PRIVATE
+            ).edit()
+                .putString("selected_language", languageCode)
+                .apply()
+        }
     }
 
-    fun getCurrentLanguage(): String {
+    fun getCurrentLanguage(
+        context: Context,
+        preferences: LanguagePreferences
+    ): String {
 
-        return AppCompatDelegate
-            .getApplicationLocales()
-            .get(0)
-            ?.language ?: "en"
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            val localeManager =
+                context.getSystemService(LocaleManager::class.java)
+
+            val appLocales = localeManager.applicationLocales
+
+            if (!appLocales.isEmpty) {
+                appLocales[0].language
+            } else {
+                "en"
+            }
+
+        } else {
+            preferences.getLanguage()
+        }
     }
-
 }

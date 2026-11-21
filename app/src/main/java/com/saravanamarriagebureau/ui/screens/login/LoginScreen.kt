@@ -1,6 +1,8 @@
 package com.saravanamarriagebureau.ui.screens.login
 
-import androidx.appcompat.app.AppCompatDelegate
+import android.content.Context
+import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,14 +26,13 @@ import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -50,19 +51,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.os.LocaleListCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saravanamarriagebureau.R
-import com.saravanamarriagebureau.ui.components.AppLogo
 import com.saravanamarriagebureau.ui.components.LabelName
 import com.saravanamarriagebureau.ui.components.LoadingDialog
-import com.saravanamarriagebureau.ui.components.LoadingView
 import com.saravanamarriagebureau.ui.components.PrimaryButton
 import com.saravanamarriagebureau.ui.components.SecondaryButton
 import com.saravanamarriagebureau.ui.components.isInternetAvailable
@@ -73,7 +70,8 @@ import com.saravanamarriagebureau.ui.theme.Cream
 import com.saravanamarriagebureau.ui.theme.Gray
 import com.saravanamarriagebureau.ui.theme.Maroon
 import com.saravanamarriagebureau.ui.theme.White
-import com.saravanamarriagebureau.util.AppPreferences
+import com.saravanamarriagebureau.util.LanguageManager
+import com.saravanamarriagebureau.util.LanguagePreferences
 import com.saravanamarriagebureau.util.ToastUtils
 import com.saravanamarriagebureau.util.ValidationUtils
 import timber.log.Timber
@@ -84,6 +82,7 @@ fun LoginScreen(
     onRegister: () -> Unit,
     onPrivacy: () -> Unit,
     onForgot: (String) -> Unit,
+    onLanguageSelected: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
     forgetPasswordViewModel: ForgetPasswordViewModel = hiltViewModel()
 ) {
@@ -116,6 +115,20 @@ fun LoginScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiStateForgetPassword by forgetPasswordViewModel.uiState.collectAsStateWithLifecycle()
+
+    val activity = context as? ComponentActivity
+
+    val languagePreferences = viewModel.languagePreferences
+
+    var selectedLanguage by remember {
+        mutableStateOf(
+            LanguageManager.getCurrentLanguage(
+                context,
+                languagePreferences
+            )
+        )
+    }
+
 
     Timber.e("uiState  ==> $uiStateForgetPassword")
 
@@ -441,7 +454,86 @@ fun LoginScreen(
         }
         Spacer(Modifier.height(20.dp))
         SecondaryButton(stringResource(id = R.string.create_new_account), onRegister)
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(20.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                RadioButton(
+                    selected = selectedLanguage == "en",
+                    onClick = {
+                        selectedLanguage = "en"
+
+                        changeLanguage(
+                            context = context,
+                            activity = activity,
+                            preferences = languagePreferences,
+                            languageCode = "en"
+                        )
+                        viewModel.saveSelectedLanguage(languageCode = "en")
+                    }
+                )
+
+                Text(
+                    text = stringResource(R.string.english),
+                    modifier = Modifier.clickable {
+                        selectedLanguage = "en"
+
+                        changeLanguage(
+                            context = context,
+                            activity = activity,
+                            preferences = languagePreferences,
+                            languageCode = "en"
+                        )
+                        viewModel.saveSelectedLanguage(languageCode = "en")
+
+                    }
+                )
+            }
+
+            Spacer(Modifier.width(20.dp))
+
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                RadioButton(
+                    selected = selectedLanguage == "te",
+                    onClick = {
+                        selectedLanguage = "te"
+                        changeLanguage(
+                            context = context,
+                            activity = activity,
+                            preferences = languagePreferences,
+                            languageCode = "te"
+                        )
+                        viewModel.saveSelectedLanguage(languageCode = "te")
+                    }
+                )
+
+                Text(
+                    text = stringResource(R.string.telugu),
+                    modifier = Modifier.clickable {
+                        selectedLanguage = "te"
+                        changeLanguage(
+                            context = context,
+                            activity = activity,
+                            preferences = languagePreferences,
+                            languageCode = "te"
+                        )
+                        viewModel.saveSelectedLanguage(languageCode = "te")
+                    }
+                )
+            }
+        }
         Spacer(Modifier.weight(1f))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -467,13 +559,33 @@ fun LoginScreen(
     }
 }
 
-fun changeAppLanguage(languageCode: String) {
-    val localeList = LocaleListCompat.forLanguageTags(languageCode)
-    AppCompatDelegate.setApplicationLocales(localeList)
+private fun changeLanguage(
+    context: Context,
+    activity: ComponentActivity?,
+    preferences: LanguagePreferences,
+    languageCode: String
+) {
+    preferences.saveLanguage(languageCode)
+
+    LanguageManager.applyLanguage(
+        context = context,
+        languageCode = languageCode
+    )
+
+    // Android 12 and below require manual recreation.
+    // Android 13+ handles the locale configuration change.
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        activity?.recreate()
+    }
 }
 
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(onLogin = {}, onRegister = {}, onPrivacy = {}, onForgot = {})
+    LoginScreen(
+        onLogin = {},
+        onRegister = {},
+        onPrivacy = {},
+        onForgot = {},
+        onLanguageSelected = {})
 }

@@ -1,6 +1,6 @@
-
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">శరవణ మ్యారేజ్ బ్యూరో</string>
     <string name="no_internet">దయచేసి ఇంటర్నెట్ కనెక్షన్‌ను ప్రారంభించండి</string>
     <string name="full_name">పూర్తి పేరు</string>
@@ -126,4 +126,5 @@
     <string name="select_language">భాషను ఎంచుకోండి</string>
     <string name="english">ఆంగ్లం</string>
     <string name="telugu">తెలుగు</string>
+
 </resources>
