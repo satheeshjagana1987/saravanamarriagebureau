@@ -35,7 +35,7 @@
     <string name="sent">పంపినవి</string>
     <string name="match_fixed">సంబంధం ఖరారైంది</string>
     <string name="proceed_payment">చెల్లింపుకు కొనసాగండి</string>
-    <string name="Matches">సంబంధాలు</string>
+    <string name="matches">సంబంధాలు</string>
     <string name="interests">ఆసక్తులు</string>
     <string name="profile">ప్రొఫైల్</string>
     <string name="login">లాగిన్</string>
@@ -126,5 +126,24 @@
     <string name="select_language">భాషను ఎంచుకోండి</string>
     <string name="english">ఆంగ్లం</string>
     <string name="telugu">తెలుగు</string>
+
+    <string name="home">హోమ్</string>
+    <string name="contact_us">మమ్మల్ని సంప్రదించండి</string>
+    <string name="recent">ఇటీవలి</string>
+    <string name="create_your_account">మీ ఖాతాను సృష్టించండి</string>
+    <string name="dashboard">డాష్‌బోర్డ్</string>
+    <string name="plans">ప్లాన్‌లు</string>
+    <string name="enquiries">విచారణలు</string>
+    <string name="settings">సెట్టింగ్‌లు</string>
+    <string name="reason">కారణం</string>
+    <string name="match">జోడీ</string>
+    <string name="new_lbl">కొత్తవి</string>
+    <string name="resolved">పరిష్కరించబడింది</string>
+    <string name="resolve">పరిష్కరించండి</string>
+    <string name="enquiry_details">విచారణ వివరాలు</string>
+    <string name="edit_memberhip_plan">సభ్యత్వ ప్లాన్‌ను సవరించండి</string>
+    <string name="interest_details">ఆసక్తి వివరాలు</string>
+    <string name="match_approve">జోడీని ఆమోదించండి</string>
+    <string name="match_reject">జోడీని తిరస్కరించండి</string>
 
 </resources>

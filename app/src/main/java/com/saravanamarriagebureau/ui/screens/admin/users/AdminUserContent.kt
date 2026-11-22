@@ -295,7 +295,7 @@ fun AdminUserContent(
             if (isFromPending) {
                 Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 20.dp)) {
                     LabelName(
-                        labelName = "Reason",
+                        labelName = stringResource(id = R.string.reason),
                         fontSize = 14.sp,
                         color = Maroon,
                         fontWeight = FontWeight.Normal
@@ -365,7 +365,7 @@ fun AdminUserContent(
             if (profile.status == "APPROVED") {
                 Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 20.dp)) {
                     LabelName(
-                        labelName = "Reason",
+                        labelName = stringResource(id = R.string.reason),
                         fontSize = 14.sp,
                         color = Maroon,
                         fontWeight = FontWeight.Normal

@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.MatchTab
 import com.saravanamarriagebureau.data.model.MatchesData
 import com.saravanamarriagebureau.ui.components.CustomButton
@@ -191,9 +193,6 @@ fun MatchesScreen(
 
             is ProfileUIState.Success -> {
               val isAdminVerified = state.data.isAdminVerified
-                Timber.e("match===matchProfileId===>$matchProfileId")
-                Timber.e("match===isAdminVerified===>$isAdminVerified")
-                Timber.e("match===isPaidUser===>$isPaidUser")
                 if(isAdminVerified) {
                     if (isPaidUser) {
                         viewModel.sendInterest(profileId = matchProfileId)
@@ -232,7 +231,7 @@ fun MatchesScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 MatchTabButton(
-                    text = "Recent",
+                    text = stringResource(id = R.string.recent),
                     count = todayCount,
                     selected = selectedTab == MatchTab.TODAY,
                     onClick = {
@@ -244,7 +243,7 @@ fun MatchesScreen(
                 )
 
                 MatchTabButton(
-                    text = "Past",
+                    text = stringResource(id = R.string.past),
                     count = pastCount,
                     selected = selectedTab == MatchTab.PAST,
                     onClick = {
@@ -256,7 +255,7 @@ fun MatchesScreen(
                 )
 
                 MatchTabButton(
-                    text = "Recommended",
+                    text = stringResource(id = R.string.recommended),
                     count = recommendedCount,
                     selected = selectedTab == MatchTab.RECOMMENDED,
                     onClick = {

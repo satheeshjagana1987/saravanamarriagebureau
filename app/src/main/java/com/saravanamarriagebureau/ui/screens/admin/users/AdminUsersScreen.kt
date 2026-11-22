@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.UsersTab
 import com.saravanamarriagebureau.data.model.PendingApprovalUser
 import com.saravanamarriagebureau.ui.components.AdminUserCard
@@ -252,7 +254,7 @@ fun AdminUsersScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 UserTabButton(
-                    text = "Pending",
+                    text = stringResource(id = R.string.pending),
                     count = pendingCount,
                     selected = selectedTab == UsersTab.PENDING,
                     onClick = {
@@ -263,7 +265,7 @@ fun AdminUsersScreen(
                 )
 
                 UserTabButton(
-                    text = "Approved",
+                    text =stringResource(id = R.string.approved),
                     count = approvedCount,
                     selected = selectedTab == UsersTab.APPROVED,
                     onClick = {
@@ -274,7 +276,7 @@ fun AdminUsersScreen(
                 )
 
                 UserTabButton(
-                    text = "Rejected",
+                    text = stringResource(id = R.string.rejected),
                     count = rejectedCount,
                     selected = selectedTab == UsersTab.REJECTED,
                     onClick = {
@@ -284,7 +286,7 @@ fun AdminUsersScreen(
                     modifier = Modifier.weight(1f)
                 )
                 UserTabButton(
-                    text = "Blocked",
+                    text = stringResource(id = R.string.blocked),
                     count = blockedCount,
                     selected = selectedTab == UsersTab.BLOCKED,
                     onClick = {

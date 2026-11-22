@@ -145,7 +145,7 @@ fun AdminInterestDetailsScreen(
             .fillMaxSize()
             .background(Cream),
     ) {
-        ScreenHeader("Interest Details", onBack)
+        ScreenHeader(stringResource(id = R.string.interest_details), onBack)
         Column(
             Modifier
                 .padding(16.dp)
@@ -310,7 +310,7 @@ fun AdminInterestDetailsScreen(
             if (interestData?.status == "ACCEPTED" && !interestData.isMatchFixed) {
                 Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 20.dp)) {
                     LabelName(
-                        labelName = "Reason",
+                        labelName = stringResource(id = R.string.resolve),
                         fontSize = 14.sp,
                         color = Maroon,
                         fontWeight = FontWeight.Normal
@@ -333,7 +333,7 @@ fun AdminInterestDetailsScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         PrimaryButton(
-                            text = "Match Approve",
+                            text = stringResource(id = R.string.match_approve),
 
                             onClick = {
                                 viewModel.adminApproveOrRejectMatch(
@@ -346,7 +346,7 @@ fun AdminInterestDetailsScreen(
                         )
                         Spacer(Modifier.width(10.dp))
                         PrimaryButton(
-                            text = "Match Reject",
+                            text = stringResource(id = R.string.match_reject),
                             onClick = {
                                 reasonError = ValidationUtils.validateField(
                                     field = reason.trim(),

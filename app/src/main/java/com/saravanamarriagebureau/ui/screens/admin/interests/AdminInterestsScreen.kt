@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.model.AdminInterestsData
 import com.saravanamarriagebureau.ui.components.AdminInterestCard
 import com.saravanamarriagebureau.ui.components.CustomButton
@@ -197,7 +199,7 @@ fun AdminInterestsScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 InterestTabButton(
-                    text = "Pending",
+                    text = stringResource(id = R.string.pending),
                     count = pendingCount,
                     selected = selectedTab == "PENDING",
                     onClick = {
@@ -209,7 +211,7 @@ fun AdminInterestsScreen(
                 )
 
                 InterestTabButton(
-                    text = "Accepted",
+                    text = stringResource(id = R.string.accepted),
                     count = acceptedCount,
                     selected = selectedTab == "ACCEPTED",
                     onClick = {
@@ -221,7 +223,7 @@ fun AdminInterestsScreen(
                 )
 
                 InterestTabButton(
-                    text = "Match",
+                    text = stringResource(id = R.string.match),
                     count = matchCount,
                     selected = selectedTab == "MATCH",
                     onClick = {
@@ -232,7 +234,7 @@ fun AdminInterestsScreen(
                     modifier = Modifier.weight(1f)
                 )
                 InterestTabButton(
-                    text = "Rejected",
+                    text = stringResource(id = R.string.rejected),
                     count = matchCount,
                     selected = selectedTab == "REJECTED",
                     onClick = {

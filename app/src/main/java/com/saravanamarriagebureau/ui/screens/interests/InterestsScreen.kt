@@ -19,12 +19,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.data.model.UserInterestsData
 import com.saravanamarriagebureau.ui.components.CustomButton
@@ -140,7 +142,7 @@ fun InterestsScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 InterestTabButton(
-                    text = "Received",
+                    text = stringResource(id = R.string.received),
                     count = receivedCount,
                     selected = selectedTab == InterestTab.RECEIVED,
                     onClick = {
@@ -152,7 +154,7 @@ fun InterestsScreen(
                 )
 
                 InterestTabButton(
-                    text = "Sent",
+                    text = stringResource(id = R.string.sent),
                     count = sentCount,
                     selected = selectedTab == InterestTab.SENT,
                     onClick = {

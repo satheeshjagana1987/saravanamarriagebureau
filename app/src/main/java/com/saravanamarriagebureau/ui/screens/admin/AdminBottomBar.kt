@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -44,13 +45,13 @@ fun AdminBottomBar(
                 icon = {
                     Icon(
                         imageVector = destination.icon,
-                        contentDescription = destination.label
+                        contentDescription = stringResource(id = destination.label)
                     )
                 },
 
                 label = {
                     Text(
-                        text = destination.label,
+                        text = stringResource(id = destination.label),
                         maxLines = 1
                     )
                 }

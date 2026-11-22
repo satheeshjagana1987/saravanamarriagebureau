@@ -114,7 +114,7 @@ fun AdminEnquiryDetailsScreen(
             .fillMaxSize()
             .background(Cream),
     ) {
-        ScreenHeader("Enquiry Details", onBack)
+        ScreenHeader(stringResource(id = R.string.enquiry_details), onBack)
         Column(
             Modifier
                 .padding(16.dp).fillMaxSize()
@@ -186,7 +186,7 @@ fun AdminEnquiryDetailsScreen(
             if (status == "NEW") {
                 Column(Modifier.padding(bottom = 30.dp, top = 20.dp)) {
                     LabelName(
-                        labelName = "Reason",
+                        labelName = stringResource(id = R.string.reason),
                         fontSize = 14.sp,
                         color = Maroon,
                         fontWeight = FontWeight.Normal
@@ -205,7 +205,7 @@ fun AdminEnquiryDetailsScreen(
                     Spacer(Modifier.height(10.dp))
 
                     PrimaryButton(
-                        text = "Resolve",
+                        text = stringResource(id = R.string.resolve),
                         onClick = {
                             reasonError = ValidationUtils.validateField(
                                 field = reason.trim(),

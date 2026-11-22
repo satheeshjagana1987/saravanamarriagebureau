@@ -19,12 +19,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.EnquiryStatus
 import com.saravanamarriagebureau.data.model.EnquiryItem
 import com.saravanamarriagebureau.ui.components.CustomButton
@@ -104,7 +106,7 @@ fun AdminEnquiriesScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 EnquiryTabButton(
-                    text = "NEW",
+                    text = stringResource(id = R.string.new_lbl),
                     selected = selectedTab == EnquiryStatus.NEW,
                     onClick = {
                         if (selectedTab == EnquiryStatus.NEW) return@EnquiryTabButton
@@ -115,7 +117,7 @@ fun AdminEnquiriesScreen(
                 )
 
                 EnquiryTabButton(
-                    text = "RESOLVED",
+                    text = stringResource(id = R.string.resolved),
                     selected = selectedTab == EnquiryStatus.RESOLVED,
                     onClick = {
                         if (selectedTab == EnquiryStatus.RESOLVED) return@EnquiryTabButton

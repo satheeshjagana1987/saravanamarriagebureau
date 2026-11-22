@@ -1,5 +1,6 @@
 package com.saravanamarriagebureau.data.model
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ContactSupport
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
@@ -13,6 +14,8 @@ import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.enums.InterestStatus
 import com.saravanamarriagebureau.data.enums.InterestTab
 import com.saravanamarriagebureau.ui.navigation.Routes
@@ -775,28 +778,28 @@ data class SubmitEnquiryResponseData(
 )
 
 // Primary Bottom Bar Destinations
-sealed class BottomBarScreen(val route: String, val title: String, val icon: ImageVector) {
-    object Home : BottomBarScreen(Routes.Home, "Home", Icons.Default.Home)
-    object Matches : BottomBarScreen(Routes.Matches, "Matches", Icons.Default.Groups)
-    object Search : BottomBarScreen(Routes.Search, "Search", Icons.Default.Search)
-    object Interests : BottomBarScreen(Routes.Interests, "Interests", Icons.Default.Interests)
+sealed class BottomBarScreen(val route: String, @StringRes val titleResId: Int, val icon: ImageVector) {
+    object Home : BottomBarScreen(Routes.Home, R.string.home, Icons.Default.Home)
+    object Matches : BottomBarScreen(Routes.Matches, R.string.matches, Icons.Default.Groups)
+    object Search : BottomBarScreen(Routes.Search, R.string.search, Icons.Default.Search)
+    object Interests : BottomBarScreen(Routes.Interests, R.string.interests, Icons.Default.Interests)
     object ProfileCreation :
-        BottomBarScreen(Routes.profileWithStepper, "Profile", Icons.Default.Person)
+        BottomBarScreen(Routes.profileWithStepper, R.string.profile, Icons.Default.Person)
 }
 
 // Secondary Side Drawer Destinations
-sealed class DrawerScreen(val route: String, val title: String, val icon: ImageVector) {
+sealed class DrawerScreen(val route: String, @StringRes val titleResId: Int, val icon: ImageVector) {
     object ChangeLanguage :
-        DrawerScreen(Routes.ChangeLanguage, "Change Language", Icons.Default.Settings)
+        DrawerScreen(Routes.ChangeLanguage, R.string.change_language, Icons.Default.Settings)
 
     object ChangePassword :
-        DrawerScreen(Routes.ChangePassword, "Change Password", Icons.Default.Password)
+        DrawerScreen(Routes.ChangePassword, R.string.change_password, Icons.Default.Password)
 
     object MyEnquiries :
-        DrawerScreen(Routes.MyEnquiries, "My Enquiries", Icons.Default.QueryStats)
+        DrawerScreen(Routes.MyEnquiries, R.string.my_enquiries, Icons.Default.QueryStats)
 
     object ContactUs :
-        DrawerScreen(Routes.ContactUs, "Contact Us", Icons.AutoMirrored.Filled.ContactSupport)
+        DrawerScreen(Routes.ContactUs, R.string.contact_us, Icons.AutoMirrored.Filled.ContactSupport)
 
-    object Logout : DrawerScreen(Routes.Logout, "Logout", Icons.AutoMirrored.Filled.ExitToApp)
+    object Logout : DrawerScreen(Routes.Logout, R.string.logout, Icons.AutoMirrored.Filled.ExitToApp)
 }

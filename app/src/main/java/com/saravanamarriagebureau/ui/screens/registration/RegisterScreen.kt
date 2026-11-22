@@ -137,7 +137,7 @@ fun RegisterScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(20.dp))
-        ScreenHeader("Create Your Account", onBack)
+        ScreenHeader(stringResource(id = R.string.create_your_account), onBack)
         Spacer(Modifier.height(10.dp))
         Column(Modifier.padding(horizontal = 16.dp)) {
             Card(

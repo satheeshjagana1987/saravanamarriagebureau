@@ -25,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -34,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.saravanamarriagebureau.R
 import com.saravanamarriagebureau.data.model.BottomBarScreen
 import com.saravanamarriagebureau.data.model.DrawerScreen
 import com.saravanamarriagebureau.ui.navigation.Routes
@@ -133,34 +135,34 @@ fun MainScreenWithHamburger(
     val appBarTitle = when (currentRoute) {
 
         BottomBarScreen.Home.route ->
-            BottomBarScreen.Home.title
+            stringResource(id = R.string.home)
 
         BottomBarScreen.Matches.route ->
-            BottomBarScreen.Matches.title
+            stringResource(id = R.string.matches)
 
         BottomBarScreen.Search.route ->
-            BottomBarScreen.Search.title
+            stringResource(id = R.string.search)
 
         BottomBarScreen.Interests.route ->
-            BottomBarScreen.Interests.title
+            stringResource(id = R.string.interests)
 
         BottomBarScreen.ProfileCreation.route ->
-            BottomBarScreen.ProfileCreation.title
+            stringResource(id = R.string.profile)
 
         Routes.Profile ->
-            "Profile"
+            stringResource(id = R.string.profile)
 
         DrawerScreen.ChangeLanguage.route ->
-            "Change Language"
+            stringResource(id = R.string.change_language)
 
         DrawerScreen.ChangePassword.route ->
-            "Change Password"
+            stringResource(id = R.string.change_password)
 
         DrawerScreen.MyEnquiries.route ->
-            "My Enquiries"
+            stringResource(id = R.string.my_enquiries)
 
         DrawerScreen.ContactUs.route ->
-            "Contact Us"
+            stringResource(id = R.string.contact_us)
 
         Routes.InterestSent ->
             ""
@@ -207,12 +209,15 @@ fun MainScreenWithHamburger(
                             icon = {
                                 Icon(
                                     imageVector = screen.icon,
-                                    contentDescription = screen.title
+                                    contentDescription = stringResource(
+                                        id = screen.titleResId)
                                 )
                             },
 
                             label = {
-                                Text(screen.title)
+                                Text(text = stringResource(
+                                    id = screen.titleResId)
+                                )
                             },
 
                             selected = isSelected,
@@ -302,12 +307,15 @@ fun MainScreenWithHamburger(
                                 icon = {
                                     Icon(
                                         imageVector = screen.icon,
-                                        contentDescription = screen.title
+                                        contentDescription = stringResource(
+                                            id = screen.titleResId)
                                     )
                                 },
 
                                 label = {
-                                    Text(screen.title)
+                                    Text(text = stringResource(
+                                        id = screen.titleResId)
+                                    )
                                 },
 
                                 selected = isSelected,
