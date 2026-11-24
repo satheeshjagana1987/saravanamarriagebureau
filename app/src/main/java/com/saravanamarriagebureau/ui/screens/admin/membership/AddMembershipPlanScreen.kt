@@ -75,7 +75,7 @@ fun AddMembershipPlanScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScreenHeader(title = "Add Membership Plan", onBack)
+        ScreenHeader(title = stringResource(id = R.string.add_membership_plan), onBack)
         Column(
             Modifier.padding(horizontal = 16.dp)
                 . verticalScroll(rememberScrollState())

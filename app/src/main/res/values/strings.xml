@@ -139,8 +139,16 @@
     <string name="resolved">Resolved</string>
     <string name="resolve">Resolve</string>
     <string name="enquiry_details">Enquiry Details</string>
-    <string name="edit_memberhip_plan">Edit Membership Plan</string>
+    <string name="edit_membership_plan">Edit Membership Plan</string>
     <string name="interest_details">Interest Details</string>
     <string name="match_approve">Match Approve</string>
     <string name="match_reject">Match Reject</string>
+
+    <string name="sender">Sender</string>
+    <string name="receiver">Receiver</string>
+    <string name="add_membership_plan">Add Membership Plan</string>
+    <string name="active">Active</string>
+    <string name="in_active">InActive</string>
+    <string name="edit">Edit</string>
+    <string name="enquiry_form">Enquiry Form</string>
 </resources>

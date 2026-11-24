@@ -102,7 +102,7 @@ fun EnquiryDetailsScreen(
             .fillMaxSize()
             .background(Cream),
     ) {
-        ScreenHeader("Enquiry Details", onBack)
+        ScreenHeader(stringResource(id = R.string.enquiry_details), onBack)
         Column(
             Modifier
                 .padding(16.dp).fillMaxSize()

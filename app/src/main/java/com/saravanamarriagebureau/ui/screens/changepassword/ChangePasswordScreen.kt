@@ -294,7 +294,7 @@ fun ChangePasswordScreen(
 
         Spacer(Modifier.weight(1f))
         PrimaryButton(
-            text = "Change Password",
+            text = stringResource(id = R.string.change_password),
             modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 50.dp),
             onClick = {
                 currentPasswordError = ValidationUtils.validateField(

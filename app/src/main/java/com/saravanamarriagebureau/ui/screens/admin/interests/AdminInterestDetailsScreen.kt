@@ -107,25 +107,25 @@ fun AdminInterestDetailsScreen(
 
             is AdminInterestsByIdUIState.Success -> {
                 isLoading = false
-                senderName = state.data.sender.fullName
-                senderDob = state.data.sender.dateOfBirth ?: NA
-                senderGender = state.data.sender.gender
-                senderEducation = state.data.sender.education ?: NA
-                senderCity = state.data.sender.city ?: NA
-                senderMaritalStatus = state.data.sender.maritalStatus ?: NA
-                senderProfession = state.data.sender.profession ?: NA
-                senderMobileNumber = state.data.sender.mobile ?: NA
-                senderFullAddress = state.data.sender.fullAddress ?: NA
+                senderName = state.data.sender?.fullName ?: NA
+                senderDob = state.data.sender?.dateOfBirth ?: NA
+                senderGender = state.data.sender?.gender ?: NA
+                senderEducation = state.data.sender?.education ?: NA
+                senderCity = state.data.sender?.city ?: NA
+                senderMaritalStatus = state.data.sender?.maritalStatus ?: NA
+                senderProfession = state.data.sender?.profession ?: NA
+                senderMobileNumber = state.data.sender?.mobile ?: NA
+                senderFullAddress = state.data.sender?.fullAddress ?: NA
 
-                receiverName = state.data.receiver.fullName
-                receiverDob = state.data.receiver.dateOfBirth ?: NA
-                receiverGender = state.data.receiver.gender
-                receiverEducation = state.data.receiver.education ?: NA
-                receiverCity = state.data.receiver.city ?: NA
-                receiverMaritalStatus = state.data.receiver.maritalStatus ?: NA
-                receiverProfession = state.data.receiver.profession ?: NA
-                receiverMobileNumber = state.data.receiver.mobile ?: NA
-                receiverFullAddress = state.data.receiver.fullAddress ?: NA
+                receiverName = state.data.receiver?.fullName ?: NA
+                receiverDob = state.data.receiver?.dateOfBirth ?: NA
+                receiverGender = state.data.receiver?.gender ?: NA
+                receiverEducation = state.data.receiver?.education ?: NA
+                receiverCity = state.data.receiver?.city ?: NA
+                receiverMaritalStatus = state.data.receiver?.maritalStatus ?: NA
+                receiverProfession = state.data.receiver?.profession ?: NA
+                receiverMobileNumber = state.data.receiver?.mobile ?: NA
+                receiverFullAddress = state.data.receiver?.fullAddress ?: NA
 
             }
 

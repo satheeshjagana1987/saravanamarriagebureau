@@ -113,7 +113,7 @@ fun EnquiriesScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 EnquiryTabButton(
-                    text = "NEW",
+                    text = stringResource(id = R.string.new_lbl),
                     selected = selectedTab == EnquiryStatus.NEW,
                     onClick = {
                         if (selectedTab == EnquiryStatus.NEW) return@EnquiryTabButton
@@ -124,7 +124,7 @@ fun EnquiriesScreen(
                 )
 
                 EnquiryTabButton(
-                    text = "RESOLVED",
+                    text = stringResource(id = R.string.resolved),
                     selected = selectedTab == EnquiryStatus.RESOLVED,
                     onClick = {
                         if (selectedTab == EnquiryStatus.RESOLVED) return@EnquiryTabButton

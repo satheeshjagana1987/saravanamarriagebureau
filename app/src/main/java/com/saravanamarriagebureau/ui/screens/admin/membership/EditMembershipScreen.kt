@@ -112,7 +112,7 @@ fun EditMembershipScreen(
             .background(Cream),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScreenHeader(title = stringResource(id = R.string.edit_memberhip_plan), onBack)
+        ScreenHeader(title = stringResource(id = R.string.edit_membership_plan), onBack)
         Column(
             Modifier
                 .padding(horizontal = 16.dp)

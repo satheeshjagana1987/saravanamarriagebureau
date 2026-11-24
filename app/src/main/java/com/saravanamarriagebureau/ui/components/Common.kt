@@ -735,7 +735,7 @@ fun AdminMembershipCard(
 //                    )
 //                    Spacer(Modifier.width(5.dp))
                     LabelName(
-                        labelName = if (profile.isActive) "Active" else "InActive",
+                        labelName = if (profile.isActive) stringResource(id = R.string.active) else stringResource(id = R.string.in_active),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (profile.isActive) Success else Red,
@@ -745,7 +745,7 @@ fun AdminMembershipCard(
             Spacer(Modifier.weight(0.4f))
             Column {
                 CustomButton(
-                    text = "Edit",
+                    text = stringResource(id = R.string.edit),
                     onClick = {
                         onEdit(profile.id)
                     },
@@ -764,7 +764,7 @@ fun AdminMembershipCard(
                 )
 
                 CustomButton(
-                    text = "InActive",
+                    text = stringResource(id = R.string.in_active),
                     onClick = {
                         if (profile.isActive) {
                             onDelete(profile.id)
@@ -1114,19 +1114,19 @@ fun AdminInterestCard(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
             NetworkImage(
-                url = interest.sender.profilePhotos.getOrNull(0).orEmpty(),
+                url = interest.sender?.profilePhotos?.getOrNull(0).orEmpty(),
                 modifier = Modifier.size(75.dp)
             )
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 LabelName(
-                    labelName = interest.sender.fullName,
+                    labelName = interest.sender?.fullName ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Maroon,
                     modifier = Modifier.padding(0.dp)
                 )
-                val age = if (interest.sender.dateOfBirth.isNullOrEmpty()) {
+                val age = if (interest.sender?.dateOfBirth.isNullOrEmpty()) {
                     "NA"
                 } else {
                     calculateAge(interest.sender.dateOfBirth).toString()
@@ -1139,7 +1139,7 @@ fun AdminInterestCard(
                     modifier = Modifier.padding(0.dp)
                 )
                 LabelName(
-                    labelName = interest.sender.education ?: NA,
+                    labelName = interest.sender?.education ?: NA,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = Black,

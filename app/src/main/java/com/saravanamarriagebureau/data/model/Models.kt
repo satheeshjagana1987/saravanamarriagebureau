@@ -609,8 +609,8 @@ data class AdminInterestsData(
     val createdAt: String,
     val updatedAt: String,
     val isMatchFixed: Boolean,
-    val sender: AdminInterestsDetails,
-    val receiver: AdminInterestsDetails
+    val sender: AdminInterestsDetails?,
+    val receiver: AdminInterestsDetails?
 )
 
 data class AdminInterestsDetails(

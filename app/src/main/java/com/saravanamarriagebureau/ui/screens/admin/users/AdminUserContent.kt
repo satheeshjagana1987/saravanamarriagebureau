@@ -129,7 +129,7 @@ fun AdminUserContent(
             .fillMaxSize()
             .background(Cream),
     ) {
-        ScreenHeader("Profile", onBack)
+        ScreenHeader(stringResource(id = R.string.profile), onBack)
         Column(
             Modifier
                 .padding(16.dp)

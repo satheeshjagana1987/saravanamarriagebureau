@@ -85,7 +85,7 @@ fun EnquiryFormScreen(
             .fillMaxSize()
             .background(Cream),
     ) {
-        ScreenHeader("Enquiry Form", onBack)
+        ScreenHeader(stringResource(R.string.enquiry_form), onBack)
         Column(
             Modifier
                 .padding(16.dp)

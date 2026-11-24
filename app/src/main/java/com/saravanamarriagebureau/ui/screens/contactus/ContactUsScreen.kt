@@ -60,7 +60,7 @@ fun ContactUsScreen(
             .fillMaxSize()
             .background(Cream),
     ) {
-        ScreenHeader("Contact Us", onBack)
+        ScreenHeader(stringResource(id = R.string.contact_us), onBack)
         Column(
             Modifier
                 .padding(16.dp)
@@ -120,7 +120,7 @@ fun ContactUsScreen(
 
                     Spacer(modifier = Modifier.height(15.dp))
                     LabelName(
-                        labelName = "Contact Us",
+                        labelName = stringResource(id = R.string.contact_us),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Black,

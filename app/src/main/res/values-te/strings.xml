@@ -141,9 +141,17 @@
     <string name="resolved">పరిష్కరించబడింది</string>
     <string name="resolve">పరిష్కరించండి</string>
     <string name="enquiry_details">విచారణ వివరాలు</string>
-    <string name="edit_memberhip_plan">సభ్యత్వ ప్లాన్‌ను సవరించండి</string>
+    <string name="edit_membership_plan">సభ్యత్వ ప్లాన్‌ను సవరించండి</string>
     <string name="interest_details">ఆసక్తి వివరాలు</string>
     <string name="match_approve">జోడీని ఆమోదించండి</string>
     <string name="match_reject">జోడీని తిరస్కరించండి</string>
+
+    <string name="sender">పంపినవారు</string>
+    <string name="receiver">స్వీకరించినవారు</string>
+    <string name="add_membership_plan">మెంబర్‌షిప్ ప్లాన్ జోడించండి</string>
+    <string name="active">యాక్టివ్</string>
+    <string name="in_active">ఇన్‌యాక్టివ్</string>
+    <string name="edit">సవరించండి</string>
+    <string name="enquiry_form">విచారణ ఫారమ్</string>
 
 </resources>
