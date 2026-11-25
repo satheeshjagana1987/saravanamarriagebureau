@@ -165,7 +165,7 @@ fun AdminInterestDetailsScreen(
                         .background(White),
                 ) {
                     Text(
-                        text = "Sender",
+                        text = stringResource(id = R.string.sender),
                         color = Black,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
@@ -237,7 +237,7 @@ fun AdminInterestDetailsScreen(
                     Spacer(Modifier.height(15.dp))
 
                     Text(
-                        text = "Receiver",
+                        text = stringResource(id = R.string.receiver),
                         color = Black,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
